@@ -1,4 +1,4 @@
-import { defineCollection, z, reference } from 'astro:content';
+import { defineCollection, z } from 'astro:content';
 import { glob } from 'astro/loaders';
 
 const PHASE = z.enum(['discover', 'design', 'build', 'market', 'business']);

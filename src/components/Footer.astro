@@ -1,8 +1,7 @@
 ---
-import { getLangFromUrl, useTranslations, getLocalizedPath } from '@/i18n/ui';
+import { getLangFromUrl, getLocalizedPath } from '@/i18n/ui';
 import { PHASES } from '@/lib/phases';
 const lang = getLangFromUrl(Astro.url);
-const t = useTranslations(lang);
 const rss = lang === 'en' ? '/en/rss.xml' : '/rss.xml';
 const home = getLocalizedPath('/', lang);
 const resources = getLocalizedPath('/resources/', lang);
@@ -13,7 +12,6 @@ const tagline = lang === 'zh'
 const colPhases = lang === 'zh' ? '阶段' : 'Phases';
 const colContent = lang === 'zh' ? '内容' : 'Content';
 const colProject = lang === 'zh' ? '项目' : 'Project';
-const lblArticles = lang === 'zh' ? '文章' : 'Articles';
 const lblCatalog = lang === 'zh' ? '工具目录' : 'Tool catalog';
 const lblAbout = lang === 'zh' ? '关于' : 'About';
 ---

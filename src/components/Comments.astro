@@ -5,7 +5,7 @@ const { lang } = Astro.props;
 const ready = GISCUS.repo && GISCUS.repoId && GISCUS.categoryId;
 ---
 {ready ? (
-  <script src="https://giscus.app/client.js"
+  <script is:inline src="https://giscus.app/client.js"
     data-repo={GISCUS.repo}
     data-repo-id={GISCUS.repoId}
     data-category={GISCUS.category}

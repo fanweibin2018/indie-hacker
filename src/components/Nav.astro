@@ -1,8 +1,7 @@
 ---
-import { getLangFromUrl, useTranslations, getLocalizedPath } from '@/i18n/ui';
+import { getLangFromUrl, getLocalizedPath } from '@/i18n/ui';
 import { PHASES, isPhaseId } from '@/lib/phases';
 const lang = getLangFromUrl(Astro.url);
-const t = useTranslations(lang);
 const path = Astro.url.pathname;
 const home = getLocalizedPath('/', lang);
 const search = getLocalizedPath('/search/', lang);
@@ -29,8 +28,8 @@ const searchLabel = lang === 'zh' ? '搜索文章与工具' : 'Search articles &
         <span class="sk">{searchLabel}</span>
       </a>
       <div class="langtog" role="group" aria-label="Language">
-        <a href={zhHref} aria-pressed={lang === 'zh' ? 'true' : 'false'}>中</a>
-        <a href={enHref} aria-pressed={lang === 'en' ? 'true' : 'false'}>EN</a>
+        <a href={zhHref} aria-current={lang === 'zh' ? 'true' : undefined}>中</a>
+        <a href={enHref} aria-current={lang === 'en' ? 'true' : undefined}>EN</a>
       </div>
       <button class="icon-btn" type="button" data-act="theme" aria-label="Toggle theme" aria-pressed="false">
         <svg class="i-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="4"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9l2.1 2.1M17 17l2.1 2.1M19.1 4.9 17 7M7 17l-2.1 2.1"/></svg>

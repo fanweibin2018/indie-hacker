@@ -9,8 +9,6 @@ const lang = 'zh' as const;
 const all = await getCollection('resources');
 const resources = (all as any[]).filter((r) => r.data.lang === lang);
 
-const pricingSet = new Set<string>(resources.map((r: any) => r.data.pricing));
-const facets = { pricing: [...pricingSet].sort() };
 ---
 <BaseLayout title="资源目录" description="跨阶段的独立开发者工具与资源">
 
@@ -24,7 +22,7 @@ const facets = { pricing: [...pricingSet].sort() };
   <section class="catalog">
     <div class="filters-wrap">
       <div class="wrap">
-        <ResourceFilter facets={facets} lang={lang} showPhase={true} />
+        <ResourceFilter lang={lang} showPhase={true} />
       </div>
     </div>
     <div class="wrap" style="padding-bottom: clamp(2rem,1.4rem+3vw,4rem);">

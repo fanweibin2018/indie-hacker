@@ -29,10 +29,6 @@ const resources = (allResources as any[]).filter(
   (r) => r.data.lang === lang && r.data.phase === phase
 );
 
-// Pricing facets (category omitted per task spec)
-const pricingSet = new Set<string>(resources.map((r: any) => r.data.pricing));
-const facets = { pricing: [...pricingSet].sort() };
-
 // Per-phase counts for pindex
 const allArticlesAll = await getCollection('articles');
 const allResourcesAll = await getCollection('resources');
@@ -132,7 +128,7 @@ const resourceCount = resources.length;
     <section class="catalog">
       <div class="filters-wrap">
         <div class="wrap">
-          <ResourceFilter facets={facets} lang={lang} showPhase={false} />
+          <ResourceFilter lang={lang} showPhase={false} />
         </div>
       </div>
       <div class="wrap" style="padding-bottom: clamp(2rem,1.4rem+3vw,4rem);">

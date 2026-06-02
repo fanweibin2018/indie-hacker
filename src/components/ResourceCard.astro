@@ -1,0 +1,16 @@
+---
+import PhaseChip from './PhaseChip.astro';
+import type { Lang } from '@/i18n/ui';
+import type { PhaseId } from '@/lib/phases';
+interface Props { name: string; url: string; description: string; phase: PhaseId; pricing: string; category: string; lang: Lang; }
+const { name, url, description, phase, pricing, category, lang } = Astro.props;
+const initial = name.trim().charAt(0).toUpperCase();
+---
+<article class="resource-card" data-category={category} data-pricing={pricing}>
+  <span class="logo" aria-hidden="true">{initial}</span>
+  <div>
+    <h3><a href={url} target="_blank" rel="noopener">{name}</a></h3>
+    <p>{description}</p>
+    <div class="meta"><PhaseChip phase={phase} lang={lang} /><span class="pricing">{pricing}</span></div>
+  </div>
+</article>

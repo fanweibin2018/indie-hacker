@@ -1,0 +1,10 @@
+---
+import { getPhase, type PhaseId } from '@/lib/phases';
+import type { Lang } from '@/i18n/ui';
+interface Props { phase: PhaseId; lang: Lang; }
+const { phase, lang } = Astro.props;
+const p = getPhase(phase);
+---
+<span class="phase-chip" style={`--chip:var(${p.colorVar})`}>
+  <span class="dot" style="background:var(--chip)"></span>{p.label[lang]}
+</span>

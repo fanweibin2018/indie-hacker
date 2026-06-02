@@ -1,0 +1,13 @@
+---
+import PhaseChip from './PhaseChip.astro';
+import { getLocalizedPath, type Lang } from '@/i18n/ui';
+import type { PhaseId } from '@/lib/phases';
+interface Props { slug: string; title: string; description: string; phase: PhaseId; lang: Lang; }
+const { slug, title, description, phase, lang } = Astro.props;
+const href = getLocalizedPath(`/articles/${slug}/`, lang);
+---
+<article class="article-card">
+  <PhaseChip phase={phase} lang={lang} />
+  <h3><a href={href}>{title}</a></h3>
+  <p>{description}</p>
+</article>

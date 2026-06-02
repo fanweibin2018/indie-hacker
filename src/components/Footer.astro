@@ -1,0 +1,9 @@
+---
+import { getLangFromUrl } from '@/i18n/ui';
+const lang = getLangFromUrl(Astro.url);
+const rss = lang === 'en' ? '/en/rss.xml' : '/rss.xml';
+---
+<footer class="site-footer">
+  <a href={rss}>RSS</a>
+  <span>© {new Date().getFullYear()} Indie Hacker Portal</span>
+</footer>

@@ -139,6 +139,22 @@ i18n 策略：中文默认（无前缀），英文 `/en/` 前缀镜像全部页�
 
 ## 6. 视觉设计方向
 
+### 6.0 设计产出方式：Claude Design 交接（design-first）
+视觉设计由 **Claude Design**（claude.ai/design，Anthropic Labs 的对话+画布设计工具）产出，工程实现由本仓库（Astro）完成，采用**交接式协作**：
+
+```
+用户在 Claude Design 出设计（首页/阶段页/文章页 + 设计系统）
+  → 导出（优先：代码 / 设计 token；次选：截图 + 色值字体）
+  → 交回本仓库
+  → 在 Astro 中实现还原（实现阶段用 frontend-design skill 把关质量）
+```
+
+- **顺序：设计优先**。仓库当前为空，用户从文字设计简报（见 `docs/design-brief.md`）在 Claude Design 从零起稿，定稿后再写实现计划与搭建工程。
+- writing-plans 阶段将"设计交接产物已就绪"作为实现前的依赖节点。
+- 下述视觉方向（编辑式）是给 Claude Design 的**设计约束**，最终视觉以 Claude Design 定稿为准，但需符合这些约束。
+
+### 6.1 视觉方向约束
+
 **方向：编辑式 / 杂志感（Editorial）+ 克制的工程气质。** 内容站靠"读"取胜，编辑式排版建立权威感与信息层级，契合独立开发者硬核调性。拒绝模板感。
 
 - **排版**：标题用有性格的字体（Space Grotesk / Sora 候选），正文用高可读无衬线（Inter）；中文走思源/系统字体栈兜底。双字体配对。
@@ -201,3 +217,4 @@ day 1 即完整跑通：
 | 统计 | Cloudflare Web Analytics | 隐私友好 |
 | 订阅 | Buttondown | 开发者友好 |
 | 部署 | GitHub Pages + 自定义域名 | Actions CI |
+| UI 设计产出 | Claude Design（design-first 交接） | 设计在 claude.ai/design 出稿，Astro 还原；见 `docs/design-brief.md` |

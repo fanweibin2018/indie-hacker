@@ -323,3 +323,35 @@ a.chip:hover { background: color-mix(in oklch, var(--phase) 18%, var(--surface))
 .col-head { display: flex; align-items: baseline; justify-content: space-between; gap: var(--space-md); padding-bottom: var(--space-md); margin-bottom: var(--space-md); border-bottom: 1px solid var(--ink); }
 .col-head h2 { font-size: var(--fs-h4); }
 .col-head .eyebrow { color: var(--ink); }
+
+/* ====================== PHASE PAGE + CATALOG LAYOUT ========= */
+/* phase header (themed masthead) */
+.phead { padding-top: clamp(1.5rem, 1rem + 2vw, 2.5rem); }
+.crumb { display: flex; align-items: center; gap: 0.5em; font-family: var(--font-mono); font-size: var(--fs-mono); color: var(--ink-3); letter-spacing: 0.03em; flex-wrap: wrap; }
+.crumb a:hover { color: var(--ink); }
+.crumb .sep { color: var(--ink-4); }
+.phead__rule { display: flex; align-items: center; justify-content: space-between; gap: var(--space-md); padding: var(--space-md) 0; border-bottom: 2px solid var(--phase); flex-wrap: wrap; }
+.phead__head { display: grid; grid-template-columns: minmax(0,1.6fr) minmax(0,1fr); gap: var(--space-xl); align-items: end; padding-block: clamp(1.25rem, 0.8rem + 2vw, 2.5rem); }
+@media (max-width: 860px) { .phead__head { grid-template-columns: 1fr; gap: var(--space-lg); } }
+.phead__no { font-family: var(--font-mono); font-size: var(--fs-h6); color: var(--phase); letter-spacing: 0.06em; }
+.phead h1 { font-size: clamp(2.5rem, 1.7rem + 4vw, 5rem); letter-spacing: -0.03em; line-height: 0.98; margin-top: 0.15em; }
+.phead__stats { display: flex; gap: var(--space-lg); }
+.stat { display: grid; gap: 0.2em; }
+.stat__n { font-family: var(--font-display); font-weight: 700; font-size: var(--fs-h3); color: var(--phase-ink); letter-spacing: -0.02em; }
+.stat__l { font-family: var(--font-mono); font-size: var(--fs-mono); color: var(--ink-3); text-transform: uppercase; letter-spacing: 0.05em; }
+
+/* Article + feature grid */
+.feat-grid { display: grid; grid-template-columns: minmax(0,1.5fr) minmax(0,1fr); gap: clamp(1rem, 0.6rem + 1.5vw, 2rem); }
+@media (max-width: 900px) { .feat-grid { grid-template-columns: 1fr; } }
+.feat-grid .side { display: grid; gap: var(--space-md); align-content: start; }
+.articles-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--space-md); }
+@media (max-width: 900px) { .articles-3 { grid-template-columns: 1fr 1fr; } }
+@media (max-width: 600px) { .articles-3 { grid-template-columns: 1fr; } }
+
+/* Tool catalog section */
+.catalog { background: var(--bg-sunken); border-top: 1px solid var(--line); }
+.filters-wrap { position: sticky; top: 64px; z-index: 20; background: color-mix(in oklch, var(--bg-sunken) 90%, transparent); backdrop-filter: blur(10px); border-bottom: 1px solid var(--line); padding-block: var(--space-md); }
+.resgrid { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--space-md); padding-top: var(--space-xl); }
+@media (max-width: 1000px) { .resgrid { grid-template-columns: 1fr 1fr; } }
+@media (max-width: 600px) { .resgrid { grid-template-columns: 1fr; } }
+.empty { display: none; padding: var(--space-2xl); text-align: center; color: var(--ink-3); font-family: var(--font-mono); }

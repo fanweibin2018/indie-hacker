@@ -3,16 +3,47 @@ import BaseLayout from '@/layouts/BaseLayout.astro';
 import ResourceCard from '@/components/ResourceCard.astro';
 import ResourceFilter from '@/components/ResourceFilter.astro';
 import { getCollection } from 'astro:content';
-import { collectFacets } from '@/lib/filter';
+
 const lang = 'en' as const;
+
 const all = await getCollection('resources');
 const resources = (all as any[]).filter((r) => r.data.lang === lang);
-const facets = collectFacets(resources as any);
+
+const pricingSet = new Set<string>(resources.map((r: any) => r.data.pricing));
+const facets = { pricing: [...pricingSet].sort() };
 ---
 <BaseLayout title="Resources" description="Cross-phase indie hacker tools and resources">
-  <h1>Resources</h1>
-  <ResourceFilter facets={facets} lang={lang} />
-  <div class="card-grid">
-    {resources.map((r) => <ResourceCard name={r.data.name} url={r.data.url} description={r.data.description} phase={r.data.phase} pricing={r.data.pricing} category={r.data.category} tags={r.data.tags} lang={lang} />)}
-  </div>
+
+  <section class="wrap section" style="padding-top: clamp(2rem,1.4rem+3vw,4rem); padding-bottom: var(--space-xl);">
+    <h1 style="font-size: var(--fs-h2); letter-spacing: var(--track-snug);">Resources</h1>
+    <p class="lead" style="margin-top: var(--space-md); color: var(--ink-2); max-width: 52ch;">
+      Curated tools for indie hackers, filterable by phase and pricing.
+    </p>
+  </section>
+
+  <section class="catalog">
+    <div class="filters-wrap">
+      <div class="wrap">
+        <ResourceFilter facets={facets} lang={lang} showPhase={true} />
+      </div>
+    </div>
+    <div class="wrap" style="padding-bottom: clamp(2rem,1.4rem+3vw,4rem);">
+      <div class="resgrid" id="resgrid">
+        {resources.map((r) => (
+          <ResourceCard
+            name={r.data.name}
+            url={r.data.url}
+            description={r.data.description}
+            phase={r.data.phase}
+            pricing={r.data.pricing}
+            category={r.data.category}
+            tags={r.data.tags}
+            lang={lang}
+          />
+        ))}
+        <div class="empty" id="resempty">No tools match these filters. Try clearing one.</div>
+      </div>
+    </div>
+  </section>
+
 </BaseLayout>

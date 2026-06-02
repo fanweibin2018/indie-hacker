@@ -3,40 +3,156 @@ import BaseLayout from '@/layouts/BaseLayout.astro';
 import ArticleCard from '@/components/ArticleCard.astro';
 import ResourceCard from '@/components/ResourceCard.astro';
 import ResourceFilter from '@/components/ResourceFilter.astro';
-import { PHASE_IDS, getPhase, isPhaseId } from '@/lib/phases';
+import { PHASES, PHASE_IDS, getPhase, isPhaseId } from '@/lib/phases';
+import { getLocalizedPath } from '@/i18n/ui';
 import { getCollection } from 'astro:content';
 import { filterArticles, sortByDateDesc } from '@/lib/collections';
-import { collectFacets } from '@/lib/filter';
-import { useTranslations } from '@/i18n/ui';
 
 export function getStaticPaths() {
   return PHASE_IDS.map((phase) => ({ params: { phase } }));
 }
+
 const { phase } = Astro.params;
 if (!isPhaseId(phase!)) throw new Error(`Invalid phase: ${phase}`);
+
 const lang = 'en' as const;
-const t = useTranslations(lang);
 const meta = getPhase(phase);
+const slugOf = (id: string) => id.split('/').pop()!;
+
+// Articles for this phase
 const allArticles = await getCollection('articles');
 const articles = sortByDateDesc(filterArticles(allArticles as any, { lang, phase })) as any[];
+
+// Resources for this phase
 const allResources = await getCollection('resources');
-const resources = (allResources as any[]).filter((r) => r.data.lang === lang && r.data.phase === phase);
-const facets = collectFacets(resources as any);
-const slugOf = (id: string) => id.split('/').pop()!;
+const resources = (allResources as any[]).filter(
+  (r) => r.data.lang === lang && r.data.phase === phase
+);
+
+// Pricing facets (category omitted per task spec)
+const pricingSet = new Set<string>(resources.map((r: any) => r.data.pricing));
+const facets = { pricing: [...pricingSet].sort() };
+
+// Per-phase counts for pindex
+const allArticlesAll = await getCollection('articles');
+const allResourcesAll = await getCollection('resources');
+const phaseStats = PHASES.map((p) => ({
+  id: p.id,
+  label: p.label[lang],
+  articleCount: (allArticlesAll as any[]).filter(
+    (a) => a.data.lang === lang && a.data.phase === p.id && !a.data.draft
+  ).length,
+  resourceCount: (allResourcesAll as any[]).filter(
+    (r) => r.data.lang === lang && r.data.phase === p.id
+  ).length,
+}));
+
+// Phase order number (01–05)
+const phaseNo = String(PHASE_IDS.indexOf(phase) + 1).padStart(2, '0');
+
+const articleCount = articles.length;
+const resourceCount = resources.length;
 ---
 <BaseLayout title={meta.label[lang]} description={meta.blurb[lang]}>
-  <header class="phase-header" style={`--c:var(${meta.colorVar})`}>
-    <h1>{meta.label[lang]}</h1><p>{meta.blurb[lang]}</p>
-  </header>
-  <section><h2>{t('phase.articles')}</h2>
-    <div class="card-grid">
-      {articles.map((a) => <ArticleCard slug={slugOf(a.id)} title={a.data.title} description={a.data.description} phase={a.data.phase} lang={lang} />)}
+
+  <!-- ============ PHASE HEADER ============ -->
+  <section class="wrap phead" data-phase={phase}>
+    <nav class="crumb" aria-label="Breadcrumb">
+      <a href={getLocalizedPath('/', lang)}>Home</a>
+      <span class="sep">/</span>
+      <a href={getLocalizedPath('/', lang)}>Phases</a>
+      <span class="sep">/</span>
+      <span style="color: var(--phase-ink);">{meta.label[lang]}</span>
+    </nav>
+
+    <div class="phead__rule">
+      <span class="phead__no">PHASE {phaseNo}</span>
+      <span class="eyebrow">{meta.blurb[lang]}</span>
     </div>
-  </section>
-  <section><h2>{t('phase.resources')}</h2>
-    <ResourceFilter facets={facets} lang={lang} />
-    <div class="card-grid">
-      {resources.map((r) => <ResourceCard name={r.data.name} url={r.data.url} description={r.data.description} phase={r.data.phase} pricing={r.data.pricing} category={r.data.category} tags={r.data.tags} lang={lang} />)}
+
+    <div class="phead__head">
+      <div>
+        <h1>{meta.label[lang]}</h1>
+        <p class="lead" style="margin-top: var(--space-md); max-width: 52ch;">{meta.blurb[lang]}</p>
+      </div>
+      <div class="phead__stats">
+        <div class="stat">
+          <span class="stat__n">{articleCount}</span>
+          <span class="stat__l">Articles</span>
+        </div>
+        <div class="stat">
+          <span class="stat__n">{resourceCount}</span>
+          <span class="stat__l">Tools</span>
+        </div>
+      </div>
     </div>
+
+    <!-- Phase switcher -->
+    <nav class="pindex" role="navigation" aria-label="Switch phase">
+      {phaseStats.map((ps, i) => (
+        <a
+          href={getLocalizedPath(`/${ps.id}/`, lang)}
+          data-phase={ps.id}
+          aria-current={ps.id === phase ? 'page' : undefined}
+        >
+          <span class="pindex__no">{String(i + 1).padStart(2, '0')}</span>
+          <span class="pindex__nm">{ps.label}</span>
+          <span class="pindex__ct">{ps.articleCount} · {ps.resourceCount}</span>
+        </a>
+      ))}
+    </nav>
   </section>
+
+  <!-- ============ ARTICLE STREAM ============ -->
+  {articles.length > 0 && (
+    <section class="wrap section" style="padding-top: clamp(2rem,1.4rem+3vw,4rem); padding-bottom: clamp(2rem,1.4rem+3vw,4rem);">
+      <div class="col-head">
+        <div>
+          <span class="eyebrow">Curated</span>
+          <h2 style="font-size: var(--fs-h3);">Articles in {meta.label[lang]}</h2>
+        </div>
+      </div>
+      <div class="articles-3" data-phase={phase}>
+        {articles.map((a) => (
+          <ArticleCard
+            slug={slugOf(a.id)}
+            title={a.data.title}
+            description={a.data.description}
+            phase={a.data.phase}
+            lang={lang}
+            pubDate={a.data.pubDate}
+          />
+        ))}
+      </div>
+    </section>
+  )}
+
+  <!-- ============ TOOL CATALOG (filterable) ============ -->
+  {resources.length > 0 && (
+    <section class="catalog">
+      <div class="filters-wrap">
+        <div class="wrap">
+          <ResourceFilter facets={facets} lang={lang} showPhase={false} />
+        </div>
+      </div>
+      <div class="wrap" style="padding-bottom: clamp(2rem,1.4rem+3vw,4rem);">
+        <div class="resgrid" id="resgrid" data-default-phase={phase}>
+          {resources.map((r) => (
+            <ResourceCard
+              name={r.data.name}
+              url={r.data.url}
+              description={r.data.description}
+              phase={r.data.phase}
+              pricing={r.data.pricing}
+              category={r.data.category}
+              tags={r.data.tags}
+              lang={lang}
+            />
+          ))}
+          <div class="empty" id="resempty">No tools match these filters. Try clearing one.</div>
+        </div>
+      </div>
+    </section>
+  )}
+
 </BaseLayout>

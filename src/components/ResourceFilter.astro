@@ -1,57 +1,69 @@
 ---
 import type { Lang } from '@/i18n/ui';
-import { useTranslations } from '@/i18n/ui';
-interface Props { facets: { categories: string[]; pricing: string[]; tags: string[] }; lang: Lang; }
-const { facets, lang } = Astro.props;
-const t = useTranslations(lang);
+import { PHASES } from '@/lib/phases';
+
+interface Props {
+  facets: { pricing: string[] };
+  lang: Lang;
+  showPhase?: boolean;
+}
+
+const { lang, showPhase = false } = Astro.props;
+
+const isZh = lang === 'zh';
+const searchPlaceholder = isZh ? '按名称 / 标签搜索工具…' : 'Search tools by name / tag…';
+const searchLabel = isZh ? '搜索工具' : 'Search tools';
+const initialCount = isZh ? '个工具' : 'tools';
+const phaseLabelText = isZh ? '阶段' : 'Phase';
+const pricingLabelText = isZh ? '定价' : 'Pricing';
+const allLabel = isZh ? '全部' : 'All';
+
+const phaseLabels: Record<string, string> = {
+  discover: isZh ? '需求挖掘' : 'Discover',
+  design:   isZh ? '设计'     : 'Design',
+  build:    isZh ? '开发'     : 'Build',
+  market:   isZh ? '营销'     : 'Market',
+  business: isZh ? '商业分析' : 'Business',
+};
+
+const pricingOptions = [
+  { value: 'all',      label: allLabel },
+  { value: 'free',     label: 'Free' },
+  { value: 'freemium', label: 'Freemium' },
+  { value: 'paid',     label: 'Paid' },
+];
 ---
-<div class="resource-filter" data-filter-root>
-  <label>{t('filter.category')}
-    <select data-filter="category"><option value="">{t('filter.all')}</option>
-      {facets.categories.map((c) => <option value={c}>{c}</option>)}
-    </select>
-  </label>
-  <label>{t('filter.pricing')}
-    <select data-filter="pricing"><option value="">{t('filter.all')}</option>
-      {facets.pricing.map((p) => <option value={p}>{p}</option>)}
-    </select>
-  </label>
-  <label>{t('filter.tag')}
-    <select data-filter="tag"><option value="">{t('filter.all')}</option>
-      {facets.tags.map((tg) => <option value={tg}>{tg}</option>)}
-    </select>
-  </label>
+<div class="filters">
+  <!-- Search row -->
+  <div class="filter-row">
+    <div class="search-field">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+        <circle cx="11" cy="11" r="7"/>
+        <path d="m20 20-3.2-3.2"/>
+      </svg>
+      <input type="text" id="resq" placeholder={searchPlaceholder} aria-label={searchLabel} />
+    </div>
+    <span class="result-count" id="rescount">{initialCount}</span>
+  </div>
+
+  <!-- Phase filter row (resources page only) -->
+  {showPhase && (
+    <div class="filter-row">
+      <span class="filter-row__label">{phaseLabelText}</span>
+      <button class="fchip" data-filter="phase" data-value="all">{allLabel}</button>
+      {PHASES.map((p) => (
+        <button class="fchip" data-filter="phase" data-value={p.id} data-phase={p.id}>
+          {phaseLabels[p.id]}
+        </button>
+      ))}
+    </div>
+  )}
+
+  <!-- Pricing filter row -->
+  <div class="filter-row">
+    <span class="filter-row__label">{pricingLabelText}</span>
+    {pricingOptions.map((opt) => (
+      <button class="fchip" data-filter="price" data-value={opt.value}>{opt.label}</button>
+    ))}
+  </div>
 </div>
-<script>
-  const root = document.querySelector('[data-filter-root]');
-  const cards = Array.from(document.querySelectorAll('.resource-card')) as HTMLElement[];
-  const url = new URL(location.href);
-  function apply() {
-    const sel = (k: string) => (document.querySelector(`[data-filter="${k}"]`) as HTMLSelectElement)?.value || '';
-    const cat = sel('category'), price = sel('pricing'), tag = sel('tag');
-    for (const c of cards) {
-      const okCat = !cat || c.dataset.category === cat;
-      const okPrice = !price || c.dataset.pricing === price;
-      const okTag = !tag || (c.dataset.tags || '').split(',').includes(tag);
-      c.hidden = !(okCat && okPrice && okTag);
-    }
-    const setOrDelete = (key: string, value: string) => {
-      if (value) { url.searchParams.set(key, value); } else { url.searchParams.delete(key); }
-    };
-    setOrDelete('category', cat); setOrDelete('pricing', price); setOrDelete('tag', tag);
-    history.replaceState(null, '', url);
-  }
-  // Restore filter state from URL on page load
-  const params = new URLSearchParams(location.search);
-  for (const key of ['category', 'pricing', 'tag'] as const) {
-    const value = params.get(key);
-    if (value) {
-      const select = document.querySelector(`[data-filter="${key}"]`) as HTMLSelectElement | null;
-      if (select && Array.from(select.options).some((o) => o.value === value)) {
-        select.value = value;
-      }
-    }
-  }
-  apply();
-  root?.addEventListener('change', apply);
-</script>

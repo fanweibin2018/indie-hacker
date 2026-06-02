@@ -9,10 +9,10 @@ import { SITE } from '@/config/site';
 interface Props {
   title: string;
   description?: string;
-  /** Absolute or root-relative OG/Twitter image path. Falls back to a site default. */
+  /** Absolute or root-relative OG/Twitter image path. Omitted entirely when unset (no 404). */
   ogImage?: string;
 }
-const { title, description = '', ogImage = '/og-default.png' } = Astro.props;
+const { title, description = '', ogImage } = Astro.props;
 const lang = getLangFromUrl(Astro.url);
 const htmlLang = lang === 'zh' ? 'zh-CN' : 'en';
 const ogLocale = lang === 'zh' ? 'zh_CN' : 'en_US';
@@ -20,7 +20,7 @@ const ogLocale = lang === 'zh' ? 'zh_CN' : 'en_US';
 // Absolute URLs. Astro.site is configured (https://indieroadmap.com); guard for types.
 const siteBase = Astro.site ?? new URL(`https://${SITE.domain}`);
 const canonical = Astro.url.href;
-const ogImageUrl = new URL(ogImage, siteBase).href;
+const ogImageUrl = ogImage ? new URL(ogImage, siteBase).href : '';
 const zhAlternate = new URL(getLocalizedPath(Astro.url.pathname, 'zh'), siteBase).href;
 const enAlternate = new URL(getLocalizedPath(Astro.url.pathname, 'en'), siteBase).href;
 const skipLabel = lang === 'zh' ? '跳到主要内容' : 'Skip to content';
@@ -57,13 +57,13 @@ const skipLabel = lang === 'zh' ? '跳到主要内容' : 'Skip to content';
     <meta property="og:url" content={canonical} />
     <meta property="og:locale" content={ogLocale} />
     <meta property="og:site_name" content={SITE.name} />
-    <meta property="og:image" content={ogImageUrl} />
+    {ogImageUrl && <meta property="og:image" content={ogImageUrl} />}
 
     {/* Twitter card */}
-    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:card" content={ogImageUrl ? 'summary_large_image' : 'summary'} />
     <meta name="twitter:title" content={title} />
     <meta name="twitter:description" content={description} />
-    <meta name="twitter:image" content={ogImageUrl} />
+    {ogImageUrl && <meta name="twitter:image" content={ogImageUrl} />}
 
     <link rel="alternate" type="application/rss+xml" href={lang === 'en' ? '/en/rss.xml' : '/rss.xml'} />
     <Analytics />

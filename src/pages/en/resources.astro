@@ -8,7 +8,7 @@ const lang = 'en' as const;
 
 const all = await getCollection('resources');
 const resources = (all as any[]).filter((r) => r.data.lang === lang);
-
+const resourceCategories = resources.map((r) => r.data.category as string);
 ---
 <BaseLayout title="Resources" description="Cross-phase indie hacker tools and resources">
 
@@ -22,7 +22,7 @@ const resources = (all as any[]).filter((r) => r.data.lang === lang);
   <section class="catalog">
     <div class="filters-wrap">
       <div class="wrap">
-        <ResourceFilter lang={lang} showPhase={true} />
+        <ResourceFilter lang={lang} showPhase={true} categories={resourceCategories} />
       </div>
     </div>
     <div class="wrap" style="padding-bottom: clamp(2rem,1.4rem+3vw,4rem);">

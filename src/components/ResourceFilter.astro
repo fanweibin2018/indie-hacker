@@ -5,15 +5,18 @@ import { PHASES } from '@/lib/phases';
 interface Props {
   lang: Lang;
   showPhase?: boolean;
+  /** Raw category labels of the resources rendered on this page. */
+  categories?: string[];
 }
 
-const { lang, showPhase = false } = Astro.props;
+const { lang, showPhase = false, categories = [] } = Astro.props;
 
 const isZh = lang === 'zh';
 const searchPlaceholder = isZh ? '按名称 / 标签搜索工具…' : 'Search tools by name / tag…';
 const searchLabel = isZh ? '搜索工具' : 'Search tools';
 const initialCount = isZh ? '个工具' : 'tools';
 const phaseLabelText = isZh ? '阶段' : 'Phase';
+const categoryLabelText = isZh ? '分类' : 'Category';
 const pricingLabelText = isZh ? '定价' : 'Pricing';
 const allLabel = isZh ? '全部' : 'All';
 
@@ -31,6 +34,20 @@ const pricingOptions = [
   { value: 'freemium', label: 'Freemium' },
   { value: 'paid',     label: 'Paid' },
 ];
+
+// Build category chips: slug MUST match ResourceCard's data-cat normalization
+// (category.trim().toLowerCase().replace(/\s+/g, '-')); label stays human-readable.
+const toCatSlug = (c: string) => c.trim().toLowerCase().replace(/\s+/g, '-');
+const categoryOptions = Array.from(
+  categories
+    .reduce((map, raw) => {
+      const label = raw.trim();
+      const slug = toCatSlug(label);
+      if (slug && !map.has(slug)) map.set(slug, label);
+      return map;
+    }, new Map<string, string>())
+    .entries()
+).map(([slug, label]) => ({ slug, label }));
 ---
 <div class="filters">
   <!-- Search row -->
@@ -54,6 +71,17 @@ const pricingOptions = [
         <button class="fchip" data-filter="phase" data-value={p.id} data-phase={p.id}>
           {phaseLabels[p.id]}
         </button>
+      ))}
+    </div>
+  )}
+
+  <!-- Category filter row -->
+  {categoryOptions.length > 0 && (
+    <div class="filter-row">
+      <span class="filter-row__label">{categoryLabelText}</span>
+      <button class="fchip" data-filter="cat" data-value="all">{allLabel}</button>
+      {categoryOptions.map((opt) => (
+        <button class="fchip" data-filter="cat" data-value={opt.slug}>{opt.label}</button>
       ))}
     </div>
   )}

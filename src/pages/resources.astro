@@ -8,7 +8,7 @@ const lang = 'zh' as const;
 
 const all = await getCollection('resources');
 const resources = (all as any[]).filter((r) => r.data.lang === lang);
-
+const resourceCategories = resources.map((r) => r.data.category as string);
 ---
 <BaseLayout title="资源目录" description="跨阶段的独立开发者工具与资源">
 
@@ -22,7 +22,7 @@ const resources = (all as any[]).filter((r) => r.data.lang === lang);
   <section class="catalog">
     <div class="filters-wrap">
       <div class="wrap">
-        <ResourceFilter lang={lang} showPhase={true} />
+        <ResourceFilter lang={lang} showPhase={true} categories={resourceCategories} />
       </div>
     </div>
     <div class="wrap" style="padding-bottom: clamp(2rem,1.4rem+3vw,4rem);">

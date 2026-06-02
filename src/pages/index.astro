@@ -9,33 +9,145 @@ import { getCollection } from 'astro:content';
 import { filterArticles, sortByDateDesc } from '@/lib/collections';
 
 const lang = 'zh' as const;
-const allArticles = await getCollection('articles');
-const featured = (sortByDateDesc(filterArticles(allArticles as any, { lang })) as any[]).slice(0, 4);
-const allResources = await getCollection('resources');
-const featuredRes = (allResources as any[]).filter((r) => r.data.lang === lang && r.data.featured).slice(0, 4);
 const slugOf = (id: string) => id.split('/').pop()!;
+
+// Articles
+const allArticles = await getCollection('articles');
+const langArticles = sortByDateDesc(filterArticles(allArticles as any, { lang })) as any[];
+const featuredArticles = langArticles.slice(0, 4);
+
+// Resources
+const allResources = await getCollection('resources');
+const featuredRes = (allResources as any[])
+  .filter((r) => r.data.lang === lang && r.data.featured)
+  .slice(0, 3);
+
+// Per-phase counts
+const phaseStats = PHASES.map((p, i) => ({
+  id: p.id,
+  label: p.label[lang],
+  no: String(i + 1).padStart(2, '0'),
+  articleCount: (allArticles as any[]).filter(
+    (a) => a.data.lang === lang && a.data.phase === p.id && !a.data.draft
+  ).length,
+  resourceCount: (allResources as any[]).filter(
+    (r) => r.data.lang === lang && r.data.phase === p.id
+  ).length,
+}));
+
+const totalArticles = phaseStats.reduce((s, p) => s + p.articleCount, 0);
+const totalResources = phaseStats.reduce((s, p) => s + p.resourceCount, 0);
 ---
-<BaseLayout title="Indie Hacker Portal" description="从需求到变现的独立开发者知识库">
-  <section class="hero">
-    <h1>从想法到变现，一网打尽</h1>
-    <p>需求挖掘 · 设计 · 开发 · 营销 · 商业分析</p>
+<BaseLayout title="独立开发者实战手册" description="围绕产品生命周期五个阶段组织的双语知识库">
+
+  <!-- ============ MASTHEAD ============ -->
+  <section class="wrap masthead">
+    <div class="masthead__rule">
+      <span class="eyebrow">独立开发者的实战手册</span>
+      <span class="eyebrow">{totalArticles} 篇文章 · {totalResources} 个工具</span>
+    </div>
+    <div class="masthead__head">
+      <h1>从想法到收入，<em>每一步</em>都有人走过。</h1>
+      <div class="masthead__aside">
+        <p class="lead">
+          围绕产品生命周期五个阶段组织的双语知识库——原创指南与它所引用的工具逐一交叉关联。
+        </p>
+        <div style="display:flex; gap:var(--space-xs); flex-wrap:wrap;">
+          <a class="btn btn--primary" href={getLocalizedPath('/discover/', lang)}>从需求挖掘开始</a>
+          <a class="btn btn--ghost" href="#resources">浏览工具目录</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Phase index strip -->
+    <nav class="pindex" role="navigation" aria-label="阶段导航">
+      {phaseStats.map((ps) => (
+        <a href={getLocalizedPath(`/${ps.id}/`, lang)} data-phase={ps.id}>
+          <span class="pindex__no">{ps.no}</span>
+          <span class="pindex__nm">{ps.label}</span>
+          <span class="pindex__ct">{ps.articleCount} 文 · {ps.resourceCount} 工具</span>
+        </a>
+      ))}
+    </nav>
   </section>
-  <section class="phase-grid">
-    {PHASES.map((p) => (
-      <a class="phase-entry" href={getLocalizedPath(`/${p.id}/`, lang)} style={`--c:var(${p.colorVar})`}>
-        <h2>{p.label[lang]}</h2><p>{p.blurb[lang]}</p>
-      </a>
-    ))}
-  </section>
-  <section><h2>精选文章</h2>
-    <div class="card-grid">
-      {featured.map((a) => <ArticleCard slug={slugOf(a.id)} title={a.data.title} description={a.data.description} phase={a.data.phase} lang={lang} />)}
+
+  <!-- ============ LEAD + SIDEBAR ============ -->
+  <section class="wrap section" style="padding-top: clamp(2rem,1rem+3vw,3.5rem);">
+    <div class="lead-grid">
+
+      <!-- Left: feature article + latest grid -->
+      <div class="stack" style="gap: var(--space-xl);">
+
+        {featuredArticles.length > 0 && (
+          <div>
+            <div class="col-head">
+              <h2>精选文章</h2>
+              <a class="link-arrow" href={getLocalizedPath('/discover/', lang)}>全部<span class="ar">→</span></a>
+            </div>
+            <div class="grid-2">
+              {featuredArticles.map((a) => (
+                <ArticleCard
+                  slug={slugOf(a.id)}
+                  title={a.data.title}
+                  description={a.data.description}
+                  phase={a.data.phase}
+                  lang={lang}
+                  pubDate={a.data.pubDate}
+                />
+              ))}
+            </div>
+          </div>
+        )}
+
+      </div>
+
+      <!-- Right: featured resources + subscribe -->
+      <aside class="stack" id="resources">
+        {featuredRes.length > 0 && (
+          <div>
+            <div class="col-head">
+              <h2>新入库工具</h2>
+              <a class="link-arrow" href={getLocalizedPath('/discover/', lang)}>目录<span class="ar">→</span></a>
+            </div>
+            <div class="reslist">
+              {featuredRes.map((r) => (
+                <ResourceCard
+                  name={r.data.name}
+                  url={r.data.url}
+                  description={r.data.description}
+                  phase={r.data.phase}
+                  pricing={r.data.pricing}
+                  category={r.data.category}
+                  tags={r.data.tags}
+                  lang={lang}
+                />
+              ))}
+            </div>
+          </div>
+        )}
+
+        <!-- Mini subscribe block -->
+        <div class="subscribe" style="padding: var(--space-lg); border-radius: var(--r-lg);">
+          <div class="subscribe__hue"></div>
+          <span class="eyebrow" style="color: color-mix(in oklch, var(--bg) 70%, transparent);">每周精选</span>
+          <h2 style="font-size: var(--fs-h4);">一封邮件，五个阶段。</h2>
+          <NewsletterForm lang={lang} />
+          <span class="subform__note">独立开发者 · 无垃圾邮件</span>
+        </div>
+      </aside>
     </div>
   </section>
-  <section><h2>精选资源</h2>
-    <div class="card-grid">
-      {featuredRes.map((r) => <ResourceCard name={r.data.name} url={r.data.url} description={r.data.description} phase={r.data.phase} pricing={r.data.pricing} category={r.data.category} tags={r.data.tags} lang={lang} />)}
+
+  <!-- ============ SUBSCRIBE ============ -->
+  <section class="wrap section" style="padding-top: 0;">
+    <div class="subscribe reveal">
+      <div class="subscribe__hue"></div>
+      <span class="eyebrow" style="color: color-mix(in oklch, var(--bg) 70%, transparent);">订阅</span>
+      <h2>每周二，一封实战笔记。</h2>
+      <p>每周一篇精选文章 + 一个值得花时间的工具，横跨五个阶段。由真正发过货的开发者撰写，而非营销号。</p>
+      <NewsletterForm lang={lang} />
+      <span class="subform__note">独立开发者 · 随时退订</span>
     </div>
   </section>
-  <section class="newsletter-section"><h2>订阅更新</h2><NewsletterForm lang={lang} /></section>
+
 </BaseLayout>

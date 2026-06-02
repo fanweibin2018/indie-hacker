@@ -7,10 +7,11 @@ const t = useTranslations(lang);
 const action = NEWSLETTER.buttondownUser
   ? `https://buttondown.email/api/emails/embed-subscribe/${NEWSLETTER.buttondownUser}`
   : '';
+const placeholder = lang === 'zh' ? 'you@example.com' : 'you@example.com';
 ---
 {action && (
-  <form action={action} method="post" target="_blank" class="newsletter">
-    <input type="email" name="email" required placeholder="you@example.com" aria-label="email" />
-    <button type="submit">{t('newsletter.cta')}</button>
+  <form action={action} method="post" target="_blank" class="subform" novalidate>
+    <input type="email" name="email" required placeholder={placeholder} aria-label="email" />
+    <button class="btn btn--primary" type="submit">{t('newsletter.cta')}</button>
   </form>
 )}

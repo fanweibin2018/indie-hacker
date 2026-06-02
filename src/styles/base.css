@@ -53,8 +53,6 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 /* ---- Bilingual: toggle on <html data-lang> ----------------- */
-:root[data-lang="en"] [data-l="zh"] { display: none !important; }
-:root[data-lang="zh"] [data-l="en"] { display: none !important; }
 /* CJK gets the CJK-leading stack adjustments */
 :root[data-lang="zh"] body { line-height: 1.7; }
 

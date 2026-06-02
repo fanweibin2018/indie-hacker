@@ -115,8 +115,8 @@ a.chip:hover { background: color-mix(in oklch, var(--phase) 18%, var(--surface))
   border-radius: var(--r-sm); overflow: hidden; font-family: var(--font-mono);
   font-size: var(--fs-mono); letter-spacing: 0.04em;
 }
-.langtog button { padding: 0 0.6em; color: var(--ink-3); transition: color var(--dur) var(--ease-out), background var(--dur) var(--ease-out); }
-.langtog button[aria-pressed="true"] { background: var(--ink); color: var(--bg); }
+.langtog a { display: flex; align-items: center; padding: 0 0.6em; color: var(--ink-3); transition: color var(--dur) var(--ease-out), background var(--dur) var(--ease-out); }
+.langtog a[aria-current="true"] { background: var(--ink); color: var(--bg); }
 
 .search-btn {
   display: inline-flex; align-items: center; gap: 0.6em; height: 38px; padding: 0 0.7em 0 0.8em;

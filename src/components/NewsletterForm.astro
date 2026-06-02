@@ -1,0 +1,16 @@
+---
+import { NEWSLETTER } from '@/config/site';
+import { useTranslations, type Lang } from '@/i18n/ui';
+interface Props { lang: Lang; }
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+const action = NEWSLETTER.buttondownUser
+  ? `https://buttondown.email/api/emails/embed-subscribe/${NEWSLETTER.buttondownUser}`
+  : '';
+---
+{action && (
+  <form action={action} method="post" target="_blank" class="newsletter">
+    <input type="email" name="email" required placeholder="you@example.com" aria-label="email" />
+    <button type="submit">{t('newsletter.cta')}</button>
+  </form>
+)}

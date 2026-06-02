@@ -1,0 +1,24 @@
+---
+import { GISCUS } from '@/config/site';
+interface Props { lang: 'zh' | 'en'; }
+const { lang } = Astro.props;
+const ready = GISCUS.repo && GISCUS.repoId && GISCUS.categoryId;
+---
+{ready ? (
+  <script src="https://giscus.app/client.js"
+    data-repo={GISCUS.repo}
+    data-repo-id={GISCUS.repoId}
+    data-category={GISCUS.category}
+    data-category-id={GISCUS.categoryId}
+    data-mapping="pathname"
+    data-strict="1"
+    data-reactions-enabled="1"
+    data-emit-metadata="0"
+    data-input-position="bottom"
+    data-theme="preferred_color_scheme"
+    data-lang={lang === 'zh' ? 'zh-CN' : 'en'}
+    crossorigin="anonymous"
+    async></script>
+) : (
+  <p class="text-[var(--color-text-muted)]">Comments not configured.</p>
+)}

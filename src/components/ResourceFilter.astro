@@ -35,8 +35,23 @@ const t = useTranslations(lang);
       const okTag = !tag || (c.dataset.tags || '').split(',').includes(tag);
       c.hidden = !(okCat && okPrice && okTag);
     }
-    url.searchParams.set('category', cat); url.searchParams.set('pricing', price); url.searchParams.set('tag', tag);
+    const setOrDelete = (key: string, value: string) => {
+      if (value) { url.searchParams.set(key, value); } else { url.searchParams.delete(key); }
+    };
+    setOrDelete('category', cat); setOrDelete('pricing', price); setOrDelete('tag', tag);
     history.replaceState(null, '', url);
   }
+  // Restore filter state from URL on page load
+  const params = new URLSearchParams(location.search);
+  for (const key of ['category', 'pricing', 'tag'] as const) {
+    const value = params.get(key);
+    if (value) {
+      const select = document.querySelector(`[data-filter="${key}"]`) as HTMLSelectElement | null;
+      if (select && Array.from(select.options).some((o) => o.value === value)) {
+        select.value = value;
+      }
+    }
+  }
+  apply();
   root?.addEventListener('change', apply);
 </script>

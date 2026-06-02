@@ -1,6 +1,6 @@
 export const SITE = {
   name: 'Indie Hacker Portal',
-  domain: 'example.com', // replaced with real domain in deploy task
+  domain: 'indieroadmap.com',
   defaultLocale: 'zh' as const,
 };
 

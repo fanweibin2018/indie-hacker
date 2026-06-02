@@ -4,7 +4,7 @@ import sitemap from '@astrojs/sitemap';
 import tailwindcss from '@tailwindcss/vite';
 
 export default defineConfig({
-  site: 'https://example.com',
+  site: 'https://indieroadmap.com',
   output: 'static',
   trailingSlash: 'always',
   i18n: {

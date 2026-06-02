@@ -1,0 +1,15 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+---
+<BaseLayout title="Search" description="Site search">
+  <h1>Search</h1>
+  <link rel="stylesheet" href="/pagefind/pagefind-ui.css" />
+  <div id="search"></div>
+  <script is:inline>
+    // pagefind is generated after build
+    window.addEventListener('DOMContentLoaded', async () => {
+      const { PagefindUI } = await import('/pagefind/pagefind-ui.js');
+      new PagefindUI({ element: '#search', showSubResults: true });
+    });
+  </script>
+</BaseLayout>

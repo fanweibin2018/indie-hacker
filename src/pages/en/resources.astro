@@ -1,0 +1,18 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import ResourceCard from '@/components/ResourceCard.astro';
+import ResourceFilter from '@/components/ResourceFilter.astro';
+import { getCollection } from 'astro:content';
+import { collectFacets } from '@/lib/filter';
+const lang = 'en' as const;
+const all = await getCollection('resources');
+const resources = (all as any[]).filter((r) => r.data.lang === lang);
+const facets = collectFacets(resources as any);
+---
+<BaseLayout title="Resources" description="Cross-phase indie hacker tools and resources">
+  <h1>Resources</h1>
+  <ResourceFilter facets={facets} lang={lang} />
+  <div class="card-grid">
+    {resources.map((r) => <ResourceCard name={r.data.name} url={r.data.url} description={r.data.description} phase={r.data.phase} pricing={r.data.pricing} category={r.data.category} tags={r.data.tags} lang={lang} />)}
+  </div>
+</BaseLayout>

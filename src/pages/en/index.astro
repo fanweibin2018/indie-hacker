@@ -3,18 +3,24 @@ import BaseLayout from '@/layouts/BaseLayout.astro';
 import ArticleCard from '@/components/ArticleCard.astro';
 import ResourceCard from '@/components/ResourceCard.astro';
 import NewsletterForm from '@/components/NewsletterForm.astro';
-import { PHASES } from '@/lib/phases';
+import { PHASES, getPhase } from '@/lib/phases';
 import { getLocalizedPath } from '@/i18n/ui';
+import { NEWSLETTER } from '@/config/site';
 import { getCollection } from 'astro:content';
 import { filterArticles, sortByDateDesc } from '@/lib/collections';
 
 const lang = 'en' as const;
 const slugOf = (id: string) => id.split('/').pop()!;
+const shortDate = (d: Date) =>
+  `${d.getFullYear()}.${String(d.getMonth() + 1).padStart(2, '0')}.${String(d.getDate()).padStart(2, '0')}`;
 
 // Articles
 const allArticles = await getCollection('articles');
 const langArticles = sortByDateDesc(filterArticles(allArticles as any, { lang })) as any[];
-const featuredArticles = langArticles.slice(0, 4);
+const feature = langArticles[0];
+const latestArticles = langArticles.slice(1, 5);
+// Dense ledger: recent cross-linked articles (re-uses the sorted set as a distinct lens)
+const ledgerArticles = langArticles.slice(0, 5);
 
 // Resources
 const allResources = await getCollection('resources');
@@ -75,17 +81,35 @@ const totalResources = phaseStats.reduce((s, p) => s + p.resourceCount, 0);
   <section class="wrap section" style="padding-top: clamp(2rem,1rem+3vw,3.5rem);">
     <div class="lead-grid">
 
-      <!-- Left: featured articles grid -->
+      <!-- Left: feature article + latest grid -->
       <div class="stack" style="gap: var(--space-xl);">
 
-        {featuredArticles.length > 0 && (
+        {feature && (
+          <article class="acard acard--feature reveal" data-phase={feature.data.phase}>
+            <div class="acard__media ph" data-phase={feature.data.phase}></div>
+            <div class="acard__body">
+              <div class="acard__meta">
+                <a class="chip" data-phase={feature.data.phase} href={getLocalizedPath(`/${feature.data.phase}/`, lang)}>
+                  <span class="dot"></span>{getPhase(feature.data.phase).label[lang]}
+                </a>
+              </div>
+              <h3 class="acard__title">
+                <a href={getLocalizedPath(`/articles/${slugOf(feature.id)}/`, lang)}>{feature.data.title}</a>
+              </h3>
+              <p class="acard__dek">{feature.data.description}</p>
+              <div class="acard__foot"><span>{shortDate(feature.data.pubDate)}</span></div>
+            </div>
+          </article>
+        )}
+
+        {latestArticles.length > 0 && (
           <div>
             <div class="col-head">
               <h2>Latest articles</h2>
               <a class="link-arrow" href={getLocalizedPath('/discover/', lang)}>All<span class="ar">→</span></a>
             </div>
             <div class="grid-2">
-              {featuredArticles.map((a) => (
+              {latestArticles.map((a) => (
                 <ArticleCard
                   slug={slugOf(a.id)}
                   title={a.data.title}
@@ -127,27 +151,63 @@ const totalResources = phaseStats.reduce((s, p) => s + p.resourceCount, 0);
         )}
 
         <!-- Mini subscribe block -->
-        <div class="subscribe" style="padding: var(--space-lg); border-radius: var(--r-lg);">
-          <div class="subscribe__hue"></div>
-          <span class="eyebrow" style="color: color-mix(in oklch, var(--bg) 70%, transparent);">Weekly digest</span>
-          <h2 style="font-size: var(--fs-h4);">One email. Five phases.</h2>
-          <NewsletterForm lang={lang} />
-          <span class="subform__note">Builders · no spam</span>
-        </div>
+        {NEWSLETTER.buttondownUser && (
+          <div class="subscribe" style="padding: var(--space-lg); border-radius: var(--r-lg);">
+            <div class="subscribe__hue"></div>
+            <span class="eyebrow" style="color: color-mix(in oklch, var(--bg) 70%, transparent);">Weekly digest</span>
+            <h2 style="font-size: var(--fs-h4);">One email. Five phases.</h2>
+            <NewsletterForm lang={lang} />
+            <span class="subform__note">Builders · no spam</span>
+          </div>
+        )}
       </aside>
     </div>
   </section>
 
+  <!-- ============ FIELD NOTES (dense ledger) ============ -->
+  {ledgerArticles.length > 0 && (
+    <section class="field-band">
+      <div class="wrap section" style="padding-block: clamp(2rem,1.4rem+3vw,4rem);">
+        <div class="section-head">
+          <div>
+            <span class="eyebrow">From the field</span>
+            <h2>Recently cross-linked</h2>
+          </div>
+          <a class="link-arrow" href={getLocalizedPath('/discover/', lang)}>Full index<span class="ar">→</span></a>
+        </div>
+        <div>
+          {ledgerArticles.map((a, i) => (
+            <a
+              class="arow"
+              data-phase={a.data.phase}
+              href={getLocalizedPath(`/articles/${slugOf(a.id)}/`, lang)}
+              style={i === ledgerArticles.length - 1 ? 'border-bottom:0;' : undefined}
+            >
+              <span class="arow__idx">{String(i + 1).padStart(2, '0')}</span>
+              <span class="arow__title">{a.data.title}</span>
+              <span class="arow__meta">
+                <span class="chip" data-phase={a.data.phase}><span class="dot"></span>{getPhase(a.data.phase).label[lang]}</span>
+                {' · '}{shortDate(a.data.pubDate)}
+              </span>
+            </a>
+          ))}
+        </div>
+      </div>
+    </section>
+  )}
+
   <!-- ============ SUBSCRIBE ============ -->
-  <section class="wrap section" style="padding-top: 0;">
-    <div class="subscribe reveal">
-      <div class="subscribe__hue"></div>
-      <span class="eyebrow" style="color: color-mix(in oklch, var(--bg) 70%, transparent);">Newsletter</span>
-      <h2>Field notes, every Tuesday.</h2>
-      <p>One curated article and one tool worth your time, across all five phases. Written by builders who shipped, not marketers.</p>
-      <NewsletterForm lang={lang} />
-      <span class="subform__note">Indie hackers · unsubscribe anytime</span>
-    </div>
-  </section>
+  {NEWSLETTER.buttondownUser && (
+    <section class="wrap section" style="padding-top: 0;">
+      <div class="subscribe reveal">
+        <div class="subscribe__hue"></div>
+        <span class="eyebrow" style="color: color-mix(in oklch, var(--bg) 70%, transparent);">Newsletter</span>
+        <h2>Field notes, every Tuesday.</h2>
+        <p>One curated article and one tool worth your time, across all five phases. Written by builders who shipped, not marketers.</p>
+        <NewsletterForm lang={lang} />
+        <span class="subform__note">Indie hackers · unsubscribe anytime</span>
+      </div>
+    </section>
+  )}
 
 </BaseLayout>

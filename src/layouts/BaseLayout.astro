@@ -3,11 +3,27 @@ import '@/styles/global.css';
 import Nav from '@/components/Nav.astro';
 import Footer from '@/components/Footer.astro';
 import Analytics from '@/components/Analytics.astro';
-import { getLangFromUrl } from '@/i18n/ui';
-interface Props { title: string; description?: string; }
-const { title, description = '' } = Astro.props;
+import { getLangFromUrl, getLocalizedPath } from '@/i18n/ui';
+import { SITE } from '@/config/site';
+
+interface Props {
+  title: string;
+  description?: string;
+  /** Absolute or root-relative OG/Twitter image path. Falls back to a site default. */
+  ogImage?: string;
+}
+const { title, description = '', ogImage = '/og-default.png' } = Astro.props;
 const lang = getLangFromUrl(Astro.url);
 const htmlLang = lang === 'zh' ? 'zh-CN' : 'en';
+const ogLocale = lang === 'zh' ? 'zh_CN' : 'en_US';
+
+// Absolute URLs. Astro.site is configured (https://indieroadmap.com); guard for types.
+const siteBase = Astro.site ?? new URL(`https://${SITE.domain}`);
+const canonical = Astro.url.href;
+const ogImageUrl = new URL(ogImage, siteBase).href;
+const zhAlternate = new URL(getLocalizedPath(Astro.url.pathname, 'zh'), siteBase).href;
+const enAlternate = new URL(getLocalizedPath(Astro.url.pathname, 'en'), siteBase).href;
+const skipLabel = lang === 'zh' ? '跳到主要内容' : 'Skip to content';
 ---
 <!doctype html>
 <html lang={htmlLang} data-lang={lang}>
@@ -27,12 +43,35 @@ const htmlLang = lang === 'zh' ? 'zh-CN' : 'en';
     </script>
     <title>{title}</title>
     <meta name="description" content={description} />
+
+    {/* Canonical + language alternates */}
+    <link rel="canonical" href={canonical} />
+    <link rel="alternate" hreflang="zh-CN" href={zhAlternate} />
+    <link rel="alternate" hreflang="en" href={enAlternate} />
+    <link rel="alternate" hreflang="x-default" href={zhAlternate} />
+
+    {/* Open Graph */}
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:locale" content={ogLocale} />
+    <meta property="og:site_name" content={SITE.name} />
+    <meta property="og:image" content={ogImageUrl} />
+
+    {/* Twitter card */}
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImageUrl} />
+
     <link rel="alternate" type="application/rss+xml" href={lang === 'en' ? '/en/rss.xml' : '/rss.xml'} />
     <Analytics />
   </head>
   <body>
+    <a class="skip-link sr-only" href="#main">{skipLabel}</a>
     <Nav />
-    <main data-pagefind-body>
+    <main id="main" data-pagefind-body>
       <slot />
     </main>
     <Footer />

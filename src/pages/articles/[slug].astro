@@ -80,7 +80,7 @@ const formattedDate = `${pubDate.getFullYear()}.${String(pubDate.getMonth() + 1)
             </div>
             {related.map((r: any) => (
               <a class="tool-item" data-phase={r.data.phase} href={r.data.url} target="_blank" rel="noopener noreferrer">
-                <span class="rlogo" data-phase={r.data.phase}>{r.data.name.charAt(0)}</span>
+                <span class="rlogo" data-phase={r.data.phase} aria-hidden="true">{r.data.name.charAt(0)}</span>
                 <span>
                   <span class="tool-item__nm">{r.data.name}</span><br />
                   <span class="tool-item__cat">{r.data.category}</span>

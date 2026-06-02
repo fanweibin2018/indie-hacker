@@ -48,11 +48,18 @@
   syncToggles();
 
   /* ---- Command palette (⌘K / Ctrl+K) ------------------------
-     Harmless when #palette is absent (guarded). Markup, if present,
-     is rendered site-wide; see BaseLayout. */
+     If a #palette dialog exists, toggle it. Otherwise be honest and
+     send the user to the search page (en mirror aware). The search
+     button links to the same destination. */
+  function searchPath() {
+    return root.getAttribute('data-lang') === 'en' ? '/en/search/' : '/search/';
+  }
   function togglePalette() {
     var p = document.getElementById('palette');
-    if (!p) return;
+    if (!p) {
+      location.href = searchPath();
+      return;
+    }
     var open = p.classList.toggle('open');
     if (open) {
       var i = p.querySelector('input');

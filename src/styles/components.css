@@ -242,7 +242,8 @@ a.chip:hover { background: color-mix(in oklch, var(--phase) 18%, var(--surface))
   font-size: var(--fs-small); transition: border-color var(--dur) var(--ease-out), background var(--dur) var(--ease-out);
 }
 .subform input::placeholder { color: color-mix(in oklch, var(--bg) 55%, transparent); }
-.subform input:focus { outline: none; border-color: var(--market); background: color-mix(in oklch, var(--bg) 14%, transparent); }
+.subform input:focus { border-color: var(--market); background: color-mix(in oklch, var(--bg) 14%, transparent); }
+.subform input:focus-visible { outline: 2px solid var(--bg); outline-offset: 2px; }
 .subform .btn--primary { background: var(--bg); color: var(--ink); }
 .subform .btn--primary:hover { background: var(--market); color: oklch(18% 0.02 60); }
 .subform__note { font-family: var(--font-mono); font-size: var(--fs-mono); color: color-mix(in oklch, var(--bg) 60%, transparent); }

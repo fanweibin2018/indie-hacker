@@ -11,11 +11,12 @@ const enHref = getLocalizedPath(path, 'en');
 const seg = path.replace(/^\/en/, '').replace(/\//g, '');
 const activePhase = isPhaseId(seg) ? seg : null;
 const brandSuffix = lang === 'zh' ? '路线图' : 'Roadmap';
+const brandSub = lang === 'zh' ? '实战手册' : 'Field Manual';
 const searchLabel = lang === 'zh' ? '搜索文章与工具' : 'Search articles & tools';
 ---
 <header class="nav">
   <div class="nav__in">
-    <a class="brand" href={home} aria-label="IndieRoadmap home"><span>Indie<span class="mk">{brandSuffix}</span></span></a>
+    <a class="brand" href={home} aria-label="IndieRoadmap home"><span>Indie<span class="mk">{brandSuffix}</span></span><span class="sl">{brandSub}</span></a>
     <nav class="nav__links" aria-label="Phases">
       {PHASES.map((p) => (
         <a href={getLocalizedPath(`/${p.id}/`, lang)} data-phase={p.id} aria-current={activePhase === p.id ? 'page' : undefined}>{p.label[lang]}</a>
@@ -26,6 +27,7 @@ const searchLabel = lang === 'zh' ? '搜索文章与工具' : 'Search articles &
       <a class="search-btn" href={search}>
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.2-3.2"/></svg>
         <span class="sk">{searchLabel}</span>
+        <kbd>⌘K</kbd>
       </a>
       <div class="langtog" role="group" aria-label="Language">
         <a href={zhHref} aria-current={lang === 'zh' ? 'true' : undefined}>中</a>

@@ -1,35 +1,198 @@
+/* =============================================================
+   INDIE / 设计 tokens
+   Single source of truth: color, type, space, radius, shadow, motion.
+   Light-first. Dark mode is an intentional override, not an inversion.
+   ============================================================= */
+
 :root {
-  /* typography */
-  --font-heading: 'Space Grotesk', system-ui, sans-serif;
-  --font-body: 'Inter', -apple-system, 'Noto Sans SC', system-ui, sans-serif;
-  --text-base: clamp(1rem, 0.92rem + 0.4vw, 1.125rem);
-  --text-hero: clamp(2.5rem, 1rem + 6vw, 5rem);
+  /* ---- Type families ------------------------------------------------ */
+  --font-display: "Space Grotesk", "Noto Sans SC", system-ui, sans-serif;
+  --font-display-alt: "Sora", "Noto Sans SC", system-ui, sans-serif;
+  --font-body: "Inter", "Noto Sans SC", system-ui, -apple-system, sans-serif;
+  --font-mono: "JetBrains Mono", "SFMono-Regular", ui-monospace, monospace;
 
-  /* surfaces & text */
-  --color-surface: oklch(99% 0 0);
-  --color-surface-2: oklch(96% 0.005 250);
-  --color-text: oklch(20% 0 0);
-  --color-text-muted: oklch(45% 0.01 250);
-  --color-border: oklch(88% 0.01 250);
+  /* ---- Fluid type scale (clamp) ------------------------------------- */
+  /* min @320  ·  max @1440 */
+  --fs-mono:   0.75rem;                                   /* eyebrows / labels */
+  --fs-micro:  clamp(0.75rem, 0.72rem + 0.15vw, 0.8125rem);
+  --fs-small:  clamp(0.8125rem, 0.78rem + 0.18vw, 0.875rem);
+  --fs-body:   clamp(0.9375rem, 0.9rem + 0.2vw, 1.0625rem);
+  --fs-lead:   clamp(1.0625rem, 0.98rem + 0.45vw, 1.3125rem);
+  --fs-h6:     clamp(1rem, 0.96rem + 0.2vw, 1.125rem);
+  --fs-h5:     clamp(1.125rem, 1.04rem + 0.42vw, 1.375rem);
+  --fs-h4:     clamp(1.3125rem, 1.18rem + 0.66vw, 1.75rem);
+  --fs-h3:     clamp(1.5rem, 1.28rem + 1.1vw, 2.25rem);
+  --fs-h2:     clamp(1.875rem, 1.5rem + 1.85vw, 3.125rem);
+  --fs-h1:     clamp(2.375rem, 1.78rem + 2.95vw, 4.25rem);
+  --fs-display: clamp(2.75rem, 1.7rem + 5.2vw, 6.5rem);
 
-  /* five phase semantic colors (placeholder oklch ring: same L/C, vary hue) */
-  --color-discover: oklch(62% 0.16 25);    /* 红橙 */
-  --color-design:   oklch(62% 0.16 95);    /* 黄绿 */
-  --color-build:    oklch(62% 0.16 160);   /* 青绿 */
-  --color-market:   oklch(62% 0.16 250);   /* 蓝 */
-  --color-business: oklch(62% 0.16 320);   /* 紫红 */
+  /* ---- Leading & tracking ------------------------------------------- */
+  --lh-tight: 1.04;
+  --lh-snug: 1.18;
+  --lh-body: 1.62;
+  --lh-relaxed: 1.75;
+  --track-tight: -0.022em;
+  --track-snug: -0.012em;
+  --track-wide: 0.02em;
+  --track-mono: 0.06em;
 
-  /* spacing & motion */
-  --space-section: clamp(3rem, 2rem + 5vw, 8rem);
-  --radius: 0.5rem;
-  --duration-normal: 300ms;
-  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  /* ---- Weights ------------------------------------------------------ */
+  --w-regular: 400;
+  --w-medium: 500;
+  --w-semibold: 600;
+  --w-bold: 700;
+
+  /* ---- Spacing scale (rhythmic, not uniform) ------------------------ */
+  --space-2xs: 0.25rem;   /* 4  */
+  --space-xs:  0.5rem;    /* 8  */
+  --space-sm:  0.75rem;   /* 12 */
+  --space-md:  1rem;      /* 16 */
+  --space-lg:  1.5rem;    /* 24 */
+  --space-xl:  2.5rem;    /* 40 */
+  --space-2xl: 4rem;      /* 64 */
+  --space-3xl: 6rem;      /* 96 */
+  --space-4xl: 9rem;      /* 144 */
+  --gutter: clamp(1.25rem, 0.6rem + 3vw, 3.5rem);
+  --maxw: 1440px;
+  --maxw-prose: 68ch;
+
+  /* ---- Radii -------------------------------------------------------- */
+  --r-xs: 4px;
+  --r-sm: 6px;
+  --r-md: 10px;
+  --r-lg: 16px;
+  --r-xl: 24px;
+  --r-pill: 999px;
+
+  /* ---- Motion ------------------------------------------------------- */
+  --dur-fast: 130ms;
+  --dur: 240ms;
+  --dur-slow: 460ms;
+  --ease-out: cubic-bezier(0.22, 0.9, 0.24, 1);
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+  --ease-spring: cubic-bezier(0.18, 1.16, 0.36, 1);
+
+  /* ===========================================================
+     COLOR — LIGHT (default). Warm paper neutral, low chroma.
+     =========================================================== */
+  --bg:        oklch(98.6% 0.004 95);   /* warm paper */
+  --bg-sunken: oklch(96.6% 0.006 95);   /* recessed wells */
+  --surface:   oklch(100% 0 0);         /* raised cards */
+  --surface-2: oklch(99.2% 0.003 95);
+  --ink:       oklch(22% 0.012 60);     /* near-black, warm */
+  --ink-2:     oklch(40% 0.01 60);      /* secondary text */
+  --ink-3:     oklch(55% 0.008 60);     /* muted / captions */
+  --ink-4:     oklch(70% 0.006 60);     /* faint / placeholders */
+  --line:      oklch(90% 0.006 80);     /* hairlines */
+  --line-2:    oklch(84% 0.008 80);     /* stronger dividers */
+  --hover:     oklch(95.5% 0.006 90);   /* row/interactive hover */
+
+  --accent:      oklch(56% 0.13 25);    /* editorial red-ink accent */
+  --accent-ink:  oklch(48% 0.15 25);
+  --focus:       oklch(58% 0.16 250);   /* focus ring (a11y) */
+
+  /* ---- Five phase semantic colors ----------------------------------
+     Same chroma family, even hue spread. Solid for chips/codes,
+     tint for surfaces, ink for accessible text on tint. */
+  --discover:      oklch(60% 0.115 200);   /* teal — 需求挖掘 */
+  --design:        oklch(60% 0.15  335);   /* magenta — 设计 */
+  --build:         oklch(57% 0.135 265);   /* indigo — 开发 */
+  --market:        oklch(66% 0.135 55);    /* amber — 营销 */
+  --business:      oklch(60% 0.115 150);   /* green — 商业分析 */
+
+  --discover-ink:  oklch(46% 0.1   200);
+  --design-ink:    oklch(47% 0.14  335);
+  --build-ink:     oklch(46% 0.13  265);
+  --market-ink:    oklch(48% 0.13  55);
+  --business-ink:  oklch(45% 0.1   150);
+
+  --discover-tint: oklch(96% 0.025 200);
+  --design-tint:   oklch(96% 0.03  335);
+  --build-tint:    oklch(96% 0.028 265);
+  --market-tint:   oklch(96.5% 0.03 75);
+  --business-tint: oklch(96% 0.028 150);
+
+  /* ---- Shadows (warm-tinted, layered) ------------------------------- */
+  --shadow-1: 0 1px 2px oklch(20% 0.02 60 / 0.05),
+              0 1px 1px oklch(20% 0.02 60 / 0.04);
+  --shadow-2: 0 2px 4px oklch(20% 0.02 60 / 0.05),
+              0 4px 10px oklch(20% 0.02 60 / 0.06);
+  --shadow-3: 0 8px 16px oklch(20% 0.02 60 / 0.07),
+              0 18px 40px oklch(20% 0.02 60 / 0.09);
+  --shadow-pop: 0 12px 28px oklch(20% 0.02 60 / 0.1),
+                0 28px 70px oklch(20% 0.02 60 / 0.12);
+
+  color-scheme: light;
 }
 
-[data-theme='dark'] {
-  --color-surface: oklch(18% 0.01 250);
-  --color-surface-2: oklch(23% 0.01 250);
-  --color-text: oklch(95% 0 0);
-  --color-text-muted: oklch(70% 0.01 250);
-  --color-border: oklch(32% 0.01 250);
+/* ===========================================================
+   COLOR — DARK. Deliberate: deep neutral, lifted phase hues.
+   =========================================================== */
+:root[data-theme="dark"] {
+  --bg:        oklch(20% 0.008 265);
+  --bg-sunken: oklch(17.5% 0.01 265);
+  --surface:   oklch(24% 0.01 265);
+  --surface-2: oklch(27% 0.012 265);
+  --ink:       oklch(95% 0.006 90);
+  --ink-2:     oklch(80% 0.008 90);
+  --ink-3:     oklch(66% 0.01 90);
+  --ink-4:     oklch(52% 0.012 265);
+  --line:      oklch(31% 0.012 265);
+  --line-2:    oklch(38% 0.014 265);
+  --hover:     oklch(28% 0.014 265);
+
+  --accent:      oklch(70% 0.14 30);
+  --accent-ink:  oklch(76% 0.14 30);
+  --focus:       oklch(72% 0.15 250);
+
+  --discover:      oklch(74% 0.12 200);
+  --design:        oklch(74% 0.14 335);
+  --build:         oklch(72% 0.13 265);
+  --market:        oklch(78% 0.13 60);
+  --business:      oklch(74% 0.12 150);
+
+  --discover-ink:  oklch(80% 0.1  200);
+  --design-ink:    oklch(80% 0.12 335);
+  --build-ink:     oklch(80% 0.11 265);
+  --market-ink:    oklch(84% 0.11 60);
+  --business-ink:  oklch(80% 0.1  150);
+
+  --discover-tint: oklch(30% 0.04 200);
+  --design-tint:   oklch(30% 0.045 335);
+  --build-tint:    oklch(30% 0.045 265);
+  --market-tint:   oklch(31% 0.045 60);
+  --business-tint: oklch(30% 0.04 150);
+
+  --shadow-1: 0 1px 2px oklch(0% 0 0 / 0.4);
+  --shadow-2: 0 2px 6px oklch(0% 0 0 / 0.4), 0 6px 16px oklch(0% 0 0 / 0.3);
+  --shadow-3: 0 10px 24px oklch(0% 0 0 / 0.45), 0 24px 60px oklch(0% 0 0 / 0.4);
+  --shadow-pop: 0 16px 40px oklch(0% 0 0 / 0.55);
+
+  color-scheme: dark;
+}
+
+/* Per-phase scoping helper: set --phase / --phase-ink / --phase-tint
+   so components can stay phase-agnostic. */
+[data-phase="discover"] { --phase: var(--discover); --phase-ink: var(--discover-ink); --phase-tint: var(--discover-tint); }
+[data-phase="design"]   { --phase: var(--design);   --phase-ink: var(--design-ink);   --phase-tint: var(--design-tint); }
+[data-phase="build"]    { --phase: var(--build);    --phase-ink: var(--build-ink);    --phase-tint: var(--build-tint); }
+[data-phase="market"]   { --phase: var(--market);   --phase-ink: var(--market-ink);   --phase-tint: var(--market-tint); }
+[data-phase="business"] { --phase: var(--business); --phase-ink: var(--business-ink); --phase-tint: var(--business-tint); }
+
+/* Display-font swap token (Tweakable): set --font-display to alt at root. */
+:root[data-display="sora"] { --font-display: var(--font-display-alt); }
+
+/* =============================================================
+   COMPAT ALIASES — keep placeholder `--color-*` / `--font-heading`
+   names resolving while components/pages migrate to frozen tokens
+   (Task 18b/18c). Also keeps `phases.ts` colorVar (`/^--color-/`) and
+   tests/unit/phases.test.ts valid. Trim in a follow-up once no
+   `--color-*` references remain.
+   ============================================================= */
+:root {
+  --color-surface: var(--surface); --color-surface-2: var(--surface-2);
+  --color-text: var(--ink); --color-text-muted: var(--ink-3); --color-border: var(--line);
+  --color-discover: var(--discover); --color-design: var(--design); --color-build: var(--build);
+  --color-market: var(--market); --color-business: var(--business);
+  --font-heading: var(--font-display);
 }

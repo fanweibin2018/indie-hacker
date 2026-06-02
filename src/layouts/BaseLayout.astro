@@ -10,10 +10,21 @@ const lang = getLangFromUrl(Astro.url);
 const htmlLang = lang === 'zh' ? 'zh-CN' : 'en';
 ---
 <!doctype html>
-<html lang={htmlLang}>
+<html lang={htmlLang} data-lang={lang}>
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    {/* Pre-paint theme: read persisted choice (ih-theme), light-first. Avoids FOUC. */}
+    <script is:inline>
+      (function () {
+        try {
+          var saved = localStorage.getItem('ih-theme');
+          document.documentElement.setAttribute('data-theme', saved === 'dark' ? 'dark' : 'light');
+        } catch (e) {
+          document.documentElement.setAttribute('data-theme', 'light');
+        }
+      })();
+    </script>
     <title>{title}</title>
     <meta name="description" content={description} />
     <link rel="alternate" type="application/rss+xml" href={lang === 'en' ? '/en/rss.xml' : '/rss.xml'} />
@@ -25,5 +36,9 @@ const htmlLang = lang === 'zh' ? 'zh-CN' : 'en';
       <slot />
     </main>
     <Footer />
+    {/* Astro-bundled progressive-enhancement script (theme toggle, ⌘K, reveals, filter). */}
+    <script>
+      import '@/scripts/site.js';
+    </script>
   </body>
 </html>

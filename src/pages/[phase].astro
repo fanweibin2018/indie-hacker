@@ -1,0 +1,40 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import ArticleCard from '@/components/ArticleCard.astro';
+import ResourceCard from '@/components/ResourceCard.astro';
+import ResourceFilter from '@/components/ResourceFilter.astro';
+import { PHASE_IDS, getPhase, isPhaseId } from '@/lib/phases';
+import { getCollection } from 'astro:content';
+import { filterArticles, sortByDateDesc } from '@/lib/collections';
+import { collectFacets } from '@/lib/filter';
+
+export function getStaticPaths() {
+  return PHASE_IDS.map((phase) => ({ params: { phase } }));
+}
+const { phase } = Astro.params;
+if (!isPhaseId(phase!)) throw new Error(`Invalid phase: ${phase}`);
+const lang = 'zh' as const;
+const meta = getPhase(phase);
+const allArticles = await getCollection('articles');
+const articles = sortByDateDesc(filterArticles(allArticles as any, { lang, phase })) as any[];
+const allResources = await getCollection('resources');
+const resources = (allResources as any[]).filter((r) => r.data.lang === lang && r.data.phase === phase);
+const facets = collectFacets(resources as any);
+const slugOf = (id: string) => id.split('/').pop()!;
+---
+<BaseLayout title={meta.label[lang]} description={meta.blurb[lang]}>
+  <header class="phase-header" style={`--c:var(${meta.colorVar})`}>
+    <h1>{meta.label[lang]}</h1><p>{meta.blurb[lang]}</p>
+  </header>
+  <section><h2>精选文章</h2>
+    <div class="card-grid">
+      {articles.map((a) => <ArticleCard slug={slugOf(a.id)} title={a.data.title} description={a.data.description} phase={a.data.phase} lang={lang} />)}
+    </div>
+  </section>
+  <section><h2>资源目录</h2>
+    <ResourceFilter facets={facets} lang={lang} />
+    <div class="card-grid">
+      {resources.map((r) => <ResourceCard name={r.data.name} url={r.data.url} description={r.data.description} phase={r.data.phase} pricing={r.data.pricing} category={r.data.category} tags={r.data.tags} lang={lang} />)}
+    </div>
+  </section>
+</BaseLayout>

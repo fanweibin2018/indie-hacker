@@ -1,0 +1,41 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import ArticleCard from '@/components/ArticleCard.astro';
+import ResourceCard from '@/components/ResourceCard.astro';
+import NewsletterForm from '@/components/NewsletterForm.astro';
+import { PHASES } from '@/lib/phases';
+import { getLocalizedPath } from '@/i18n/ui';
+import { getCollection } from 'astro:content';
+import { filterArticles, sortByDateDesc } from '@/lib/collections';
+
+const lang = 'zh' as const;
+const allArticles = await getCollection('articles');
+const featured = (sortByDateDesc(filterArticles(allArticles as any, { lang })) as any[]).slice(0, 4);
+const allResources = await getCollection('resources');
+const featuredRes = (allResources as any[]).filter((r) => r.data.lang === lang && r.data.featured).slice(0, 4);
+const slugOf = (id: string) => id.split('/').pop()!;
+---
+<BaseLayout title="Indie Hacker Portal" description="从需求到变现的独立开发者知识库">
+  <section class="hero">
+    <h1>从想法到变现，一网打尽</h1>
+    <p>需求挖掘 · 设计 · 开发 · 营销 · 商业分析</p>
+  </section>
+  <section class="phase-grid">
+    {PHASES.map((p) => (
+      <a class="phase-entry" href={getLocalizedPath(`/${p.id}/`, lang)} style={`--c:var(${p.colorVar})`}>
+        <h2>{p.label[lang]}</h2><p>{p.blurb[lang]}</p>
+      </a>
+    ))}
+  </section>
+  <section><h2>精选文章</h2>
+    <div class="card-grid">
+      {featured.map((a) => <ArticleCard slug={slugOf(a.id)} title={a.data.title} description={a.data.description} phase={a.data.phase} lang={lang} />)}
+    </div>
+  </section>
+  <section><h2>精选资源</h2>
+    <div class="card-grid">
+      {featuredRes.map((r) => <ResourceCard name={r.data.name} url={r.data.url} description={r.data.description} phase={r.data.phase} pricing={r.data.pricing} category={r.data.category} tags={r.data.tags} lang={lang} />)}
+    </div>
+  </section>
+  <section class="newsletter-section"><h2>订阅更新</h2><NewsletterForm lang={lang} /></section>
+</BaseLayout>

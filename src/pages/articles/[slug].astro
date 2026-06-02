@@ -1,0 +1,36 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import ResourceCard from '@/components/ResourceCard.astro';
+import Comments from '@/components/Comments.astro';
+import PhaseChip from '@/components/PhaseChip.astro';
+import { useTranslations } from '@/i18n/ui';
+import { getCollection, render } from 'astro:content';
+import { resolveRelated } from '@/lib/related';
+
+export async function getStaticPaths() {
+  const articles = await getCollection('articles');
+  const zh = (articles as any[]).filter((a) => a.data.lang === 'zh' && !a.data.draft);
+  return zh.map((a) => ({ params: { slug: a.id.split('/').pop()! }, props: { entry: a } }));
+}
+const { entry } = Astro.props;
+const lang = 'zh' as const;
+const t = useTranslations(lang);
+const { Content } = await render(entry);
+const allResources = await getCollection('resources');
+const related = resolveRelated(entry as any, allResources as any);
+---
+<BaseLayout title={entry.data.title} description={entry.data.description}>
+  <article class="article">
+    <PhaseChip phase={entry.data.phase} lang={lang} />
+    <h1>{entry.data.title}</h1>
+    <Content />
+  </article>
+  {related.length > 0 && (
+    <section class="related"><h2>{t('article.relatedResources')}</h2>
+      <div class="card-grid">
+        {related.map((r: any) => <ResourceCard name={r.data.name} url={r.data.url} description={r.data.description} phase={r.data.phase} pricing={r.data.pricing} category={r.data.category} tags={r.data.tags} lang={lang} />)}
+      </div>
+    </section>
+  )}
+  <section class="comments"><Comments lang={lang} /></section>
+</BaseLayout>

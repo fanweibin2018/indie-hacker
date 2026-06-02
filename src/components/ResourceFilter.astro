@@ -1,0 +1,42 @@
+---
+import type { Lang } from '@/i18n/ui';
+import { useTranslations } from '@/i18n/ui';
+interface Props { facets: { categories: string[]; pricing: string[]; tags: string[] }; lang: Lang; }
+const { facets, lang } = Astro.props;
+const t = useTranslations(lang);
+---
+<div class="resource-filter" data-filter-root>
+  <label>{t('filter.category')}
+    <select data-filter="category"><option value="">{t('filter.all')}</option>
+      {facets.categories.map((c) => <option value={c}>{c}</option>)}
+    </select>
+  </label>
+  <label>{t('filter.pricing')}
+    <select data-filter="pricing"><option value="">{t('filter.all')}</option>
+      {facets.pricing.map((p) => <option value={p}>{p}</option>)}
+    </select>
+  </label>
+  <label>{t('filter.tag')}
+    <select data-filter="tag"><option value="">{t('filter.all')}</option>
+      {facets.tags.map((tg) => <option value={tg}>{tg}</option>)}
+    </select>
+  </label>
+</div>
+<script>
+  const root = document.querySelector('[data-filter-root]');
+  const cards = Array.from(document.querySelectorAll('.resource-card')) as HTMLElement[];
+  const url = new URL(location.href);
+  function apply() {
+    const sel = (k: string) => (document.querySelector(`[data-filter="${k}"]`) as HTMLSelectElement)?.value || '';
+    const cat = sel('category'), price = sel('pricing'), tag = sel('tag');
+    for (const c of cards) {
+      const okCat = !cat || c.dataset.category === cat;
+      const okPrice = !price || c.dataset.pricing === price;
+      const okTag = !tag || (c.dataset.tags || '').split(',').includes(tag);
+      c.hidden = !(okCat && okPrice && okTag);
+    }
+    url.searchParams.set('category', cat); url.searchParams.set('pricing', price); url.searchParams.set('tag', tag);
+    history.replaceState(null, '', url);
+  }
+  root?.addEventListener('change', apply);
+</script>

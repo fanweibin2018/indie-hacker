@@ -1,0 +1,18 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import ResourceCard from '@/components/ResourceCard.astro';
+import ResourceFilter from '@/components/ResourceFilter.astro';
+import { getCollection } from 'astro:content';
+import { collectFacets } from '@/lib/filter';
+const lang = 'zh' as const;
+const all = await getCollection('resources');
+const resources = (all as any[]).filter((r) => r.data.lang === lang);
+const facets = collectFacets(resources as any);
+---
+<BaseLayout title="资源目录" description="跨阶段的独立开发者工具与资源">
+  <h1>资源目录</h1>
+  <ResourceFilter facets={facets} lang={lang} />
+  <div class="card-grid">
+    {resources.map((r) => <ResourceCard name={r.data.name} url={r.data.url} description={r.data.description} phase={r.data.phase} pricing={r.data.pricing} category={r.data.category} tags={r.data.tags} lang={lang} />)}
+  </div>
+</BaseLayout>

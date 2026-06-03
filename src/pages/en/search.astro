@@ -7,9 +7,10 @@ import BaseLayout from '@/layouts/BaseLayout.astro';
   <div id="search"></div>
   <script is:inline>
     // pagefind is generated after build
+    // pagefind-ui.js is an IIFE that attaches window.PagefindUI (no named export)
     window.addEventListener('DOMContentLoaded', async () => {
-      const { PagefindUI } = await import('/pagefind/pagefind-ui.js');
-      new PagefindUI({ element: '#search', showSubResults: true });
+      await import('/pagefind/pagefind-ui.js');
+      new window.PagefindUI({ element: '#search', showSubResults: true });
     });
   </script>
 </BaseLayout>

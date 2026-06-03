@@ -7,35 +7,20 @@ import PageHeader from '@/components/PageHeader.astro';
     lang="en"
     eyebrow="Site search"
     title="Search"
-    lead="Search across every article and the full tool catalog, in English and Chinese."
+    lead="Search every article and every tool by name, tag or description."
     meta="⌘K from anywhere"
   />
 
   <section class="wrap section" style="padding-top: clamp(1.5rem,1rem+2vw,2.5rem);">
-    <link rel="stylesheet" href="/pagefind/pagefind-ui.css" />
-    <div id="search" class="pf-search"></div>
+    <div class="search-hero">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.2-3.2"/></svg>
+      <input id="site-search-input" type="search" placeholder="Search articles, tools, tags…" aria-label="Search" autocomplete="off" spellcheck="false" />
+    </div>
+    <div id="site-search-list" class="results" data-lang="en">
+      <p class="palette__empty">Type a keyword to search every article and tool.</p>
+    </div>
     <noscript>
       <p class="muted" style="font-family: var(--font-mono); font-size: var(--fs-small);">Search requires JavaScript.</p>
     </noscript>
   </section>
-
-  <script is:inline>
-    // pagefind is generated after build
-    // pagefind-ui.js is an IIFE that attaches window.PagefindUI (no named export)
-    window.addEventListener('DOMContentLoaded', async () => {
-      try {
-        await import('/pagefind/pagefind-ui.js');
-        new window.PagefindUI({
-          element: '#search',
-          showSubResults: true,
-          showImages: false,
-          translations: {
-            placeholder: 'Search articles, tools, phases…',
-          },
-        });
-      } catch (e) {
-        // /pagefind/ assets are not generated in dev; available after build
-      }
-    });
-  </script>
 </BaseLayout>

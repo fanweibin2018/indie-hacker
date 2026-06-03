@@ -150,70 +150,124 @@
     }
   });
 
-  /* ---- Command palette: live Pagefind search ----------------
-     Restores the design's ⌘K popup. Typing queries the Pagefind
-     index (generated at build) and renders results inline; empty
-     query restores the default "browse phases" list. Pagefind auto-
-     selects the index for the page's language. Degrades gracefully
-     when the index is absent (e.g. astro dev). */
+  /* ---- Live search: ⌘K palette + /search/ page --------------
+     Both query a build-time JSON index (/search-index.json) so results
+     are fine-grained — every article AND every tool is its own hit,
+     not just the page that contains it. Pure client-side, no backend. */
+  function esc(s) {
+    return String(s).replace(/[&<>"]/g, function (c) {
+      return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c];
+    });
+  }
+  var T = {
+    zh: { tool: '工具', article: '文章', none: '没有匹配的结果', err: '搜索暂不可用' },
+    en: { tool: 'Tool', article: 'Article', none: 'No results', err: 'Search unavailable' }
+  };
+  var SEARCH_INDEX = null;
+  function loadIndex() {
+    if (SEARCH_INDEX) return Promise.resolve(SEARCH_INDEX);
+    return fetch('/search-index.json')
+      .then(function (r) { return r.json(); })
+      .then(function (d) { SEARCH_INDEX = d; return d; })
+      .catch(function () { SEARCH_INDEX = 'err'; return 'err'; });
+  }
+  /** Score + filter index items for a query in the active language.
+     Matches across title / tags / category / description (AND over
+     whitespace tokens); ranks title and tag/category hits highest. */
+  function searchItems(items, q, lang) {
+    var tokens = q.toLowerCase().split(/\s+/).filter(Boolean);
+    if (!tokens.length) return [];
+    var out = [];
+    items.forEach(function (it) {
+      if (it.lang !== lang) return;
+      var title = (it.title || '').toLowerCase();
+      var meta = ((it.tags || []).join(' ') + ' ' + (it.cat || '')).toLowerCase();
+      var desc = (it.desc || '').toLowerCase();
+      var hay = title + '' + meta + '' + desc;
+      var ok = tokens.every(function (t) { return hay.indexOf(t) >= 0; });
+      if (!ok) return;
+      var score = 0;
+      tokens.forEach(function (t) {
+        if (title.indexOf(t) === 0) score += 12;
+        else if (title.indexOf(t) >= 0) score += 8;
+        if (meta.indexOf(t) >= 0) score += 5;
+        if (desc.indexOf(t) >= 0) score += 2;
+      });
+      out.push({ it: it, score: score });
+    });
+    out.sort(function (a, b) { return b.score - a.score || a.it.title.length - b.it.title.length; });
+    return out.map(function (s) { return s.it; });
+  }
+  /** Compact row for the ⌘K palette. */
+  function paletteRow(it, lang) {
+    var label = T[lang][it.type];
+    var ext = it.type === 'tool' ? ' target="_blank" rel="noopener noreferrer"' : '';
+    var title = it.type === 'tool' && it.cat ? it.title + ' · ' + it.cat : it.title;
+    return '<a href="' + it.url + '"' + ext + '>' + esc(title) +
+      '<span class="chip" data-phase="' + it.phase + '"><span class="dot"></span>' + label + '</span></a>';
+  }
+  /** Richer card for the /search/ results page. */
+  function resultCard(it, lang) {
+    var label = T[lang][it.type];
+    var ext = it.type === 'tool' ? ' target="_blank" rel="noopener noreferrer"' : '';
+    var sub = it.type === 'tool' && it.cat ? '<span class="sresult__cat">' + esc(it.cat) + '</span>' : '';
+    return '<a class="sresult" href="' + it.url + '"' + ext + ' data-phase="' + it.phase + '">' +
+      '<div class="sresult__head"><span class="sresult__title">' + esc(it.title) + '</span>' +
+      '<span class="chip" data-phase="' + it.phase + '"><span class="dot"></span>' + label + '</span></div>' +
+      (it.desc ? '<p class="sresult__desc">' + esc(it.desc) + '</p>' : '') + sub + '</a>';
+  }
+  /** Wire an input + list pair to the live index. */
+  function wireSearch(input, list, opts) {
+    var lang = (opts.lang === 'en') ? 'en' : 'zh';
+    var limit = opts.limit || 8;
+    var render = opts.render;
+    var onEmpty = opts.onEmpty || function () { list.innerHTML = ''; };
+    var debounce;
+    function run(q) {
+      loadIndex().then(function (items) {
+        if (input.value.trim() !== q) return; // stale
+        if (items === 'err') { list.innerHTML = '<div class="palette__empty">' + T[lang].err + '</div>'; return; }
+        var res = searchItems(items, q, lang).slice(0, limit);
+        if (!res.length) { list.innerHTML = '<div class="palette__empty">' + T[lang].none + '</div>'; return; }
+        list.innerHTML = res.map(function (it) { return render(it, lang); }).join('');
+      });
+    }
+    input.addEventListener('input', function () {
+      var q = input.value.trim();
+      clearTimeout(debounce);
+      if (!q) { onEmpty(); return; }
+      debounce = setTimeout(function () { run(q); }, 120);
+    });
+  }
+
+  // ⌘K palette
   var palInput = document.getElementById('palette-input');
   var palList = document.getElementById('palette-list');
   if (palInput && palList) {
-    var PHASE_LABEL = {
-      zh: { discover: '需求挖掘', design: '设计', build: '开发', market: '营销', business: '商业分析' },
-      en: { discover: 'Discover', design: 'Design', build: 'Build', market: 'Market', business: 'Business' }
-    };
     var palLang = palList.getAttribute('data-lang') === 'en' ? 'en' : 'zh';
-    var defaultHTML = palList.innerHTML;
-    var pf = null; // lazily-imported Pagefind module (or 'err')
-    var debounce;
-
-    function esc(s) {
-      return String(s).replace(/[&<>"]/g, function (c) {
-        return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c];
-      });
-    }
-    function note(text) {
-      palList.innerHTML = '<div class="palette__empty">' + esc(text) + '</div>';
-    }
-    function ensurePF() {
-      if (pf) return Promise.resolve(pf);
-      // Variable path keeps Rollup from statically resolving this build-time
-      // -absent module; Pagefind is generated into /pagefind/ at build.
-      var PF_URL = '/pagefind/pagefind.js';
-      return import(/* @vite-ignore */ PF_URL)
-        .then(function (m) { pf = m; return m; })
-        .catch(function () { pf = 'err'; return 'err'; });
-    }
-    function row(d) {
-      var phase = d.meta && d.meta.phase;
-      var title = (d.meta && d.meta.title) || d.url;
-      var chip = phase
-        ? '<span class="chip" data-phase="' + phase + '"><span class="dot"></span>' +
-          ((PHASE_LABEL[palLang] && PHASE_LABEL[palLang][phase]) || phase) + '</span>'
-        : '';
-      return '<a href="' + d.url + '">' + esc(title) + chip + '</a>';
-    }
-    function runSearch(q) {
-      ensurePF().then(function (lib) {
-        if (lib === 'err') { note(palLang === 'zh' ? '搜索暂不可用' : 'Search unavailable'); return; }
-        lib.search(q).then(function (res) {
-          if (palInput.value.trim() !== q) return; // stale
-          var top = res.results.slice(0, 6);
-          if (!top.length) { note(palLang === 'zh' ? '没有匹配的结果' : 'No results'); return; }
-          Promise.all(top.map(function (r) { return r.data(); })).then(function (datas) {
-            if (palInput.value.trim() !== q) return;
-            palList.innerHTML = datas.map(row).join('');
-          });
-        });
-      });
-    }
-    palInput.addEventListener('input', function () {
-      var q = palInput.value.trim();
-      clearTimeout(debounce);
-      if (!q) { palList.innerHTML = defaultHTML; return; }
-      debounce = setTimeout(function () { runSearch(q); }, 160);
+    var palDefault = palList.innerHTML;
+    wireSearch(palInput, palList, {
+      lang: palLang, limit: 7, render: paletteRow,
+      onEmpty: function () { palList.innerHTML = palDefault; }
     });
+    // Warm the index as soon as the palette opens.
+    palInput.addEventListener('focus', loadIndex, { once: true });
+  }
+
+  // /search/ results page
+  var siteInput = document.getElementById('site-search-input');
+  var siteList = document.getElementById('site-search-list');
+  if (siteInput && siteList) {
+    var siteLang = siteList.getAttribute('data-lang') === 'en' ? 'en' : 'zh';
+    var siteDefault = siteList.innerHTML;
+    wireSearch(siteInput, siteList, {
+      lang: siteLang, limit: 30, render: resultCard,
+      onEmpty: function () { siteList.innerHTML = siteDefault; }
+    });
+    // Support ?q= deep links and the nav search box landing here.
+    var q0 = new URLSearchParams(location.search).get('q');
+    if (q0) { siteInput.value = q0; siteInput.dispatchEvent(new Event('input')); }
+    siteInput.focus();
   }
 
   /* ---- Reveal on scroll -------------------------------------

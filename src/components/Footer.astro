@@ -1,0 +1,45 @@
+---
+import { getLangFromUrl, getLocalizedPath } from '@/i18n/ui';
+import { PHASES } from '@/lib/phases';
+const lang = getLangFromUrl(Astro.url);
+const rss = lang === 'en' ? '/en/rss.xml' : '/rss.xml';
+const home = getLocalizedPath('/', lang);
+const resources = getLocalizedPath('/resources/', lang);
+const about = getLocalizedPath('/about/', lang);
+const tagline = lang === 'zh'
+  ? '面向独立开发者的双语知识库，按从想法到变现的五个阶段组织。'
+  : 'A bilingual knowledge base for indie hackers, organized by the five phases from idea to revenue.';
+const colPhases = lang === 'zh' ? '阶段' : 'Phases';
+const colContent = lang === 'zh' ? '内容' : 'Content';
+const colProject = lang === 'zh' ? '项目' : 'Project';
+const lblCatalog = lang === 'zh' ? '工具目录' : 'Tool catalog';
+const lblAbout = lang === 'zh' ? '关于' : 'About';
+---
+<footer class="foot">
+  <div class="foot__in">
+    <div class="foot__col">
+      <a class="brand" href={home}><span>Indie<span class="mk">Roadmap</span></span></a>
+      <p class="muted" style="font-size:var(--fs-small);max-width:34ch;margin-top:var(--space-sm);">{tagline}</p>
+      <div class="phaserail" style="margin-top:var(--space-md);max-width:240px;"><i></i><i></i><i></i><i></i><i></i></div>
+    </div>
+    <div class="foot__col">
+      <h4>{colPhases}</h4>
+      <ul>{PHASES.map((p) => <li><a href={getLocalizedPath(`/${p.id}/`, lang)}>{p.label[lang]}</a></li>)}</ul>
+    </div>
+    <div class="foot__col">
+      <h4>{colContent}</h4>
+      <ul>
+        <li><a href={resources}>{lblCatalog}</a></li>
+        <li><a href={rss}>RSS</a></li>
+      </ul>
+    </div>
+    <div class="foot__col">
+      <h4>{colProject}</h4>
+      <ul>
+        <li><a href={about}>{lblAbout}</a></li>
+        <li><a href="https://github.com" target="_blank" rel="noopener noreferrer">GitHub</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="foot__bottom"><span>© {new Date().getFullYear()} IndieRoadmap</span><span>indieroadmap.com</span></div>
+</footer>

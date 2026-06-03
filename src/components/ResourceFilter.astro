@@ -1,0 +1,96 @@
+---
+import type { Lang } from '@/i18n/ui';
+import { PHASES } from '@/lib/phases';
+
+interface Props {
+  lang: Lang;
+  showPhase?: boolean;
+  /** Raw category labels of the resources rendered on this page. */
+  categories?: string[];
+}
+
+const { lang, showPhase = false, categories = [] } = Astro.props;
+
+const isZh = lang === 'zh';
+const searchPlaceholder = isZh ? '按名称 / 标签搜索工具…' : 'Search tools by name / tag…';
+const searchLabel = isZh ? '搜索工具' : 'Search tools';
+const initialCount = isZh ? '个工具' : 'tools';
+const phaseLabelText = isZh ? '阶段' : 'Phase';
+const categoryLabelText = isZh ? '分类' : 'Category';
+const pricingLabelText = isZh ? '定价' : 'Pricing';
+const allLabel = isZh ? '全部' : 'All';
+
+const phaseLabels: Record<string, string> = {
+  discover: isZh ? '需求挖掘' : 'Discover',
+  design:   isZh ? '设计'     : 'Design',
+  build:    isZh ? '开发'     : 'Build',
+  market:   isZh ? '营销'     : 'Market',
+  business: isZh ? '商业分析' : 'Business',
+};
+
+const pricingOptions = [
+  { value: 'all',      label: allLabel },
+  { value: 'free',     label: 'Free' },
+  { value: 'freemium', label: 'Freemium' },
+  { value: 'paid',     label: 'Paid' },
+];
+
+// Build category chips: slug MUST match ResourceCard's data-cat normalization
+// (category.trim().toLowerCase().replace(/\s+/g, '-')); label stays human-readable.
+const toCatSlug = (c: string) => c.trim().toLowerCase().replace(/\s+/g, '-');
+const categoryOptions = Array.from(
+  categories
+    .reduce((map, raw) => {
+      const label = raw.trim();
+      const slug = toCatSlug(label);
+      if (slug && !map.has(slug)) map.set(slug, label);
+      return map;
+    }, new Map<string, string>())
+    .entries()
+).map(([slug, label]) => ({ slug, label }));
+---
+<div class="filters">
+  <!-- Search row -->
+  <div class="filter-row">
+    <div class="search-field">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+        <circle cx="11" cy="11" r="7"/>
+        <path d="m20 20-3.2-3.2"/>
+      </svg>
+      <input type="text" id="resq" placeholder={searchPlaceholder} aria-label={searchLabel} />
+    </div>
+    <span class="result-count" id="rescount">{initialCount}</span>
+  </div>
+
+  <!-- Phase filter row (resources page only) -->
+  {showPhase && (
+    <div class="filter-row">
+      <span class="filter-row__label">{phaseLabelText}</span>
+      <button class="fchip" data-filter="phase" data-value="all">{allLabel}</button>
+      {PHASES.map((p) => (
+        <button class="fchip" data-filter="phase" data-value={p.id} data-phase={p.id}>
+          {phaseLabels[p.id]}
+        </button>
+      ))}
+    </div>
+  )}
+
+  <!-- Category filter row -->
+  {categoryOptions.length > 0 && (
+    <div class="filter-row">
+      <span class="filter-row__label">{categoryLabelText}</span>
+      <button class="fchip" data-filter="cat" data-value="all">{allLabel}</button>
+      {categoryOptions.map((opt) => (
+        <button class="fchip" data-filter="cat" data-value={opt.slug}>{opt.label}</button>
+      ))}
+    </div>
+  )}
+
+  <!-- Pricing filter row -->
+  <div class="filter-row">
+    <span class="filter-row__label">{pricingLabelText}</span>
+    {pricingOptions.map((opt) => (
+      <button class="fchip" data-filter="price" data-value={opt.value}>{opt.label}</button>
+    ))}
+  </div>
+</div>

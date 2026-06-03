@@ -1,0 +1,83 @@
+---
+import '@/styles/global.css';
+import Nav from '@/components/Nav.astro';
+import Footer from '@/components/Footer.astro';
+import Analytics from '@/components/Analytics.astro';
+import { getLangFromUrl, getLocalizedPath } from '@/i18n/ui';
+import { SITE } from '@/config/site';
+
+interface Props {
+  title: string;
+  description?: string;
+  /** Absolute or root-relative OG/Twitter image path. Omitted entirely when unset (no 404). */
+  ogImage?: string;
+}
+const { title, description = '', ogImage } = Astro.props;
+const lang = getLangFromUrl(Astro.url);
+const htmlLang = lang === 'zh' ? 'zh-CN' : 'en';
+const ogLocale = lang === 'zh' ? 'zh_CN' : 'en_US';
+
+// Absolute URLs. Astro.site is configured (https://indieroadmap.com); guard for types.
+const siteBase = Astro.site ?? new URL(`https://${SITE.domain}`);
+const canonical = Astro.url.href;
+const ogImageUrl = ogImage ? new URL(ogImage, siteBase).href : '';
+const zhAlternate = new URL(getLocalizedPath(Astro.url.pathname, 'zh'), siteBase).href;
+const enAlternate = new URL(getLocalizedPath(Astro.url.pathname, 'en'), siteBase).href;
+const skipLabel = lang === 'zh' ? '跳到主要内容' : 'Skip to content';
+---
+<!doctype html>
+<html lang={htmlLang} data-lang={lang}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    {/* Pre-paint theme: read persisted choice (ih-theme), light-first. Avoids FOUC. */}
+    <script is:inline>
+      (function () {
+        try {
+          var saved = localStorage.getItem('ih-theme');
+          document.documentElement.setAttribute('data-theme', saved === 'dark' ? 'dark' : 'light');
+        } catch (e) {
+          document.documentElement.setAttribute('data-theme', 'light');
+        }
+      })();
+    </script>
+    <title>{title}</title>
+    <meta name="description" content={description} />
+
+    {/* Canonical + language alternates */}
+    <link rel="canonical" href={canonical} />
+    <link rel="alternate" hreflang="zh-CN" href={zhAlternate} />
+    <link rel="alternate" hreflang="en" href={enAlternate} />
+    <link rel="alternate" hreflang="x-default" href={zhAlternate} />
+
+    {/* Open Graph */}
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:locale" content={ogLocale} />
+    <meta property="og:site_name" content={SITE.name} />
+    {ogImageUrl && <meta property="og:image" content={ogImageUrl} />}
+
+    {/* Twitter card */}
+    <meta name="twitter:card" content={ogImageUrl ? 'summary_large_image' : 'summary'} />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    {ogImageUrl && <meta name="twitter:image" content={ogImageUrl} />}
+
+    <link rel="alternate" type="application/rss+xml" href={lang === 'en' ? '/en/rss.xml' : '/rss.xml'} />
+    <Analytics />
+  </head>
+  <body>
+    <a class="skip-link sr-only" href="#main">{skipLabel}</a>
+    <Nav />
+    <main id="main" data-pagefind-body>
+      <slot />
+    </main>
+    <Footer />
+    {/* Astro-bundled progressive-enhancement script (theme toggle, ⌘K, reveals, filter). */}
+    <script>
+      import '@/scripts/site.js';
+    </script>
+  </body>
+</html>

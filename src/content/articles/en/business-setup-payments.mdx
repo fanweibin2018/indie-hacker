@@ -1,0 +1,25 @@
+---
+title: How to Add Payments to Your Indie Product Fast
+description: Use Stripe to accept subscriptions or one-time payments in a day — without the compliance headaches.
+phase: business
+tags: [payments, stripe, monetization]
+lang: en
+pubDate: 2026-06-01
+relatedResources: [business-stripe]
+---
+
+Adding payments is the step that turns a "project" into a "business." Stripe is the most developer-friendly payment platform available — great docs, a solid sandbox, and global coverage.
+
+## Integration overview
+
+1. **Create a Stripe account**: Complete KYC identity verification (usually 1–2 business days).
+2. **Choose your pricing model**: One-time charge (`payment_intent`) or subscription (`subscription`)?
+3. **Use Stripe Checkout**: A few lines of code surface a hosted payment page — no need to build payment UI yourself.
+4. **Configure webhooks**: Listen for `payment_succeeded` / `invoice.paid` events to trigger business logic (activate membership, send email, etc.).
+
+## Key gotchas
+
+- Never expose your Secret Key on the frontend — only the Publishable Key.
+- Test every failure scenario (card declined, webhook retry) in the sandbox before going live.
+
+> Get the money flowing first, then optimize the checkout experience.

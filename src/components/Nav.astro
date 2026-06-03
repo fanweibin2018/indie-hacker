@@ -1,0 +1,48 @@
+---
+import { getLangFromUrl, getLocalizedPath } from '@/i18n/ui';
+import { PHASES, isPhaseId } from '@/lib/phases';
+const lang = getLangFromUrl(Astro.url);
+const path = Astro.url.pathname;
+const home = getLocalizedPath('/', lang);
+const search = getLocalizedPath('/search/', lang);
+const zhHref = getLocalizedPath(path, 'zh');
+const enHref = getLocalizedPath(path, 'en');
+// active phase: strip /en prefix + slashes
+const seg = path.replace(/^\/en/, '').replace(/\//g, '');
+const activePhase = isPhaseId(seg) ? seg : null;
+const brandSuffix = lang === 'zh' ? '路线图' : 'Roadmap';
+const brandSub = lang === 'zh' ? '实战手册' : 'Field Manual';
+const searchLabel = lang === 'zh' ? '搜索文章与工具' : 'Search articles & tools';
+---
+<header class="nav">
+  <div class="nav__in">
+    <a class="brand" href={home} aria-label="IndieRoadmap home"><span>Indie<span class="mk">{brandSuffix}</span></span><span class="sl">{brandSub}</span></a>
+    <nav class="nav__links" aria-label="Phases">
+      {PHASES.map((p) => (
+        <a href={getLocalizedPath(`/${p.id}/`, lang)} data-phase={p.id} aria-current={activePhase === p.id ? 'page' : undefined}>{p.label[lang]}</a>
+      ))}
+    </nav>
+    <span class="nav__spacer"></span>
+    <div class="nav__tools">
+      <a class="search-btn" href={search}>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.2-3.2"/></svg>
+        <span class="sk">{searchLabel}</span>
+        <kbd>⌘K</kbd>
+      </a>
+      <div class="langtog" role="group" aria-label="Language">
+        <a href={zhHref} aria-current={lang === 'zh' ? 'true' : undefined}>中</a>
+        <a href={enHref} aria-current={lang === 'en' ? 'true' : undefined}>EN</a>
+      </div>
+      <button class="icon-btn" type="button" data-act="theme" aria-label="Toggle theme" aria-pressed="false">
+        <svg class="i-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="4"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9l2.1 2.1M17 17l2.1 2.1M19.1 4.9 17 7M7 17l-2.1 2.1"/></svg>
+        <svg class="i-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z"/></svg>
+      </button>
+      <button class="icon-btn nav__burger" type="button" data-act="menu" aria-label="Menu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M3 12h18M3 18h18"/></svg></button>
+    </div>
+  </div>
+  <nav class="mobnav" aria-label="Mobile">
+    {PHASES.map((p) => (
+      <a href={getLocalizedPath(`/${p.id}/`, lang)} data-phase={p.id}><span class="dot"></span>{p.label[lang]}</a>
+    ))}
+  </nav>
+</header>

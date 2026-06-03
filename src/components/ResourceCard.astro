@@ -1,0 +1,27 @@
+---
+import type { Lang } from '@/i18n/ui';
+import type { PhaseId } from '@/lib/phases';
+interface Props { name: string; url: string; description: string; phase: PhaseId; pricing: 'free' | 'freemium' | 'paid'; category: string; tags: string[]; lang: Lang; }
+const { name, url, description, phase, pricing, category, tags } = Astro.props;
+const initial = name.trim().charAt(0).toUpperCase();
+const cat = category.trim().toLowerCase().replace(/\s+/g, '-');
+const priceLabel = pricing.charAt(0).toUpperCase() + pricing.slice(1);
+const visit = '↗';
+---
+<a class="rcard" data-phase={phase} data-cat={cat} data-price={pricing} data-tags={tags.join(' ')} href={url} target="_blank" rel="noopener noreferrer">
+  <div class="rcard__top">
+    <span class="rlogo" data-phase={phase} aria-hidden="true">{initial}</span>
+    <div>
+      <div class="rcard__name">{name}</div>
+      <div class="rcard__cat">{category}</div>
+    </div>
+  </div>
+  <p class="rcard__desc">{description}</p>
+  {tags.length > 0 && (
+    <div class="rcard__tags">{tags.map((t) => <span class="tag">{t}</span>)}</div>
+  )}
+  <div class="rcard__foot">
+    <span class={`price price--${pricing}`}>{priceLabel}</span>
+    <span class="rcard__ext">{visit}</span>
+  </div>
+</a>

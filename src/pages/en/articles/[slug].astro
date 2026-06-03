@@ -1,0 +1,128 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import Comments from '@/components/Comments.astro';
+import PhaseChip from '@/components/PhaseChip.astro';
+import { useTranslations, getLocalizedPath } from '@/i18n/ui';
+import { getPhase } from '@/lib/phases';
+import { getCollection, render } from 'astro:content';
+import { resolveRelated } from '@/lib/related';
+import { filterArticles, sortByDateDesc } from '@/lib/collections';
+
+export async function getStaticPaths() {
+  const articles = await getCollection('articles');
+  const en = (articles as any[]).filter((a) => a.data.lang === 'en' && !a.data.draft);
+  return en.map((a) => ({ params: { slug: a.id.split('/').pop()! }, props: { entry: a } }));
+}
+
+const { entry } = Astro.props;
+const lang = 'en' as const;
+const t = useTranslations(lang);
+const { Content } = await render(entry);
+
+const allResources = await getCollection('resources');
+const related = resolveRelated(entry as any, allResources as any);
+
+const allArticles = await getCollection('articles');
+const phaseArticles = sortByDateDesc(
+  filterArticles(allArticles as any, { lang, phase: entry.data.phase })
+) as any[];
+const currentIdx = phaseArticles.findIndex(
+  (a: any) => a.id.split('/').pop() === entry.id.split('/').pop()
+);
+const prevEntry = currentIdx > 0 ? phaseArticles[currentIdx - 1] : null;
+const nextEntry = currentIdx < phaseArticles.length - 1 ? phaseArticles[currentIdx + 1] : null;
+
+const phaseLabel = getPhase(entry.data.phase).label[lang];
+const phaseHref = getLocalizedPath(`/${entry.data.phase}/`, lang);
+
+const pubDate = new Date(entry.data.pubDate);
+const formattedDate = `${pubDate.getFullYear()}.${String(pubDate.getMonth() + 1).padStart(2, '0')}.${String(pubDate.getDate()).padStart(2, '0')}`;
+---
+<BaseLayout title={entry.data.title} description={entry.data.description}>
+  <div class="wrap">
+    <!-- Article header -->
+    <article class="art-head" data-phase={entry.data.phase}>
+      <nav class="crumb" aria-label="Breadcrumb">
+        <a href={getLocalizedPath('/', lang)}>Home</a>
+        <span class="sep">/</span>
+        <a href={phaseHref}>{phaseLabel}</a>
+        <span class="sep">/</span>
+        <span style="color: var(--phase-ink);">Article</span>
+      </nav>
+      <div class="art-head__rule" style="margin-top: var(--space-md);">
+        <div style="display:flex; align-items:center; gap: var(--space-sm); flex-wrap: wrap;">
+          <PhaseChip phase={entry.data.phase} lang={lang} href={phaseHref} />
+          {(entry.data.tags as string[]).map((tag: string) => (
+            <span class="tag">{tag}</span>
+          ))}
+        </div>
+        <h1 class="art-title">{entry.data.title}</h1>
+        <p class="art-dek">{entry.data.description}</p>
+        <div class="byline">
+          <span>{formattedDate}</span>
+        </div>
+      </div>
+      <div class="art-cover ph" data-phase={entry.data.phase}></div>
+    </article>
+
+    <!-- Body + rail -->
+    <div class="art-grid">
+      <div class="prose">
+        <Content />
+      </div>
+
+      <aside class="rail-art">
+        {related.length > 0 && (
+          <div class="toolbox">
+            <div class="toolbox__h">
+              <span class="eyebrow">Cross-linked</span>
+              <h3>{t('article.relatedResources')}</h3>
+            </div>
+            {related.map((r: any) => (
+              <a class="tool-item" data-phase={r.data.phase} href={r.data.url} target="_blank" rel="noopener noreferrer">
+                <span class="rlogo" data-phase={r.data.phase} aria-hidden="true">{r.data.name.charAt(0)}</span>
+                <span>
+                  <span class="tool-item__nm">{r.data.name}</span><br />
+                  <span class="tool-item__cat">{r.data.category}</span>
+                </span>
+                <span class="tool-item__r">
+                  <span class={`price price--${r.data.pricing}`} style="font-size:0.66rem;">{r.data.pricing === 'free' ? 'Free' : r.data.pricing === 'freemium' ? 'Freemium' : 'Paid'}</span>
+                </span>
+              </a>
+            ))}
+          </div>
+        )}
+      </aside>
+    </div>
+
+    <!-- Comments -->
+    <section class="comments">
+      <div class="col-head" style="border-color: var(--line);">
+        <h2 style="font-size: var(--fs-h4);">Discussion</h2>
+      </div>
+      <Comments lang={lang} />
+    </section>
+
+    <!-- Pager -->
+    {(prevEntry || nextEntry) && (
+      <nav class="pager" aria-label={`More in ${phaseLabel}`}>
+        {prevEntry ? (
+          <a href={getLocalizedPath('/articles/' + prevEntry.id.split('/').pop() + '/', lang)} data-phase={prevEntry.data.phase}>
+            <span class="pager__k">← Previous</span>
+            <span class="pager__t">{prevEntry.data.title}</span>
+          </a>
+        ) : (
+          <span></span>
+        )}
+        {nextEntry ? (
+          <a href={getLocalizedPath('/articles/' + nextEntry.id.split('/').pop() + '/', lang)} data-phase={nextEntry.data.phase} class="next">
+            <span class="pager__k">Next →</span>
+            <span class="pager__t">{nextEntry.data.title}</span>
+          </a>
+        ) : (
+          <span></span>
+        )}
+      </nav>
+    )}
+  </div>
+</BaseLayout>

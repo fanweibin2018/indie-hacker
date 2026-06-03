@@ -1,0 +1,180 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import ResourceCard from '@/components/ResourceCard.astro';
+import ResourceFilter from '@/components/ResourceFilter.astro';
+import { PHASES, PHASE_IDS, getPhase, isPhaseId } from '@/lib/phases';
+import { getLocalizedPath } from '@/i18n/ui';
+import { getCollection } from 'astro:content';
+import { filterArticles, sortByDateDesc } from '@/lib/collections';
+
+export function getStaticPaths() {
+  return PHASE_IDS.map((phase) => ({ params: { phase } }));
+}
+
+const { phase } = Astro.params;
+if (!isPhaseId(phase!)) throw new Error(`Invalid phase: ${phase}`);
+
+const lang = 'zh' as const;
+const meta = getPhase(phase);
+const slugOf = (id: string) => id.split('/').pop()!;
+
+// Articles for this phase
+const allArticles = await getCollection('articles');
+const articles = sortByDateDesc(filterArticles(allArticles as any, { lang, phase })) as any[];
+
+// Resources for this phase
+const allResources = await getCollection('resources');
+const resources = (allResources as any[]).filter(
+  (r) => r.data.lang === lang && r.data.phase === phase
+);
+const resourceCategories = resources.map((r) => r.data.category as string);
+
+// Per-phase counts for pindex (all langs combined for zh page)
+const allArticlesAll = await getCollection('articles');
+const allResourcesAll = await getCollection('resources');
+const phaseStats = PHASES.map((p) => ({
+  id: p.id,
+  label: p.label[lang],
+  articleCount: (allArticlesAll as any[]).filter(
+    (a) => a.data.lang === lang && a.data.phase === p.id && !a.data.draft
+  ).length,
+  resourceCount: (allResourcesAll as any[]).filter(
+    (r) => r.data.lang === lang && r.data.phase === p.id
+  ).length,
+}));
+
+// Phase order number (01–05)
+const phaseNo = String(PHASE_IDS.indexOf(phase) + 1).padStart(2, '0');
+
+const articleCount = articles.length;
+const resourceCount = resources.length;
+
+// Article stream: lead feature + ranked side rows (frozen .feat-grid)
+const feature = articles[0];
+const sideArticles = articles.slice(1, 5);
+const shortDate = (d: Date) =>
+  `${d.getFullYear()}.${String(d.getMonth() + 1).padStart(2, '0')}.${String(d.getDate()).padStart(2, '0')}`;
+---
+<BaseLayout title={meta.label[lang]} description={meta.blurb[lang]}>
+
+  <!-- ============ PHASE HEADER ============ -->
+  <section class="wrap phead" data-phase={phase}>
+    <nav class="crumb" aria-label="Breadcrumb">
+      <a href={getLocalizedPath('/', lang)}>首页</a>
+      <span class="sep">/</span>
+      <a href={getLocalizedPath('/', lang)}>阶段</a>
+      <span class="sep">/</span>
+      <span style="color: var(--phase-ink);">{meta.label[lang]}</span>
+    </nav>
+
+    <div class="phead__rule">
+      <span class="phead__no">PHASE {phaseNo}</span>
+      <span class="eyebrow">{meta.blurb[lang]}</span>
+    </div>
+
+    <div class="phead__head">
+      <div>
+        <h1>{meta.label[lang]}</h1>
+        <p class="lead" style="margin-top: var(--space-md); max-width: 52ch;">{meta.blurb[lang]}</p>
+      </div>
+      <div class="phead__stats">
+        <div class="stat">
+          <span class="stat__n">{articleCount}</span>
+          <span class="stat__l">文章</span>
+        </div>
+        <div class="stat">
+          <span class="stat__n">{resourceCount}</span>
+          <span class="stat__l">工具</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Phase switcher -->
+    <nav class="pindex" role="navigation" aria-label="切换阶段">
+      {phaseStats.map((ps, i) => (
+        <a
+          href={getLocalizedPath(`/${ps.id}/`, lang)}
+          data-phase={ps.id}
+          aria-current={ps.id === phase ? 'page' : undefined}
+        >
+          <span class="pindex__no">{String(i + 1).padStart(2, '0')}</span>
+          <span class="pindex__nm">{ps.label}</span>
+          <span class="pindex__ct">{ps.articleCount} · {ps.resourceCount}</span>
+        </a>
+      ))}
+    </nav>
+  </section>
+
+  <!-- ============ ARTICLE STREAM ============ -->
+  {feature && (
+    <section class="wrap section" style="padding-top: clamp(2rem,1.4rem+3vw,4rem); padding-bottom: clamp(2rem,1.4rem+3vw,4rem);">
+      <div class="col-head">
+        <div>
+          <span class="eyebrow">精选</span>
+          <h2 style="font-size: var(--fs-h3);">{meta.label[lang]} · 文章</h2>
+        </div>
+        <a class="link-arrow" href={getLocalizedPath('/discover/', lang)}>全部 {articleCount} 篇<span class="ar">→</span></a>
+      </div>
+      <div class="feat-grid">
+        <!-- lead feature -->
+        <article class="acard reveal" data-phase={feature.data.phase} style="padding: var(--space-lg);">
+          <div class="acard__media ph" data-phase={feature.data.phase} style="aspect-ratio: 16/9;"></div>
+          <div class="acard__meta">
+            <a class="chip" data-phase={feature.data.phase} href={getLocalizedPath(`/${feature.data.phase}/`, lang)}><span class="dot"></span>{getPhase(feature.data.phase).label[lang]}</a>
+          </div>
+          <h3 class="acard__title" style="font-size: var(--fs-h3);">
+            <a href={getLocalizedPath(`/articles/${slugOf(feature.id)}/`, lang)}>{feature.data.title}</a>
+          </h3>
+          <p class="acard__dek" style="font-size: var(--fs-body);">{feature.data.description}</p>
+          <div class="acard__foot"><span>{shortDate(feature.data.pubDate)}</span></div>
+        </article>
+        <!-- side list -->
+        {sideArticles.length > 0 && (
+          <div class="side">
+            {sideArticles.map((a, i) => (
+              <a
+                class="arow"
+                data-phase={a.data.phase}
+                href={getLocalizedPath(`/articles/${slugOf(a.id)}/`, lang)}
+                style={(i === 0 ? 'padding-top:0;' : '') + (i === sideArticles.length - 1 ? 'border-bottom:0;' : '')}
+              >
+                <span class="arow__idx">{String(i + 1).padStart(2, '0')}</span>
+                <span class="arow__title">{a.data.title}</span>
+                <span class="arow__meta">{shortDate(a.data.pubDate)}</span>
+              </a>
+            ))}
+          </div>
+        )}
+      </div>
+    </section>
+  )}
+
+  <!-- ============ TOOL CATALOG (filterable) ============ -->
+  {resources.length > 0 && (
+    <section class="catalog">
+      <div class="filters-wrap">
+        <div class="wrap">
+          <ResourceFilter lang={lang} showPhase={false} categories={resourceCategories} />
+        </div>
+      </div>
+      <div class="wrap" style="padding-bottom: clamp(2rem,1.4rem+3vw,4rem);">
+        <div class="resgrid" id="resgrid" data-default-phase={phase}>
+          {resources.map((r) => (
+            <ResourceCard
+              name={r.data.name}
+              url={r.data.url}
+              description={r.data.description}
+              phase={r.data.phase}
+              pricing={r.data.pricing}
+              category={r.data.category}
+              tags={r.data.tags}
+              lang={lang}
+            />
+          ))}
+          <div class="empty" id="resempty">没有符合筛选条件的工具，试着清除一个条件。</div>
+        </div>
+      </div>
+    </section>
+  )}
+
+</BaseLayout>

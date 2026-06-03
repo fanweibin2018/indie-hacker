@@ -1,0 +1,12 @@
+---
+import { getPhase, type PhaseId } from '@/lib/phases';
+import type { Lang } from '@/i18n/ui';
+interface Props { phase: PhaseId; lang: Lang; href?: string; }
+const { phase, lang, href } = Astro.props;
+const label = getPhase(phase).label[lang];
+---
+{href ? (
+  <a class="chip" data-phase={phase} href={href}><span class="dot"></span>{label}</a>
+) : (
+  <span class="chip" data-phase={phase}><span class="dot"></span>{label}</span>
+)}

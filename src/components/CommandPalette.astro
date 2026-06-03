@@ -1,0 +1,29 @@
+---
+import { PHASES } from '@/lib/phases';
+import { getLangFromUrl, getLocalizedPath } from '@/i18n/ui';
+
+const lang = getLangFromUrl(Astro.url);
+const isZh = lang === 'zh';
+const placeholder = isZh ? '搜索文章、工具、阶段…' : 'Search articles, tools, phases…';
+const label = isZh ? '搜索' : 'Search';
+const phaseTag = isZh ? '阶段' : 'Phase';
+---
+<div class="palette" id="palette" role="dialog" aria-modal="true" aria-label={label}>
+  <div class="palette__scrim" data-act="palette"></div>
+  <div class="palette__box">
+    <div class="palette__field">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.2-3.2"/></svg>
+      <input id="palette-input" type="text" placeholder={placeholder} aria-label={label} autocomplete="off" spellcheck="false" />
+      <span class="palette__hint">ESC</span>
+    </div>
+    {/* Default state: browse phases. Replaced live with Pagefind results on type. */}
+    <div class="palette__list" id="palette-list" data-lang={lang}>
+      {PHASES.map((p) => (
+        <a href={getLocalizedPath(`/${p.id}/`, lang)}>
+          {p.label[lang]}
+          <span class="chip" data-phase={p.id}><span class="dot"></span>{phaseTag}</span>
+        </a>
+      ))}
+    </div>
+  </div>
+</div>

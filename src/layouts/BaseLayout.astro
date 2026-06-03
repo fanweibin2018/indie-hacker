@@ -3,6 +3,7 @@ import '@/styles/global.css';
 import Nav from '@/components/Nav.astro';
 import Footer from '@/components/Footer.astro';
 import Analytics from '@/components/Analytics.astro';
+import CommandPalette from '@/components/CommandPalette.astro';
 import { getLangFromUrl, getLocalizedPath } from '@/i18n/ui';
 import { SITE } from '@/config/site';
 
@@ -81,6 +82,7 @@ const skipLabel = lang === 'zh' ? '跳到主要内容' : 'Skip to content';
       <slot />
     </main>
     <Footer />
+    <CommandPalette />
     {/* Astro-bundled progressive-enhancement script (theme toggle, ⌘K, reveals, filter). */}
     <script>
       import '@/scripts/site.js';

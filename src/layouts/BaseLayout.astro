@@ -41,6 +41,12 @@ const skipLabel = lang === 'zh' ? '跳到主要内容' : 'Skip to content';
         }
       })();
     </script>
+
+    {/* Favicons — SVG primary, PNG fallbacks for Safari/iOS + legacy */}
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="icon" href="/favicon-32.png" sizes="32x32" type="image/png" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+
     <title>{title}</title>
     <meta name="description" content={description} />
 

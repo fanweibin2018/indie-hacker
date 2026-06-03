@@ -1,0 +1,11 @@
+<svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="IndieRoadmap">
+  <title>IndieRoadmap</title>
+  <!-- Ink tile = the dark "Indie"; warm near-black, ink token oklch(22% .012 60) -->
+  <rect width="32" height="32" rx="7" fill="#1F1915"/>
+  <rect x="0.6" y="0.6" width="30.8" height="30.8" rx="6.5" fill="none" stroke="#FFFFFF" stroke-opacity="0.08"/>
+  <!-- R = the red "Roadmap"; accent token oklch(56% .13 25). Stem + bowl + leg, counter punched in tile color. -->
+  <rect x="9.5" y="6.5" width="4" height="19" fill="#B4524C"/>
+  <path d="M13.5 6.5 C19.5 6.5 22 9 22 11.5 C22 14 19.5 16.5 13.5 16.5 Z" fill="#B4524C"/>
+  <path d="M13.5 9.6 C17.6 9.6 18.8 10.6 18.8 11.5 C18.8 12.4 17.6 13.4 13.5 13.4 Z" fill="#1F1915"/>
+  <path d="M13.5 15 L16.9 15 L22.3 25.5 L18.9 25.5 Z" fill="#B4524C"/>
+</svg>

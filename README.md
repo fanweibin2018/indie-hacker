@@ -3,7 +3,7 @@
 双语内容知识门户，面向独立开发者，围绕产品生命周期五个阶段组织内容。
 A bilingual (zh default + `/en/`) content knowledge portal for indie hackers, organized around five phases.
 
-**线上地址 / Live:** [indieroadmap.com](https://indieroadmap.com)
+**线上地址 / Live:** [indie.fanweibin.cn](https://indie.fanweibin.cn)
 
 ---
 
@@ -157,7 +157,7 @@ src/
 **GitHub Pages:**
 
 1. Repo Settings → Pages → Source = **GitHub Actions**
-2. 添加自定义域名 `indieroadmap.com`；勾选 **Enforce HTTPS**
+2. 添加自定义域名 `indie.fanweibin.cn`；勾选 **Enforce HTTPS**
 
 **Actions Variables** (Settings → Secrets and variables → Actions → Variables)：
 
@@ -172,21 +172,17 @@ src/
 | `PUBLIC_CF_BEACON_TOKEN` | Cloudflare Web Analytics beacon |
 | `PUBLIC_BUTTONDOWN_USER` | Buttondown newsletter 用户名 |
 
-**DNS（apex 域名 `indieroadmap.com`）：**
+**DNS（子域名 `indie.fanweibin.cn`）：**
+
+在 `fanweibin.cn` 所在的 DNS 服务商加一条 CNAME 记录即可：
 
 ```
-# A records
-185.199.108.153
-185.199.109.153
-185.199.110.153
-185.199.111.153
-
-# AAAA records
-2606:50c0:8000::153
-2606:50c0:8001::153
-2606:50c0:8002::153
-2606:50c0:8003::153
+主机记录(Host)   类型(Type)   记录值(Value)
+indie            CNAME        fanweibin2018.github.io
 ```
+
+> 子域名只需这一条 CNAME；apex 裸域名才需要 GitHub 的 4 条 A + 4 条 AAAA 记录。
+> 部分服务商（阿里云 / DNSPod 等）记录值结尾可不带点 `.`。
 
 **本地功能测试：**
 

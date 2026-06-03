@@ -15,10 +15,10 @@ const ready = GISCUS.repo && GISCUS.repoId && GISCUS.categoryId;
     data-reactions-enabled="1"
     data-emit-metadata="0"
     data-input-position="bottom"
-    data-theme="preferred_color_scheme"
+    data-theme="light"
     data-lang={lang === 'zh' ? 'zh-CN' : 'en'}
     crossorigin="anonymous"
     async></script>
 ) : (
-  <p class="text-[var(--color-text-muted)]">Comments not configured.</p>
+  <p class="muted" style="font-family:var(--font-mono);font-size:var(--fs-small);">{lang === 'zh' ? '评论尚未配置。' : 'Comments not configured.'}</p>
 )}

@@ -30,6 +30,39 @@
     });
   }
 
+  function uiLang() {
+    return root.getAttribute('data-lang') === 'en' ? 'en' : 'zh';
+  }
+
+  /** Keep the embedded Giscus comment thread in sync with the site theme
+     (spec: dark mode must follow the toggle, not just the OS pref). */
+  function setGiscusTheme(theme) {
+    var f = document.querySelector('iframe.giscus-frame');
+    if (!f || !f.contentWindow) return;
+    f.contentWindow.postMessage(
+      { giscus: { setConfig: { theme: theme } } },
+      'https://giscus.app'
+    );
+  }
+  // Push the current theme once Giscus signals it is ready.
+  window.addEventListener('message', function (e) {
+    if (e.origin === 'https://giscus.app' && e.data && e.data.giscus) {
+      setGiscusTheme(root.getAttribute('data-theme'));
+    }
+  });
+
+  /** Brief inline confirmation on an action button, then restore. */
+  function flash(btn, msg) {
+    if (btn.dataset.flashing) return;
+    btn.dataset.flashing = '1';
+    var prev = btn.innerHTML;
+    btn.innerHTML = msg;
+    setTimeout(function () {
+      btn.innerHTML = prev;
+      delete btn.dataset.flashing;
+    }, 1600);
+  }
+
   document.addEventListener('click', function (e) {
     var t = e.target.closest('[data-act]');
     if (!t) return;
@@ -39,6 +72,7 @@
       root.setAttribute('data-theme', next);
       localStorage.setItem('ih-theme', next);
       syncToggles();
+      setGiscusTheme(next);
     } else if (act === 'palette') {
       // When the popup palette exists, intercept the link so we open the
       // overlay instead of navigating to the /search/ fallback page.
@@ -46,9 +80,45 @@
       togglePalette();
     } else if (act === 'menu') {
       document.body.classList.toggle('nav-open');
+    } else if (act === 'share') {
+      e.preventDefault();
+      var url = location.href;
+      var data = { title: document.title, url: url };
+      if (navigator.share) {
+        navigator.share(data).catch(function () {});
+      } else if (navigator.clipboard) {
+        navigator.clipboard.writeText(url).then(function () {
+          flash(t, uiLang() === 'zh' ? '✓ 已复制' : '✓ Copied');
+        });
+      }
+    } else if (act === 'save') {
+      e.preventDefault();
+      toggleSaved(t);
     }
   });
   syncToggles();
+
+  /* ---- Save / bookmark (localStorage, no backend) ----------- */
+  var SAVE_KEY = 'ih-saved';
+  function savedList() {
+    try { return JSON.parse(localStorage.getItem(SAVE_KEY) || '[]'); } catch (e) { return []; }
+  }
+  function saveLabel(btn, on) {
+    var zh = uiLang() === 'zh';
+    btn.innerHTML = on ? (zh ? '★ 已收藏' : '★ Saved') : (zh ? '☆ 收藏' : '☆ Save');
+    btn.setAttribute('aria-pressed', String(on));
+  }
+  function toggleSaved(btn) {
+    var key = location.pathname;
+    var list = savedList();
+    var i = list.indexOf(key);
+    if (i >= 0) list.splice(i, 1); else list.push(key);
+    localStorage.setItem(SAVE_KEY, JSON.stringify(list));
+    saveLabel(btn, i < 0);
+  }
+  document.querySelectorAll('[data-act="save"]').forEach(function (btn) {
+    saveLabel(btn, savedList().indexOf(location.pathname) >= 0);
+  });
 
   /* ---- Command palette (⌘K / Ctrl+K) ------------------------
      If a #palette dialog exists, toggle it. Otherwise be honest and

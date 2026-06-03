@@ -18,7 +18,8 @@ export async function getStaticPaths() {
 const { entry } = Astro.props;
 const lang = 'zh' as const;
 const t = useTranslations(lang);
-const { Content } = await render(entry);
+const { Content, headings } = await render(entry);
+const toc = headings.filter((h) => h.depth === 2 || h.depth === 3);
 
 const allResources = await getCollection('resources');
 const related = resolveRelated(entry as any, allResources as any);
@@ -102,6 +103,20 @@ const author = entry.data.author;
             ))}
           </div>
         )}
+
+        {toc.length > 0 && (
+          <nav class="toc-art" aria-label="本页目录">
+            <span class="eyebrow">本页目录</span>
+            {toc.map((h) => (
+              <a href={`#${h.slug}`} style={h.depth === 3 ? 'padding-left:1.4em;' : undefined}>{h.text}</a>
+            ))}
+          </nav>
+        )}
+
+        <div style="display:flex; gap:0.5em; flex-wrap:wrap;">
+          <button class="btn btn--ghost" type="button" data-act="save" aria-pressed="false" style="flex:1; justify-content:center;">☆ 收藏</button>
+          <button class="btn btn--ghost" type="button" data-act="share" style="flex:1; justify-content:center;">↗ 分享</button>
+        </div>
       </aside>
     </div>
 

@@ -1,6 +1,41 @@
 ---
 import BaseLayout from '@/layouts/BaseLayout.astro';
+import PageHeader from '@/components/PageHeader.astro';
+import { PHASES } from '@/lib/phases';
+import { getLocalizedPath } from '@/i18n/ui';
+
+const lang = 'en' as const;
 ---
-<BaseLayout title="About" description="About this indie hacker knowledge base">
-  <article class="prose"><h1>About</h1><p>Documenting the full journey from idea to revenue, build in public.</p></article>
+<BaseLayout title="About" description="About this bilingual knowledge base for indie hackers">
+  <PageHeader
+    lang="en"
+    eyebrow="About"
+    title="Field Manual"
+    lead="A bilingual knowledge base for indie hackers, documenting the full journey from idea to revenue — built in public."
+    meta="Build in public"
+  />
+
+  <section class="wrap section" style="padding-top: clamp(2rem,1.4rem+3vw,3.5rem);">
+    <div class="prose" style="max-width: var(--maxw-prose);">
+      <p>Everything here is organized around the five phases of shipping a product — Discover, Design, Build, Market, Business — turning "idea to revenue" into steps you can actually walk.</p>
+      <p>Content comes in two cross-linked forms: <strong>original articles &amp; guides</strong>, and a structured <strong>tool &amp; resource catalog</strong>. Articles name the exact tools they use, and tools link back to the articles that mention them — one connected web of knowledge.</p>
+      <p>The whole site is static, open source, privacy-friendly, and free of tracking analytics. Content is just Git commits, updated continuously.</p>
+    </div>
+
+    <div style="margin-top: clamp(2rem,1.4rem+3vw,3.5rem);">
+      <div class="col-head">
+        <h2>Five phases</h2>
+        <a class="link-arrow" href={getLocalizedPath('/resources/', lang)}>Tool catalog<span class="ar">→</span></a>
+      </div>
+      <nav class="pindex" role="navigation" aria-label="Phase index">
+        {PHASES.map((p, i) => (
+          <a href={getLocalizedPath(`/${p.id}/`, lang)} data-phase={p.id}>
+            <span class="pindex__no">{String(i + 1).padStart(2, '0')}</span>
+            <span class="pindex__nm">{p.label[lang]}</span>
+            <span class="pindex__ct">{p.blurb[lang]}</span>
+          </a>
+        ))}
+      </nav>
+    </div>
+  </section>
 </BaseLayout>

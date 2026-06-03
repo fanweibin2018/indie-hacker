@@ -1,0 +1,35 @@
+---
+import type { Lang } from '@/i18n/ui';
+import { getLocalizedPath } from '@/i18n/ui';
+
+interface Props {
+  lang: Lang;
+  /** Mono eyebrow above the title (left of the top rule). */
+  eyebrow: string;
+  title: string;
+  /** Optional dek under the title. */
+  lead?: string;
+  /** Optional mono note on the right of the top rule. */
+  meta?: string;
+  /** Show a Home / <title> breadcrumb above the rule. */
+  crumb?: boolean;
+}
+
+const { lang, eyebrow, title, lead, meta, crumb = true } = Astro.props;
+const homeLabel = lang === 'zh' ? '首页' : 'Home';
+---
+<section class="wrap page-head">
+  {crumb && (
+    <nav class="crumb" aria-label={lang === 'zh' ? '面包屑导航' : 'Breadcrumb'}>
+      <a href={getLocalizedPath('/', lang)}>{homeLabel}</a>
+      <span class="sep">/</span>
+      <span style="color: var(--ink);">{title}</span>
+    </nav>
+  )}
+  <div class="page-head__rule">
+    <span class="eyebrow">{eyebrow}</span>
+    {meta && <span class="eyebrow">{meta}</span>}
+  </div>
+  <h1>{title}</h1>
+  {lead && <p class="lead">{lead}</p>}
+</section>

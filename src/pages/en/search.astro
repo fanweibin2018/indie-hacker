@@ -1,16 +1,41 @@
 ---
 import BaseLayout from '@/layouts/BaseLayout.astro';
+import PageHeader from '@/components/PageHeader.astro';
 ---
-<BaseLayout title="Search" description="Site search">
-  <h1>Search</h1>
-  <link rel="stylesheet" href="/pagefind/pagefind-ui.css" />
-  <div id="search"></div>
+<BaseLayout title="Search" description="Search every article and tool in the catalog">
+  <PageHeader
+    lang="en"
+    eyebrow="Site search"
+    title="Search"
+    lead="Search across every article and the full tool catalog, in English and Chinese."
+    meta="⌘K from anywhere"
+  />
+
+  <section class="wrap section" style="padding-top: clamp(1.5rem,1rem+2vw,2.5rem);">
+    <link rel="stylesheet" href="/pagefind/pagefind-ui.css" />
+    <div id="search" class="pf-search"></div>
+    <noscript>
+      <p class="muted" style="font-family: var(--font-mono); font-size: var(--fs-small);">Search requires JavaScript.</p>
+    </noscript>
+  </section>
+
   <script is:inline>
     // pagefind is generated after build
     // pagefind-ui.js is an IIFE that attaches window.PagefindUI (no named export)
     window.addEventListener('DOMContentLoaded', async () => {
-      await import('/pagefind/pagefind-ui.js');
-      new window.PagefindUI({ element: '#search', showSubResults: true });
+      try {
+        await import('/pagefind/pagefind-ui.js');
+        new window.PagefindUI({
+          element: '#search',
+          showSubResults: true,
+          showImages: false,
+          translations: {
+            placeholder: 'Search articles, tools, phases…',
+          },
+        });
+      } catch (e) {
+        // /pagefind/ assets are not generated in dev; available after build
+      }
     });
   </script>
 </BaseLayout>

@@ -1,16 +1,42 @@
 ---
 import BaseLayout from '@/layouts/BaseLayout.astro';
+import PageHeader from '@/components/PageHeader.astro';
 ---
-<BaseLayout title="搜索" description="站内搜索">
-  <h1>搜索</h1>
-  <link rel="stylesheet" href="/pagefind/pagefind-ui.css" />
-  <div id="search"></div>
+<BaseLayout title="搜索" description="检索全部文章与工具目录">
+  <PageHeader
+    lang="zh"
+    eyebrow="站内检索"
+    title="搜索"
+    lead="检索全部文章与工具目录，支持中英文。"
+    meta="⌘K 随处唤起"
+  />
+
+  <section class="wrap section" style="padding-top: clamp(1.5rem,1rem+2vw,2.5rem);">
+    <link rel="stylesheet" href="/pagefind/pagefind-ui.css" />
+    <div id="search" class="pf-search"></div>
+    <noscript>
+      <p class="muted" style="font-family: var(--font-mono); font-size: var(--fs-small);">搜索需要启用 JavaScript。</p>
+    </noscript>
+  </section>
+
   <script is:inline>
-    /* pagefind 在构建后生成，使用 is:inline 避免 Vite 在构建时解析此路径 */
+    /* pagefind 在构建后生成，使用 is:inline 避免 Vite 在构建期解析此路径 */
     /* pagefind-ui.js 是 IIFE，会挂载 window.PagefindUI，而非具名导出 */
     window.addEventListener('DOMContentLoaded', async () => {
-      await import('/pagefind/pagefind-ui.js');
-      new window.PagefindUI({ element: '#search', showSubResults: true });
+      try {
+        await import('/pagefind/pagefind-ui.js');
+        new window.PagefindUI({
+          element: '#search',
+          showSubResults: true,
+          showImages: false,
+          translations: {
+            placeholder: '搜索文章、工具、阶段…',
+            zero_results: '没有匹配「[SEARCH_TERM]」的结果',
+          },
+        });
+      } catch (e) {
+        /* dev 模式下 /pagefind/ 资源尚未生成，构建后可用 */
+      }
     });
   </script>
 </BaseLayout>

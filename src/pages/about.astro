@@ -1,6 +1,41 @@
 ---
 import BaseLayout from '@/layouts/BaseLayout.astro';
+import PageHeader from '@/components/PageHeader.astro';
+import { PHASES } from '@/lib/phases';
+import { getLocalizedPath } from '@/i18n/ui';
+
+const lang = 'zh' as const;
 ---
-<BaseLayout title="关于" description="关于这个独立开发者知识库">
-  <article class="prose"><h1>关于</h1><p>记录从需求到变现的全过程，build in public。</p></article>
+<BaseLayout title="关于" description="关于这个面向独立开发者的双语知识门户">
+  <PageHeader
+    lang="zh"
+    eyebrow="关于本站"
+    title="实战手册"
+    lead="一个面向独立开发者的双语知识门户，记录从想法到变现的全过程，build in public。"
+    meta="Build in public"
+  />
+
+  <section class="wrap section" style="padding-top: clamp(2rem,1.4rem+3vw,3.5rem);">
+    <div class="prose" style="max-width: var(--maxw-prose);">
+      <p>这里围绕产品生命周期的五个阶段组织内容——需求挖掘、设计、开发、营销、商业分析——把「从想法到收入」拆成可走的每一步。</p>
+      <p>内容分两类并相互关联：<strong>原创文章 / 指南</strong>，以及结构化的<strong>工具 / 资源目录</strong>。文章会标注它用到的工具，工具也会反向列出相关文章，织成一张一网打尽的知识网。</p>
+      <p>全站纯静态、开源、隐私友好、零追踪式统计。内容即 Git 提交，持续更新。</p>
+    </div>
+
+    <div style="margin-top: clamp(2rem,1.4rem+3vw,3.5rem);">
+      <div class="col-head">
+        <h2>五个阶段</h2>
+        <a class="link-arrow" href={getLocalizedPath('/resources/', lang)}>工具目录<span class="ar">→</span></a>
+      </div>
+      <nav class="pindex" role="navigation" aria-label="阶段导航">
+        {PHASES.map((p, i) => (
+          <a href={getLocalizedPath(`/${p.id}/`, lang)} data-phase={p.id}>
+            <span class="pindex__no">{String(i + 1).padStart(2, '0')}</span>
+            <span class="pindex__nm">{p.label[lang]}</span>
+            <span class="pindex__ct">{p.blurb[lang]}</span>
+          </a>
+        ))}
+      </nav>
+    </div>
+  </section>
 </BaseLayout>

@@ -1,6 +1,6 @@
 export const SITE = {
   name: 'Indie Hacker Portal',
-  domain: 'indieroadmap.com',
+  domain: 'indie.fanweibin.cn',
   defaultLocale: 'zh' as const,
 };
 

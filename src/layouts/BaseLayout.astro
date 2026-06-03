@@ -17,7 +17,7 @@ const lang = getLangFromUrl(Astro.url);
 const htmlLang = lang === 'zh' ? 'zh-CN' : 'en';
 const ogLocale = lang === 'zh' ? 'zh_CN' : 'en_US';
 
-// Absolute URLs. Astro.site is configured (https://indieroadmap.com); guard for types.
+// Absolute URLs. Astro.site is configured (https://indie.fanweibin.cn); guard for types.
 const siteBase = Astro.site ?? new URL(`https://${SITE.domain}`);
 const canonical = Astro.url.href;
 const ogImageUrl = ogImage ? new URL(ogImage, siteBase).href : '';

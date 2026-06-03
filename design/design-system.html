@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="zh" data-lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Design System — Workbench</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Sora:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Noto+Sans+SC:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles/tokens.css">
+<link rel="stylesheet" href="styles/base.css">
+<link rel="stylesheet" href="styles/components.css">
+<style>
+  .ds-head { padding-block: clamp(2rem,1.4rem+3vw,4rem); border-bottom: 2px solid var(--ink); }
+  .ds-head h1 { font-size: var(--fs-display); letter-spacing: -0.03em; line-height: 0.96; }
+  .ds-head .lead { max-width: 56ch; margin-top: var(--space-md); }
+
+  .ds-sec { padding-block: clamp(2.5rem,1.6rem+3vw,4.5rem); border-bottom: 1px solid var(--line); }
+  .ds-sec__head { display: flex; align-items: baseline; gap: var(--space-md); margin-bottom: var(--space-xl); }
+  .ds-sec__no { font-family: var(--font-mono); font-size: var(--fs-mono); color: var(--accent); letter-spacing: 0.06em; }
+  .ds-sec__head h2 { font-size: var(--fs-h2); }
+  .ds-label { font-family: var(--font-mono); font-size: var(--fs-mono); letter-spacing: var(--track-mono); text-transform: uppercase; color: var(--ink-3); margin-bottom: var(--space-md); }
+
+  /* swatches */
+  .sw-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: var(--space-md); }
+  @media (max-width: 880px){ .sw-grid{ grid-template-columns: repeat(2,1fr); } }
+  .sw { border: 1px solid var(--line); border-radius: var(--r-md); overflow: hidden; background: var(--surface); }
+  .sw__chip { height: 88px; position: relative; }
+  .sw__row { display: flex; height: 24px; }
+  .sw__row i { flex: 1; }
+  .sw__body { padding: var(--space-sm) var(--space-md) var(--space-md); }
+  .sw__nm { font-family: var(--font-display); font-weight: 700; font-size: var(--fs-h6); }
+  .sw__var { font-family: var(--font-mono); font-size: 0.68rem; color: var(--ink-3); margin-top: 0.2em; display: block; word-break: break-all; }
+  .sw__use { font-family: var(--font-mono); font-size: 0.68rem; color: var(--ink-4); margin-top: 0.3em; }
+
+  .neutrals { display: grid; grid-template-columns: repeat(auto-fit, minmax(96px,1fr)); gap: var(--space-xs); }
+  .neutrals .n { border-radius: var(--r-sm); overflow: hidden; border: 1px solid var(--line); }
+  .neutrals .n .c { height: 56px; }
+  .neutrals .n span { display: block; font-family: var(--font-mono); font-size: 0.64rem; color: var(--ink-3); padding: 0.4em 0.5em; }
+
+  /* type specimens */
+  .spec { display: grid; grid-template-columns: 120px 1fr; gap: var(--space-md); padding: var(--space-md) 0; border-bottom: 1px solid var(--line); align-items: baseline; }
+  .spec:last-child { border-bottom: 0; }
+  .spec__meta { font-family: var(--font-mono); font-size: var(--fs-mono); color: var(--ink-3); }
+  .spec__meta b { display: block; color: var(--ink); font-weight: 500; }
+
+  .tokens-tbl { width: 100%; border-collapse: collapse; font-size: var(--fs-small); }
+  .tokens-tbl td { padding: 0.6em 0.8em; border-bottom: 1px solid var(--line); vertical-align: middle; }
+  .tokens-tbl .mono { font-family: var(--font-mono); font-size: var(--fs-mono); color: var(--ink-3); }
+  .demo-box { background: var(--phase, var(--ink)); border-radius: var(--r-xs); }
+
+  .grid-cards { display: grid; gap: var(--space-lg); }
+  .demo-grid { display: grid; gap: var(--space-md); }
+  .three { grid-template-columns: repeat(3,1fr); } @media(max-width:880px){ .three{ grid-template-columns:1fr; } }
+  .two { grid-template-columns: repeat(2,1fr); } @media(max-width:760px){ .two{ grid-template-columns:1fr; } }
+  .swatch-line { display: flex; gap: var(--space-sm); flex-wrap: wrap; align-items: center; }
+  .radii-row { display: flex; gap: var(--space-md); flex-wrap: wrap; }
+  .radii-row .r { width: 84px; height: 84px; background: var(--bg-sunken); border: 1px solid var(--line-2); display: grid; place-items: end center; }
+  .radii-row .r span { font-family: var(--font-mono); font-size: 0.64rem; color: var(--ink-3); padding-bottom: 6px; }
+  .shadow-row { display: flex; gap: var(--space-xl); flex-wrap: wrap; }
+  .shadow-row .s { width: 120px; height: 84px; background: var(--surface); border-radius: var(--r-md); display: grid; place-items: center; font-family: var(--font-mono); font-size: var(--fs-mono); color: var(--ink-3); }
+  .space-row { display: grid; gap: 0.5em; }
+  .space-row .sp { display: flex; align-items: center; gap: var(--space-md); }
+  .space-row .sp i { height: 16px; background: var(--phase, var(--accent)); border-radius: 3px; }
+  .space-row .sp span { font-family: var(--font-mono); font-size: var(--fs-mono); color: var(--ink-3); }
+</style>
+</head>
+<body data-phase="discover">
+
+<header class="nav">
+  <div class="nav__in">
+    <a class="brand" href="index.html" aria-label="Workbench home"><span>Work<span class="mk">bench</span></span><span class="sl" data-l="en">Design System</span><span class="sl" data-l="zh">设计系统</span></a>
+    <nav class="nav__links" aria-label="Phases">
+      <a href="discover.html" data-phase="discover"><span data-l="en">Discover</span><span data-l="zh">需求</span></a>
+      <a href="discover.html?phase=design" data-phase="design"><span data-l="en">Design</span><span data-l="zh">设计</span></a>
+      <a href="discover.html?phase=build" data-phase="build"><span data-l="en">Build</span><span data-l="zh">开发</span></a>
+      <a href="discover.html?phase=market" data-phase="market"><span data-l="en">Market</span><span data-l="zh">营销</span></a>
+      <a href="discover.html?phase=business" data-phase="business"><span data-l="en">Business</span><span data-l="zh">商业</span></a>
+    </nav>
+    <span class="nav__spacer"></span>
+    <div class="nav__tools">
+      <button class="search-btn" data-act="palette" aria-label="Search">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.2-3.2"/></svg>
+        <span class="sk" data-l="en">Search</span><span class="sk" data-l="zh">搜索</span><kbd>⌘K</kbd>
+      </button>
+      <div class="langtog" role="group" aria-label="Language"><button data-act="lang" data-lang="zh">中</button><button data-act="lang" data-lang="en">EN</button></div>
+      <button class="icon-btn" data-act="theme" aria-label="Toggle theme" aria-pressed="false">
+        <svg class="i-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="4"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9l2.1 2.1M17 17l2.1 2.1M19.1 4.9 17 7M7 17l-2.1 2.1"/></svg>
+        <svg class="i-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z"/></svg>
+      </button>
+      <button class="icon-btn nav__burger" data-act="menu" aria-label="Menu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M3 12h18M3 18h18"/></svg></button>
+    </div>
+  </div>
+  <nav class="mobnav" aria-label="Mobile">
+    <a href="discover.html" data-phase="discover"><span class="dot"></span><span data-l="en">Discover</span><span data-l="zh">需求挖掘</span></a>
+    <a href="discover.html?phase=design" data-phase="design"><span class="dot"></span><span data-l="en">Design</span><span data-l="zh">设计</span></a>
+    <a href="discover.html?phase=build" data-phase="build"><span class="dot"></span><span data-l="en">Build</span><span data-l="zh">开发</span></a>
+    <a href="discover.html?phase=market" data-phase="market"><span class="dot"></span><span data-l="en">Market</span><span data-l="zh">营销</span></a>
+    <a href="discover.html?phase=business" data-phase="business"><span class="dot"></span><span data-l="en">Business</span><span data-l="zh">商业分析</span></a>
+  </nav>
+</header>
+
+<main class="wrap">
+  <section class="ds-head">
+    <span class="eyebrow"><span data-l="en">Workbench · Foundations</span><span data-l="zh">Workbench · 设计基底</span></span>
+    <h1><span data-l="en">Design system</span><span data-l="zh">设计系统</span></h1>
+    <p class="lead"><span data-l="en">Every color, type ramp, spacing step, radius, shadow and easing lives as a CSS custom property in <span class="mono">tokens.css</span>. The five phase colors share one chroma family and an even hue spread — they're a semantic code, not decoration.</span><span data-l="zh">每一个颜色、字阶、间距、圆角、阴影与缓动都以 CSS 自定义属性的形式存放在 <span class="mono">tokens.css</span> 里。五个阶段色共享同一彩度族、色相均匀铺开——它们是语义色码，而非装饰。</span></p>
+    <div class="phaserail" style="margin-top: var(--space-lg); max-width: 420px;"><i></i><i></i><i></i><i></i><i></i></div>
+  </section>
+
+  <!-- ===== 01 PHASE COLORS ===== -->
+  <section class="ds-sec">
+    <div class="ds-sec__head"><span class="ds-sec__no">01</span><h2><span data-l="en">Phase colors</span><span data-l="zh">阶段语义色</span></h2></div>
+    <p class="lead" style="margin-bottom: var(--space-xl); max-width: 56ch;"><span data-l="en">Solid for chips & codes, tint for surfaces, ink for accessible text on tint. Each swatch shows solid / ink / tint.</span><span data-l="zh">实色用于 chip 与色码，浅色用于背景，深色用于浅底上的可读文字。每块从上到下为 实色 / 深色 / 浅色。</span></p>
+    <div class="sw-grid">
+      <div class="sw" data-phase="discover"><div class="sw__chip" style="background:var(--discover)"></div><div class="sw__row"><i style="background:var(--discover-ink)"></i><i style="background:var(--discover-tint)"></i></div><div class="sw__body"><span class="sw__nm">Discover</span><span class="sw__var">--discover · oklch(60% .115 200)</span><span class="sw__use">需求挖掘 · teal</span></div></div>
+      <div class="sw" data-phase="design"><div class="sw__chip" style="background:var(--design)"></div><div class="sw__row"><i style="background:var(--design-ink)"></i><i style="background:var(--design-tint)"></i></div><div class="sw__body"><span class="sw__nm">Design</span><span class="sw__var">--design · oklch(60% .15 335)</span><span class="sw__use">设计 · magenta</span></div></div>
+      <div class="sw" data-phase="build"><div class="sw__chip" style="background:var(--build)"></div><div class="sw__row"><i style="background:var(--build-ink)"></i><i style="background:var(--build-tint)"></i></div><div class="sw__body"><span class="sw__nm">Build</span><span class="sw__var">--build · oklch(57% .135 265)</span><span class="sw__use">开发 · indigo</span></div></div>
+      <div class="sw" data-phase="market"><div class="sw__chip" style="background:var(--market)"></div><div class="sw__row"><i style="background:var(--market-ink)"></i><i style="background:var(--market-tint)"></i></div><div class="sw__body"><span class="sw__nm">Market</span><span class="sw__var">--market · oklch(66% .135 55)</span><span class="sw__use">营销 · amber</span></div></div>
+      <div class="sw" data-phase="business"><div class="sw__chip" style="background:var(--business)"></div><div class="sw__row"><i style="background:var(--business-ink)"></i><i style="background:var(--business-tint)"></i></div><div class="sw__body"><span class="sw__nm">Business</span><span class="sw__var">--business · oklch(60% .115 150)</span><span class="sw__use">商业分析 · green</span></div></div>
+    </div>
+  </section>
+
+  <!-- ===== 02 NEUTRALS & ACCENT ===== -->
+  <section class="ds-sec">
+    <div class="ds-sec__head"><span class="ds-sec__no">02</span><h2><span data-l="en">Neutrals & accent</span><span data-l="zh">中性色与点缀</span></h2></div>
+    <p class="ds-label"><span data-l="en">Warm paper neutrals — chroma stays under 0.02. Toggle the theme (top-right) to see the dark ramp.</span><span data-l="zh">暖调纸感中性色——彩度始终低于 0.02。点右上角切换主题查看深色梯度。</span></p>
+    <div class="neutrals">
+      <div class="n"><div class="c" style="background:var(--bg)"></div><span>--bg</span></div>
+      <div class="n"><div class="c" style="background:var(--bg-sunken)"></div><span>--bg-sunken</span></div>
+      <div class="n"><div class="c" style="background:var(--surface)"></div><span>--surface</span></div>
+      <div class="n"><div class="c" style="background:var(--line-2)"></div><span>--line-2</span></div>
+      <div class="n"><div class="c" style="background:var(--ink-4)"></div><span>--ink-4</span></div>
+      <div class="n"><div class="c" style="background:var(--ink-3)"></div><span>--ink-3</span></div>
+      <div class="n"><div class="c" style="background:var(--ink-2)"></div><span>--ink-2</span></div>
+      <div class="n"><div class="c" style="background:var(--ink)"></div><span>--ink</span></div>
+      <div class="n"><div class="c" style="background:var(--accent)"></div><span>--accent</span></div>
+      <div class="n"><div class="c" style="background:var(--focus)"></div><span>--focus</span></div>
+    </div>
+  </section>
+
+  <!-- ===== 03 TYPE ===== -->
+  <section class="ds-sec">
+    <div class="ds-sec__head"><span class="ds-sec__no">03</span><h2><span data-l="en">Typography</span><span data-l="zh">排版</span></h2></div>
+    <p class="ds-label">Space Grotesk (display) · Inter + Noto Sans SC (body) · JetBrains Mono (labels & code) · fluid clamp() scale</p>
+    <div>
+      <div class="spec"><div class="spec__meta"><b>--fs-display</b>clamp 44→104</div><div style="font-family:var(--font-display); font-weight:700; font-size:var(--fs-display); line-height:1; letter-spacing:-.03em;">Ship it.</div></div>
+      <div class="spec"><div class="spec__meta"><b>--fs-h1</b>clamp 38→68</div><div style="font-family:var(--font-display); font-weight:700; font-size:var(--fs-h1); letter-spacing:-.02em;"><span data-l="en">From idea to revenue</span><span data-l="zh">从想法到收入</span></div></div>
+      <div class="spec"><div class="spec__meta"><b>--fs-h3</b>clamp 24→36</div><div style="font-family:var(--font-display); font-weight:600; font-size:var(--fs-h3);"><span data-l="en">Talk to 30 strangers</span><span data-l="zh">先和 30 个陌生人聊聊</span></div></div>
+      <div class="spec"><div class="spec__meta"><b>--fs-lead</b>clamp 17→21</div><div class="lead" style="margin:0;"><span data-l="en">A bilingual knowledge base built around the five phases of shipping a product.</span><span data-l="zh">围绕产品生命周期五个阶段组织的双语知识库。</span></div></div>
+      <div class="spec"><div class="spec__meta"><b>--fs-body</b>clamp 15→17</div><div><span data-l="en">Body copy in Inter. The cheapest insurance you can buy is a conversation with a stranger who has the problem.</span><span data-l="zh">正文使用 Inter / 思源黑体。你能买到的最便宜的保险，就是和一个真正有这个问题的陌生人聊一次。</span></div></div>
+      <div class="spec"><div class="spec__meta"><b>--font-mono</b>0.75rem</div><div class="mono" style="letter-spacing:var(--track-mono); text-transform:uppercase; color:var(--ink-3);">PHASE 01 · DISCOVER · 42 ARTICLES</div></div>
+    </div>
+  </section>
+
+  <!-- ===== 04 SPACING / RADII / SHADOW / MOTION ===== -->
+  <section class="ds-sec">
+    <div class="ds-sec__head"><span class="ds-sec__no">04</span><h2><span data-l="en">Space, radius, depth, motion</span><span data-l="zh">间距 · 圆角 · 深度 · 动效</span></h2></div>
+    <div class="demo-grid two">
+      <div>
+        <p class="ds-label"><span data-l="en">Spacing scale (rhythmic)</span><span data-l="zh">间距标度（有节奏）</span></p>
+        <div class="space-row" data-phase="discover">
+          <div class="sp"><i style="width:4px"></i><span>--space-2xs · 4</span></div>
+          <div class="sp"><i style="width:8px"></i><span>--space-xs · 8</span></div>
+          <div class="sp"><i style="width:12px"></i><span>--space-sm · 12</span></div>
+          <div class="sp"><i style="width:16px"></i><span>--space-md · 16</span></div>
+          <div class="sp"><i style="width:24px"></i><span>--space-lg · 24</span></div>
+          <div class="sp"><i style="width:40px"></i><span>--space-xl · 40</span></div>
+          <div class="sp"><i style="width:64px"></i><span>--space-2xl · 64</span></div>
+          <div class="sp"><i style="width:96px"></i><span>--space-3xl · 96</span></div>
+        </div>
+        <p class="ds-label" style="margin-top: var(--space-xl);"><span data-l="en">Radii</span><span data-l="zh">圆角</span></p>
+        <div class="radii-row">
+          <div class="r" style="border-radius:var(--r-xs)"><span>xs · 4</span></div>
+          <div class="r" style="border-radius:var(--r-sm)"><span>sm · 6</span></div>
+          <div class="r" style="border-radius:var(--r-md)"><span>md · 10</span></div>
+          <div class="r" style="border-radius:var(--r-lg)"><span>lg · 16</span></div>
+          <div class="r" style="border-radius:var(--r-xl)"><span>xl · 24</span></div>
+        </div>
+      </div>
+      <div>
+        <p class="ds-label"><span data-l="en">Elevation</span><span data-l="zh">层叠阴影</span></p>
+        <div class="shadow-row">
+          <div class="s" style="box-shadow:var(--shadow-1)">shadow-1</div>
+          <div class="s" style="box-shadow:var(--shadow-2)">shadow-2</div>
+          <div class="s" style="box-shadow:var(--shadow-3)">shadow-3</div>
+        </div>
+        <p class="ds-label" style="margin-top: var(--space-xl);"><span data-l="en">Motion — transform & opacity only, reduced-motion safe</span><span data-l="zh">动效 — 仅 transform / opacity，尊重 reduced-motion</span></p>
+        <table class="tokens-tbl">
+          <tr><td class="mono">--dur-fast</td><td>130ms</td><td class="mono">--ease-out</td></tr>
+          <tr><td class="mono">--dur</td><td>240ms</td><td class="mono">cubic-bezier(.22,.9,.24,1)</td></tr>
+          <tr><td class="mono">--dur-slow</td><td>460ms</td><td class="mono">--ease-spring</td></tr>
+        </table>
+        <p class="ds-label" style="margin-top: var(--space-lg);"><span data-l="en">Hover any card below to feel it.</span><span data-l="zh">把鼠标移到下方任意卡片上感受一下。</span></p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== 05 COMPONENTS ===== -->
+  <section class="ds-sec">
+    <div class="ds-sec__head"><span class="ds-sec__no">05</span><h2><span data-l="en">Components</span><span data-l="zh">组件</span></h2></div>
+
+    <p class="ds-label"><span data-l="en">Buttons</span><span data-l="zh">按钮</span></p>
+    <div class="swatch-line" style="margin-bottom: var(--space-xl);">
+      <button class="btn btn--primary"><span data-l="en">Primary</span><span data-l="zh">主按钮</span></button>
+      <button class="btn btn--ghost"><span data-l="en">Ghost</span><span data-l="zh">次按钮</span></button>
+      <span data-phase="build"><button class="btn btn--phase"><span data-l="en">Phase</span><span data-l="zh">阶段色</span></button></span>
+      <a class="link-arrow" href="#"><span data-l="en">Text link</span><span data-l="zh">文字链接</span><span class="ar">→</span></a>
+    </div>
+
+    <p class="ds-label"><span data-l="en">Phase chips · price tags · tags</span><span data-l="zh">阶段 chip · 定价标 · 标签</span></p>
+    <div class="swatch-line" style="margin-bottom: var(--space-xl);">
+      <span class="chip" data-phase="discover"><span class="dot"></span>Discover</span>
+      <span class="chip" data-phase="design"><span class="dot"></span>Design</span>
+      <span class="chip" data-phase="build"><span class="dot"></span>Build</span>
+      <span class="chip" data-phase="market"><span class="dot"></span>Market</span>
+      <span class="chip" data-phase="business"><span class="dot"></span>Business</span>
+      <span class="price price--free">Free</span><span class="price price--freemium">Freemium</span><span class="price price--paid">Paid</span>
+      <span class="tag">Postgres</span><span class="tag">OSS</span>
+    </div>
+
+    <p class="ds-label"><span data-l="en">Filter chips (interactive)</span><span data-l="zh">筛选 chip（可交互）</span></p>
+    <div class="filter-row" style="margin-bottom: var(--space-xl);">
+      <button class="fchip" aria-pressed="true"><span data-l="en">All</span><span data-l="zh">全部</span></button>
+      <button class="fchip" data-phase="build" aria-pressed="false">Build</button>
+      <button class="fchip" aria-pressed="false">Free</button>
+      <button class="fchip" aria-pressed="false">Freemium</button>
+    </div>
+
+    <p class="ds-label"><span data-l="en">Cards — article & resource</span><span data-l="zh">卡片 — 文章 & 资源</span></p>
+    <div class="demo-grid three" style="margin-bottom: var(--space-xl);">
+      <article class="acard" data-phase="discover">
+        <div class="acard__media ph" data-phase="discover"><span data-l="en">cover</span><span data-l="zh">封面</span></div>
+        <div class="acard__meta"><span class="chip" data-phase="discover"><span class="dot"></span>Discover</span><span class="mono muted">12 min</span></div>
+        <h3 class="acard__title"><a href="article.html"><span data-l="en">Talk to 30 strangers first</span><span data-l="zh">先和 30 个陌生人聊聊</span></a></h3>
+        <p class="acard__dek"><span data-l="en">A repeatable interview script for validating demand.</span><span data-l="zh">一套可复用的需求验证访谈脚本。</span></p>
+        <div class="acard__foot"><span data-l="en">Lin Yao</span><span data-l="zh">林遥</span><i class="sep"></i><span>05.28</span></div>
+      </article>
+      <a class="rcard" data-phase="build" href="#"><div class="rcard__top"><span class="rlogo" data-phase="build">Q</span><div><div class="rcard__name">Queueless</div><div class="rcard__cat"><span data-l="en">Background jobs</span><span data-l="zh">后台任务</span></div></div></div><p class="rcard__desc"><span data-l="en">Cron + queues on your existing Postgres.</span><span data-l="zh">在现有 Postgres 上跑定时任务与队列。</span></p><div class="rcard__tags"><span class="tag">Postgres</span><span class="tag">OSS</span></div><div class="rcard__foot"><span class="price price--free">Free</span><span class="rcard__ext"><span data-l="en">Visit</span><span data-l="zh">前往</span>↗</span></div></a>
+      <div data-phase="market">
+        <a class="arow" data-phase="market" href="#" style="padding-top:0;"><span class="arow__idx">01</span><span class="arow__title"><span data-l="en">Ledger row component</span><span data-l="zh">账本行组件</span></span><span class="arow__meta">7 min</span></a>
+        <a class="arow" data-phase="market" href="#"><span class="arow__idx">02</span><span class="arow__title"><span data-l="en">Compact, dense, hover-lit</span><span data-l="zh">紧凑、密集、悬停高亮</span></span><span class="arow__meta">5 min</span></a>
+        <a class="arow" data-phase="market" href="#" style="border-bottom:0;"><span class="arow__idx">03</span><span class="arow__title"><span data-l="en">Phase-tinted on hover</span><span data-l="zh">悬停染上阶段色</span></span><span class="arow__meta">9 min</span></a>
+      </div>
+    </div>
+
+    <p class="ds-label"><span data-l="en">Phase index strip</span><span data-l="zh">阶段索引条</span></p>
+    <div class="pindex" style="margin-bottom: var(--space-xl); border-radius: var(--r-md); overflow: hidden;">
+      <a href="discover.html" data-phase="discover"><span class="pindex__no">01</span><span class="pindex__nm"><span data-l="en">Discover</span><span data-l="zh">需求挖掘</span></span><span class="pindex__ct">42 · 60</span></a>
+      <a href="discover.html?phase=design" data-phase="design"><span class="pindex__no">02</span><span class="pindex__nm"><span data-l="en">Design</span><span data-l="zh">设计</span></span><span class="pindex__ct">31 · 44</span></a>
+      <a href="discover.html?phase=build" data-phase="build"><span class="pindex__no">03</span><span class="pindex__nm"><span data-l="en">Build</span><span data-l="zh">开发</span></span><span class="pindex__ct">58 · 90</span></a>
+      <a href="discover.html?phase=market" data-phase="market"><span class="pindex__no">04</span><span class="pindex__nm"><span data-l="en">Market</span><span data-l="zh">营销</span></span><span class="pindex__ct">47 · 71</span></a>
+      <a href="discover.html?phase=business" data-phase="business"><span class="pindex__no">05</span><span class="pindex__nm"><span data-l="en">Business</span><span data-l="zh">商业分析</span></span><span class="pindex__ct">40 · 38</span></a>
+    </div>
+
+    <p class="ds-label"><span data-l="en">Newsletter form</span><span data-l="zh">邮件订阅表单</span></p>
+    <div class="subscribe" style="padding: var(--space-xl);">
+      <div class="subscribe__hue"></div>
+      <h2 style="font-size: var(--fs-h4); color: var(--bg);"><span data-l="en">Field notes, every Tuesday.</span><span data-l="zh">每周二，一封实战笔记。</span></h2>
+      <form class="subform" novalidate><input type="email" placeholder="you@indie.dev" aria-label="Email"><button class="btn btn--primary" type="submit"><span data-l="en">Subscribe</span><span data-l="zh">订阅</span></button></form>
+      <span class="subform__note"><span data-l="en">3,400+ builders · no spam</span><span data-l="zh">3,400+ 开发者 · 无垃圾邮件</span></span>
+    </div>
+  </section>
+
+  <section class="ds-sec" style="border-bottom:0;">
+    <div class="ds-sec__head"><span class="ds-sec__no">06</span><h2><span data-l="en">Pages</span><span data-l="zh">页面</span></h2></div>
+    <div class="swatch-line">
+      <a class="btn btn--ghost" href="index.html"><span data-l="en">Landing (A) →</span><span data-l="zh">首页（A）→</span></a>
+      <a class="btn btn--ghost" href="discover.html"><span data-l="en">Phase · Discover →</span><span data-l="zh">阶段页 · 需求挖掘 →</span></a>
+      <a class="btn btn--ghost" href="article.html"><span data-l="en">Article detail →</span><span data-l="zh">文章详情 →</span></a>
+      <a class="btn btn--ghost" href="compare.html"><span data-l="en">Compare variants →</span><span data-l="zh">排版变体对比 →</span></a>
+    </div>
+  </section>
+</main>
+
+<footer class="foot">
+  <div class="foot__in">
+    <div class="foot__col">
+      <a class="brand" href="index.html" style="margin-bottom: var(--space-md);"><span>Work<span class="mk">bench</span></span></a>
+      <p class="muted" style="font-size: var(--fs-small); max-width: 34ch;"><span data-l="en">Design system & foundations.</span><span data-l="zh">设计系统与基底。</span></p>
+      <div class="phaserail" style="margin-top: var(--space-md); max-width: 240px;"><i></i><i></i><i></i><i></i><i></i></div>
+    </div>
+    <div class="foot__col"><h4><span data-l="en">Pages</span><span data-l="zh">页面</span></h4><ul><li><a href="index.html"><span data-l="en">Landing</span><span data-l="zh">首页</span></a></li><li><a href="discover.html"><span data-l="en">Phase page</span><span data-l="zh">阶段页</span></a></li><li><a href="article.html"><span data-l="en">Article</span><span data-l="zh">文章详情</span></a></li></ul></div>
+    <div class="foot__col"><h4><span data-l="en">Tokens</span><span data-l="zh">Token</span></h4><ul><li><a href="#"><span data-l="en">Color</span><span data-l="zh">颜色</span></a></li><li><a href="#"><span data-l="en">Type</span><span data-l="zh">排版</span></a></li><li><a href="#"><span data-l="en">Space</span><span data-l="zh">间距</span></a></li></ul></div>
+    <div class="foot__col"><h4><span data-l="en">Files</span><span data-l="zh">文件</span></h4><ul><li><a href="#" class="mono">tokens.css</a></li><li><a href="#" class="mono">base.css</a></li><li><a href="#" class="mono">components.css</a></li></ul></div>
+  </div>
+  <div class="foot__bottom"><span>© 2026 Workbench</span><span><span data-l="en">Design system</span><span data-l="zh">设计系统</span></span></div>
+</footer>
+
+<div class="palette" id="palette" role="dialog" aria-modal="true" aria-label="Search">
+  <div class="palette__scrim" data-act="palette"></div>
+  <div class="palette__box">
+    <div class="palette__field"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.2-3.2"/></svg><input type="text" placeholder="搜索… / Search…" aria-label="Search"><span class="palette__hint">ESC</span></div>
+    <div class="palette__list">
+      <a href="index.html"><span data-l="en">Landing page</span><span data-l="zh">首页</span><span class="chip" data-phase="discover"><span class="dot"></span>Page</span></a>
+      <a href="discover.html"><span data-l="en">Discover phase</span><span data-l="zh">需求挖掘</span><span class="chip" data-phase="discover"><span class="dot"></span>Phase</span></a>
+      <a href="article.html"><span data-l="en">Article detail</span><span data-l="zh">文章详情</span><span class="chip" data-phase="discover"><span class="dot"></span>Page</span></a>
+    </div>
+  </div>
+</div>
+
+<script src="scripts/site.js"></script>
+</body>
+</html>

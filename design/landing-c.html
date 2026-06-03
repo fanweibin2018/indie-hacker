@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="zh" data-lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Workbench — Variant C · Index / Ledger</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Sora:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Noto+Sans+SC:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles/tokens.css">
+<link rel="stylesheet" href="styles/base.css">
+<link rel="stylesheet" href="styles/components.css">
+<style>
+  /* ---- Variant C: index / ledger ---- */
+  .ledger { display: grid; grid-template-columns: minmax(0, 360px) minmax(0, 1fr); gap: clamp(1.5rem, 0.6rem + 3vw, 4rem); align-items: start; padding-top: clamp(2rem,1rem+3vw,3.5rem); }
+  @media (max-width: 940px) { .ledger { grid-template-columns: 1fr; } }
+
+  .rail { position: sticky; top: 88px; display: grid; gap: var(--space-xl); }
+  @media (max-width: 940px) { .rail { position: static; } }
+  .rail h1 { font-size: clamp(2.1rem, 1.5rem + 2.6vw, 3.4rem); letter-spacing: -0.03em; line-height: 1.0; }
+  .rail h1 em { font-style: normal; color: var(--accent); }
+  .rail .lead { max-width: 38ch; }
+
+  /* phase TOC */
+  .toc { display: grid; }
+  .toc a { display: grid; grid-template-columns: auto 1fr auto; align-items: baseline; gap: var(--space-md); padding: var(--space-md) 0; border-top: 1px solid var(--line); position: relative; transition: padding-left var(--dur) var(--ease-out); }
+  .toc a:last-child { border-bottom: 1px solid var(--line); }
+  .toc a::before { content: ""; position: absolute; left: -12px; top: 50%; width: 4px; height: 0; background: var(--phase); transform: translateY(-50%); border-radius: 2px; transition: height var(--dur) var(--ease-out); }
+  .toc a:hover { padding-left: 8px; }
+  .toc a:hover::before { height: 60%; }
+  .toc__no { font-family: var(--font-mono); font-size: var(--fs-mono); color: var(--phase); letter-spacing: 0.06em; }
+  .toc__nm { font-family: var(--font-display); font-weight: var(--w-semibold); font-size: var(--fs-h6); letter-spacing: var(--track-snug); }
+  .toc a:hover .toc__nm { color: var(--phase-ink); }
+  .toc__ct { font-family: var(--font-mono); font-size: var(--fs-mono); color: var(--ink-3); }
+
+  .ledger__main { display: grid; gap: var(--space-2xl); }
+  .lblock__head { display: flex; align-items: center; justify-content: space-between; gap: var(--space-md); padding-bottom: var(--space-sm); border-bottom: 2px solid var(--ink); margin-bottom: var(--space-xs); }
+  .lblock__head h2 { font-size: var(--fs-h4); }
+  .lblock__head .eyebrow { color: var(--ink); }
+
+  /* dense article ledger rows */
+  .ledrow { display: grid; grid-template-columns: 2.6rem 1fr auto; gap: var(--space-md); align-items: center; padding: 0.85rem 0.4rem; border-bottom: 1px solid var(--line); transition: background var(--dur) var(--ease-out); }
+  .ledrow:hover { background: var(--hover); }
+  .ledrow__no { font-family: var(--font-mono); font-size: var(--fs-mono); color: var(--ink-4); }
+  .ledrow__main { min-width: 0; }
+  .ledrow__t { font-family: var(--font-display); font-weight: var(--w-semibold); font-size: var(--fs-h6); letter-spacing: var(--track-snug); line-height: 1.25; }
+  .ledrow:hover .ledrow__t { color: var(--phase-ink); }
+  .ledrow__sub { font-family: var(--font-mono); font-size: var(--fs-mono); color: var(--ink-3); margin-top: 0.25em; display: flex; gap: 0.6em; align-items: center; flex-wrap: wrap; }
+  .ledrow__r { text-align: right; display: grid; gap: 0.2em; }
+  @media (max-width: 560px) { .ledrow { grid-template-columns: 1.8rem 1fr; } .ledrow__r { display: none; } }
+
+  .res-strip { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-sm); }
+  @media (max-width: 600px){ .res-strip{ grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+
+<header class="nav">
+  <div class="nav__in">
+    <a class="brand" href="index.html" aria-label="Workbench home">
+      <span>Work<span class="mk">bench</span></span>
+      <span class="sl" data-l="en">Field Manual</span>
+      <span class="sl" data-l="zh">实战手册</span>
+    </a>
+    <nav class="nav__links" aria-label="Phases">
+      <a href="discover.html" data-phase="discover"><span data-l="en">Discover</span><span data-l="zh">需求</span></a>
+      <a href="discover.html" data-phase="design"><span data-l="en">Design</span><span data-l="zh">设计</span></a>
+      <a href="discover.html" data-phase="build"><span data-l="en">Build</span><span data-l="zh">开发</span></a>
+      <a href="discover.html" data-phase="market"><span data-l="en">Market</span><span data-l="zh">营销</span></a>
+      <a href="discover.html" data-phase="business"><span data-l="en">Business</span><span data-l="zh">商业</span></a>
+    </nav>
+    <span class="nav__spacer"></span>
+    <div class="nav__tools">
+      <button class="search-btn" data-act="palette" aria-label="Search">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.2-3.2"/></svg>
+        <span class="sk" data-l="en">Search articles & tools</span>
+        <span class="sk" data-l="zh">搜索文章与工具</span>
+        <kbd>⌘K</kbd>
+      </button>
+      <div class="langtog" role="group" aria-label="Language">
+        <button data-act="lang" data-lang="zh">中</button>
+        <button data-act="lang" data-lang="en">EN</button>
+      </div>
+      <button class="icon-btn" data-act="theme" aria-label="Toggle theme" aria-pressed="false">
+        <svg class="i-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="4"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9l2.1 2.1M17 17l2.1 2.1M19.1 4.9 17 7M7 17l-2.1 2.1"/></svg>
+        <svg class="i-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z"/></svg>
+      </button>
+      <button class="icon-btn nav__burger" data-act="menu" aria-label="Menu">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+      </button>
+    </div>
+  </div>
+  <nav class="mobnav" aria-label="Mobile">
+    <a href="discover.html" data-phase="discover"><span class="dot"></span><span data-l="en">Discover</span><span data-l="zh">需求挖掘</span></a>
+    <a href="discover.html" data-phase="design"><span class="dot"></span><span data-l="en">Design</span><span data-l="zh">设计</span></a>
+    <a href="discover.html" data-phase="build"><span class="dot"></span><span data-l="en">Build</span><span data-l="zh">开发</span></a>
+    <a href="discover.html" data-phase="market"><span class="dot"></span><span data-l="en">Market</span><span data-l="zh">营销</span></a>
+    <a href="discover.html" data-phase="business"><span class="dot"></span><span data-l="en">Business</span><span data-l="zh">商业分析</span></a>
+  </nav>
+</header>
+
+<main class="wrap">
+  <div class="ledger">
+    <!-- ============ LEFT RAIL ============ -->
+    <aside class="rail">
+      <div>
+        <span class="eyebrow"><span data-l="en">Field Manual · Issue 14</span><span data-l="zh">实战手册 · 第 14 期</span></span>
+        <h1 style="margin-top: var(--space-md);"><span data-l="en">The whole journey, <em>indexed</em>.</span><span data-l="zh">完整旅程，<em>已编入索引</em>。</span></h1>
+        <p class="lead" style="margin-top: var(--space-md);"><span data-l="en">218 guides and 303 tools, organized by the five phases of shipping a product.</span><span data-l="zh">218 篇指南、303 个工具，按出货的五个阶段编排。</span></p>
+      </div>
+
+      <nav class="toc" aria-label="Phase index">
+        <a href="discover.html" data-phase="discover"><span class="toc__no">01</span><span class="toc__nm"><span data-l="en">Discover</span><span data-l="zh">需求挖掘</span></span><span class="toc__ct">42 · 60</span></a>
+        <a href="discover.html" data-phase="design"><span class="toc__no">02</span><span class="toc__nm"><span data-l="en">Design</span><span data-l="zh">设计</span></span><span class="toc__ct">31 · 44</span></a>
+        <a href="discover.html" data-phase="build"><span class="toc__no">03</span><span class="toc__nm"><span data-l="en">Build</span><span data-l="zh">开发</span></span><span class="toc__ct">58 · 90</span></a>
+        <a href="discover.html" data-phase="market"><span class="toc__no">04</span><span class="toc__nm"><span data-l="en">Market</span><span data-l="zh">营销</span></span><span class="toc__ct">47 · 71</span></a>
+        <a href="discover.html" data-phase="business"><span class="toc__no">05</span><span class="toc__nm"><span data-l="en">Business</span><span data-l="zh">商业分析</span></span><span class="toc__ct">40 · 38</span></a>
+      </nav>
+
+      <!-- mini subscribe -->
+      <form class="subform" novalidate style="flex-direction: column; align-items: stretch; max-width: none; gap: var(--space-sm); background: var(--bg-sunken); padding: var(--space-md); border-radius: var(--r-md); border: 1px solid var(--line);">
+        <span class="eyebrow" style="color: var(--ink-2);"><span data-l="en">Weekly digest →</span><span data-l="zh">每周精选 →</span></span>
+        <input type="email" placeholder="you@indie.dev" aria-label="Email" style="background: var(--surface); border: 1px solid var(--line-2); color: var(--ink);">
+        <button class="btn btn--primary" type="submit" style="justify-content:center;"><span data-l="en">Subscribe · 3,400+ builders</span><span data-l="zh">订阅 · 3,400+ 开发者</span></button>
+      </form>
+    </aside>
+
+    <!-- ============ LEDGER MAIN ============ -->
+    <div class="ledger__main">
+      <!-- latest articles -->
+      <section>
+        <div class="lblock__head">
+          <h2><span data-l="en">Latest articles</span><span data-l="zh">最新文章</span></h2>
+          <span class="eyebrow"><span data-l="en">Updated daily</span><span data-l="zh">每日更新</span></span>
+        </div>
+        <a class="ledrow" data-phase="discover" href="article.html">
+          <span class="ledrow__no">01</span>
+          <div class="ledrow__main">
+            <div class="ledrow__t"><span data-l="en">Talk to 30 strangers before you write a line of code</span><span data-l="zh">写第一行代码前，先和 30 个陌生人聊聊</span></div>
+            <div class="ledrow__sub"><span class="chip" data-phase="discover"><span class="dot"></span>Discover</span><span data-l="en">Lin Yao</span><span data-l="zh">林遥</span></div>
+          </div>
+          <div class="ledrow__r"><span class="mono muted">12 min</span><span class="mono muted">05.28</span></div>
+        </a>
+        <a class="ledrow" data-phase="build" href="article.html">
+          <span class="ledrow__no">02</span>
+          <div class="ledrow__main">
+            <div class="ledrow__t"><span data-l="en">Ship a v0 in a weekend without drowning in setup</span><span data-l="zh">一个周末上线 v0，别把时间耗在脚手架上</span></div>
+            <div class="ledrow__sub"><span class="chip" data-phase="build"><span class="dot"></span>Build</span><span data-l="en">Chen Mu</span><span data-l="zh">陈牧</span></div>
+          </div>
+          <div class="ledrow__r"><span class="mono muted">9 min</span><span class="mono muted">05.24</span></div>
+        </a>
+        <a class="ledrow" data-phase="market" href="article.html">
+          <span class="ledrow__no">03</span>
+          <div class="ledrow__main">
+            <div class="ledrow__t"><span data-l="en">Your first 100 users won't come from Product Hunt</span><span data-l="zh">前 100 个用户，不会来自 Product Hunt</span></div>
+            <div class="ledrow__sub"><span class="chip" data-phase="market"><span class="dot"></span>Market</span><span data-l="en">A. Reyes</span><span data-l="zh">A. Reyes</span></div>
+          </div>
+          <div class="ledrow__r"><span class="mono muted">7 min</span><span class="mono muted">05.21</span></div>
+        </a>
+        <a class="ledrow" data-phase="design" href="article.html">
+          <span class="ledrow__no">04</span>
+          <div class="ledrow__main">
+            <div class="ledrow__t"><span data-l="en">Design systems are overkill until they aren't</span><span data-l="zh">设计系统在某一刻之前都是过度设计</span></div>
+            <div class="ledrow__sub"><span class="chip" data-phase="design"><span class="dot"></span>Design</span><span data-l="en">Ito K.</span><span data-l="zh">伊藤 K.</span></div>
+          </div>
+          <div class="ledrow__r"><span class="mono muted">6 min</span><span class="mono muted">05.18</span></div>
+        </a>
+        <a class="ledrow" data-phase="business" href="article.html">
+          <span class="ledrow__no">05</span>
+          <div class="ledrow__main">
+            <div class="ledrow__t"><span data-l="en">Pricing is a research project, not a guess</span><span data-l="zh">定价是一个研究课题，不是拍脑袋</span></div>
+            <div class="ledrow__sub"><span class="chip" data-phase="business"><span class="dot"></span>Business</span><span data-l="en">Sofia M.</span><span data-l="zh">Sofia M.</span></div>
+          </div>
+          <div class="ledrow__r"><span class="mono muted">11 min</span><span class="mono muted">05.15</span></div>
+        </a>
+        <a class="ledrow" data-phase="build" href="article.html" style="border-bottom:0;">
+          <span class="ledrow__no">06</span>
+          <div class="ledrow__main">
+            <div class="ledrow__t"><span data-l="en">Stop rewriting your landing page; rewrite the headline</span><span data-l="zh">别重写落地页，先重写那句标题</span></div>
+            <div class="ledrow__sub"><span class="chip" data-phase="build"><span class="dot"></span>Build</span><span data-l="en">Chen Mu</span><span data-l="zh">陈牧</span></div>
+          </div>
+          <div class="ledrow__r"><span class="mono muted">8 min</span><span class="mono muted">05.12</span></div>
+        </a>
+      </section>
+
+      <!-- new resources -->
+      <section>
+        <div class="lblock__head">
+          <h2><span data-l="en">New in the tool catalog</span><span data-l="zh">工具目录新入库</span></h2>
+          <a class="link-arrow" href="discover.html"><span data-l="en">All 303</span><span data-l="zh">全部 303</span><span class="ar">→</span></a>
+        </div>
+        <div class="res-strip">
+          <a class="rcard reveal" data-phase="discover" href="#"><div class="rcard__top"><span class="rlogo" data-phase="discover">P</span><div><div class="rcard__name">PostScan</div><div class="rcard__cat"><span data-l="en">Demand research</span><span data-l="zh">需求调研</span></div></div></div><p class="rcard__desc"><span data-l="en">Watches niche forums for recurring pain phrases.</span><span data-l="zh">监听细分论坛，抓取反复出现的痛点。</span></p><div class="rcard__foot"><span class="price price--freemium">Freemium</span><span class="rcard__ext">↗</span></div></a>
+          <a class="rcard reveal" data-phase="build" href="#"><div class="rcard__top"><span class="rlogo" data-phase="build">Q</span><div><div class="rcard__name">Queueless</div><div class="rcard__cat"><span data-l="en">Background jobs</span><span data-l="zh">后台任务</span></div></div></div><p class="rcard__desc"><span data-l="en">Cron + queues on your existing Postgres.</span><span data-l="zh">在现有 Postgres 上跑定时任务与队列。</span></p><div class="rcard__foot"><span class="price price--free">Free</span><span class="rcard__ext">↗</span></div></a>
+          <a class="rcard reveal" data-phase="market" href="#"><div class="rcard__top"><span class="rlogo" data-phase="market">B</span><div><div class="rcard__name">Beacon</div><div class="rcard__cat"><span data-l="en">Programmatic SEO</span><span data-l="zh">程序化 SEO</span></div></div></div><p class="rcard__desc"><span data-l="en">Thousands of landing pages from a sheet.</span><span data-l="zh">从一张表批量生成上千落地页。</span></p><div class="rcard__foot"><span class="price price--paid">Paid</span><span class="rcard__ext">↗</span></div></a>
+          <a class="rcard reveal" data-phase="business" href="#"><div class="rcard__top"><span class="rlogo" data-phase="business">L</span><div><div class="rcard__name">Ledgerly</div><div class="rcard__cat"><span data-l="en">MRR analytics</span><span data-l="zh">MRR 分析</span></div></div></div><p class="rcard__desc"><span data-l="en">Stripe metrics that actually explain churn.</span><span data-l="zh">真正能解释流失的 Stripe 指标。</span></p><div class="rcard__foot"><span class="price price--freemium">Freemium</span><span class="rcard__ext">↗</span></div></a>
+        </div>
+      </section>
+    </div>
+  </div>
+</main>
+
+<footer class="foot" style="margin-top: var(--space-2xl);">
+  <div class="foot__in">
+    <div class="foot__col">
+      <a class="brand" href="index.html" style="margin-bottom: var(--space-md);"><span>Work<span class="mk">bench</span></span></a>
+      <p class="muted" style="font-size: var(--fs-small); max-width: 34ch;"><span data-l="en">A bilingual field manual for indie hackers, organized by the five phases of shipping.</span><span data-l="zh">面向独立开发者的双语实战手册，按出货的五个阶段组织。</span></p>
+      <div class="phaserail" style="margin-top: var(--space-md); max-width: 240px;"><i></i><i></i><i></i><i></i><i></i></div>
+    </div>
+    <div class="foot__col"><h4><span data-l="en">Phases</span><span data-l="zh">阶段</span></h4><ul><li><a href="discover.html"><span data-l="en">Discover</span><span data-l="zh">需求挖掘</span></a></li><li><a href="discover.html"><span data-l="en">Design</span><span data-l="zh">设计</span></a></li><li><a href="discover.html"><span data-l="en">Build</span><span data-l="zh">开发</span></a></li><li><a href="discover.html"><span data-l="en">Market</span><span data-l="zh">营销</span></a></li><li><a href="discover.html"><span data-l="en">Business</span><span data-l="zh">商业分析</span></a></li></ul></div>
+    <div class="foot__col"><h4><span data-l="en">Content</span><span data-l="zh">内容</span></h4><ul><li><a href="#"><span data-l="en">Articles</span><span data-l="zh">文章</span></a></li><li><a href="discover.html"><span data-l="en">Tool catalog</span><span data-l="zh">工具目录</span></a></li><li><a href="#"><span data-l="en">Collections</span><span data-l="zh">合集</span></a></li><li><a href="#"><span data-l="en">Submit a tool</span><span data-l="zh">提交工具</span></a></li></ul></div>
+    <div class="foot__col"><h4><span data-l="en">Project</span><span data-l="zh">项目</span></h4><ul><li><a href="design-system.html"><span data-l="en">Design system</span><span data-l="zh">设计系统</span></a></li><li><a href="#"><span data-l="en">About</span><span data-l="zh">关于</span></a></li><li><a href="#">RSS</a></li><li><a href="#">GitHub</a></li></ul></div>
+  </div>
+  <div class="foot__bottom">
+    <span>© 2026 Workbench</span>
+    <span><span data-l="en">Variant C · Index / Ledger</span><span data-l="zh">变体 C · 索引 / 账本</span></span>
+  </div>
+</footer>
+
+<div class="palette" id="palette" role="dialog" aria-modal="true" aria-label="Search">
+  <div class="palette__scrim" data-act="palette"></div>
+  <div class="palette__box">
+    <div class="palette__field">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.2-3.2"/></svg>
+      <input type="text" placeholder="搜索文章、工具、阶段… / Search articles, tools, phases…" aria-label="Search">
+      <span class="palette__hint">ESC</span>
+    </div>
+    <div class="palette__list">
+      <a href="article.html"><span data-l="en">Talk to 30 strangers before you code</span><span data-l="zh">写代码前先和 30 个陌生人聊聊</span><span class="chip" data-phase="discover"><span class="dot"></span>Discover</span></a>
+      <a href="discover.html"><span data-l="en">PostScan — demand research</span><span data-l="zh">PostScan — 需求调研</span><span class="chip" data-phase="discover"><span class="dot"></span>Tool</span></a>
+      <a href="article.html"><span data-l="en">Ship a v0 in a weekend</span><span data-l="zh">一个周末上线 v0</span><span class="chip" data-phase="build"><span class="dot"></span>Build</span></a>
+      <a href="article.html"><span data-l="en">Pricing is a research project</span><span data-l="zh">定价是一个研究课题</span><span class="chip" data-phase="business"><span class="dot"></span>Business</span></a>
+    </div>
+  </div>
+</div>
+
+<script src="scripts/site.js"></script>
+</body>
+</html>

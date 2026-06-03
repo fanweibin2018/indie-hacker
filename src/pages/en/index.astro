@@ -8,6 +8,7 @@ import { getLocalizedPath } from '@/i18n/ui';
 import { NEWSLETTER } from '@/config/site';
 import { getCollection } from 'astro:content';
 import { filterArticles, sortByDateDesc } from '@/lib/collections';
+import { readingLabel } from '@/lib/reading-time';
 
 const lang = 'en' as const;
 const slugOf = (id: string) => id.split('/').pop()!;
@@ -92,6 +93,7 @@ const totalResources = phaseStats.reduce((s, p) => s + p.resourceCount, 0);
                 <a class="chip" data-phase={feature.data.phase} href={getLocalizedPath(`/${feature.data.phase}/`, lang)}>
                   <span class="dot"></span>{getPhase(feature.data.phase).label[lang]}
                 </a>
+                <span class="mono muted">{readingLabel(feature.body)}</span>
               </div>
               <h3 class="acard__title">
                 <a href={getLocalizedPath(`/articles/${slugOf(feature.id)}/`, lang)}>{feature.data.title}</a>
@@ -117,6 +119,7 @@ const totalResources = phaseStats.reduce((s, p) => s + p.resourceCount, 0);
                   phase={a.data.phase}
                   lang={lang}
                   pubDate={a.data.pubDate}
+                  readingTime={readingLabel(a.body)}
                 />
               ))}
             </div>
@@ -187,7 +190,7 @@ const totalResources = phaseStats.reduce((s, p) => s + p.resourceCount, 0);
               <span class="arow__title">{a.data.title}</span>
               <span class="arow__meta">
                 <span class="chip" data-phase={a.data.phase}><span class="dot"></span>{getPhase(a.data.phase).label[lang]}</span>
-                {' · '}{shortDate(a.data.pubDate)}
+                {' · '}{readingLabel(a.body)}
               </span>
             </a>
           ))}

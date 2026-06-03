@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="zh" data-lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Workbench — Variant A · Editorial Masthead</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Sora:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Noto+Sans+SC:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles/tokens.css">
+<link rel="stylesheet" href="styles/base.css">
+<link rel="stylesheet" href="styles/components.css">
+<style>
+  /* ---- Variant A: editorial masthead ---- */
+  .masthead { padding-top: clamp(2rem, 1rem + 3vw, 3.5rem); padding-bottom: clamp(1.5rem,1rem+2vw,2.5rem); }
+  .masthead__rule { display: flex; align-items: center; justify-content: space-between; gap: var(--space-md); padding-bottom: var(--space-md); border-bottom: 2px solid var(--ink); flex-wrap: wrap; }
+  .masthead__rule .eyebrow { color: var(--ink); }
+  .masthead__head { display: grid; grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr); gap: var(--space-xl); align-items: end; padding-block: clamp(1.5rem, 1rem + 3vw, 3rem); }
+  .masthead h1 { font-size: var(--fs-display); letter-spacing: -0.03em; line-height: 0.96; }
+  .masthead h1 em { font-style: normal; color: var(--accent); }
+  .masthead__aside { display: grid; gap: var(--space-md); padding-bottom: 0.4rem; }
+  @media (max-width: 860px) { .masthead__head { grid-template-columns: 1fr; gap: var(--space-lg); } }
+
+  /* lead + bento layout */
+  .lead-grid { display: grid; grid-template-columns: minmax(0, 2fr) minmax(0, 1fr); gap: clamp(1.25rem, 0.6rem + 2vw, 2.5rem); align-items: start; }
+  @media (max-width: 980px) { .lead-grid { grid-template-columns: 1fr; } }
+  .stack { display: grid; gap: var(--space-md); }
+  .reslist { display: grid; gap: var(--space-sm); }
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-md); }
+  @media (max-width: 560px) { .grid-2 { grid-template-columns: 1fr; } }
+
+  .field-band { background: var(--bg-sunken); border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+</style>
+</head>
+<body>
+
+<!-- ============ NAV ============ -->
+<header class="nav">
+  <div class="nav__in">
+    <a class="brand" href="index.html" aria-label="Workbench home">
+      <span>Work<span class="mk">bench</span></span>
+      <span class="sl" data-l="en">Field Manual</span>
+      <span class="sl" data-l="zh">实战手册</span>
+    </a>
+    <nav class="nav__links" aria-label="Phases">
+      <a href="discover.html" data-phase="discover"><span data-l="en">Discover</span><span data-l="zh">需求</span></a>
+      <a href="discover.html" data-phase="design"><span data-l="en">Design</span><span data-l="zh">设计</span></a>
+      <a href="discover.html" data-phase="build"><span data-l="en">Build</span><span data-l="zh">开发</span></a>
+      <a href="discover.html" data-phase="market"><span data-l="en">Market</span><span data-l="zh">营销</span></a>
+      <a href="discover.html" data-phase="business"><span data-l="en">Business</span><span data-l="zh">商业</span></a>
+    </nav>
+    <span class="nav__spacer"></span>
+    <div class="nav__tools">
+      <button class="search-btn" data-act="palette" aria-label="Search">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.2-3.2"/></svg>
+        <span class="sk" data-l="en">Search articles & tools</span>
+        <span class="sk" data-l="zh">搜索文章与工具</span>
+        <kbd>⌘K</kbd>
+      </button>
+      <div class="langtog" role="group" aria-label="Language">
+        <button data-act="lang" data-lang="zh">中</button>
+        <button data-act="lang" data-lang="en">EN</button>
+      </div>
+      <button class="icon-btn" data-act="theme" aria-label="Toggle theme" aria-pressed="false">
+        <svg class="i-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="4"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9l2.1 2.1M17 17l2.1 2.1M19.1 4.9 17 7M7 17l-2.1 2.1"/></svg>
+        <svg class="i-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z"/></svg>
+      </button>
+      <button class="icon-btn nav__burger" data-act="menu" aria-label="Menu">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+      </button>
+    </div>
+  </div>
+  <nav class="mobnav" aria-label="Mobile">
+    <a href="discover.html" data-phase="discover"><span class="dot"></span><span data-l="en">Discover</span><span data-l="zh">需求挖掘</span></a>
+    <a href="discover.html" data-phase="design"><span class="dot"></span><span data-l="en">Design</span><span data-l="zh">设计</span></a>
+    <a href="discover.html" data-phase="build"><span class="dot"></span><span data-l="en">Build</span><span data-l="zh">开发</span></a>
+    <a href="discover.html" data-phase="market"><span class="dot"></span><span data-l="en">Market</span><span data-l="zh">营销</span></a>
+    <a href="discover.html" data-phase="business"><span class="dot"></span><span data-l="en">Business</span><span data-l="zh">商业分析</span></a>
+  </nav>
+</header>
+
+<main>
+  <!-- ============ MASTHEAD ============ -->
+  <section class="wrap masthead">
+    <div class="masthead__rule">
+      <span class="eyebrow"><span data-l="en">Field Manual for Indie Hackers</span><span data-l="zh">独立开发者的实战手册</span></span>
+      <span class="eyebrow"><span data-l="en">Issue 14 · Jun 2026 · 218 entries</span><span data-l="zh">第 14 期 · 2026 年 6 月 · 218 篇</span></span>
+    </div>
+    <div class="masthead__head">
+      <h1>
+        <span data-l="en">From idea to revenue, <em>every step</em> already mapped.</span>
+        <span data-l="zh">从想法到收入，<em>每一步</em>都有人走过。</span>
+      </h1>
+      <div class="masthead__aside">
+        <p class="lead">
+          <span data-l="en">A bilingual knowledge base built around the five phases of shipping a product — original guides cross-linked to the exact tools they mention.</span>
+          <span data-l="zh">围绕产品生命周期五个阶段组织的双语知识库——原创指南与它所引用的工具逐一交叉关联。</span>
+        </p>
+        <div style="display:flex; gap:var(--space-xs); flex-wrap:wrap;">
+          <a class="btn btn--primary" href="discover.html"><span data-l="en">Start with Discover</span><span data-l="zh">从需求挖掘开始</span></a>
+          <a class="btn btn--ghost" href="#resources"><span data-l="en">Browse tools</span><span data-l="zh">浏览工具目录</span></a>
+        </div>
+      </div>
+    </div>
+
+    <!-- phase index -->
+    <div class="pindex" role="navigation" aria-label="Phase index">
+      <a href="discover.html" data-phase="discover">
+        <span class="pindex__no">01</span>
+        <span class="pindex__nm"><span data-l="en">Discover</span><span data-l="zh">需求挖掘</span></span>
+        <span class="pindex__ct"><span data-l="en">42 articles · 60 tools</span><span data-l="zh">42 文 · 60 工具</span></span>
+      </a>
+      <a href="discover.html" data-phase="design">
+        <span class="pindex__no">02</span>
+        <span class="pindex__nm"><span data-l="en">Design</span><span data-l="zh">设计</span></span>
+        <span class="pindex__ct"><span data-l="en">31 articles · 44 tools</span><span data-l="zh">31 文 · 44 工具</span></span>
+      </a>
+      <a href="discover.html" data-phase="build">
+        <span class="pindex__no">03</span>
+        <span class="pindex__nm"><span data-l="en">Build</span><span data-l="zh">开发</span></span>
+        <span class="pindex__ct"><span data-l="en">58 articles · 90 tools</span><span data-l="zh">58 文 · 90 工具</span></span>
+      </a>
+      <a href="discover.html" data-phase="market">
+        <span class="pindex__no">04</span>
+        <span class="pindex__nm"><span data-l="en">Market</span><span data-l="zh">营销</span></span>
+        <span class="pindex__ct"><span data-l="en">47 articles · 71 tools</span><span data-l="zh">47 文 · 71 工具</span></span>
+      </a>
+      <a href="discover.html" data-phase="business">
+        <span class="pindex__no">05</span>
+        <span class="pindex__nm"><span data-l="en">Business</span><span data-l="zh">商业分析</span></span>
+        <span class="pindex__ct"><span data-l="en">40 articles · 38 tools</span><span data-l="zh">40 文 · 38 工具</span></span>
+      </a>
+    </div>
+  </section>
+
+  <!-- ============ LEAD + BENTO ============ -->
+  <section class="wrap section" style="padding-top: clamp(2rem,1rem+3vw,3.5rem);">
+    <div class="lead-grid">
+      <!-- left: lead feature + latest -->
+      <div class="stack" style="gap: var(--space-xl);">
+        <article class="acard acard--feature reveal" data-phase="discover">
+          <div class="acard__media ph" data-phase="discover"><span data-l="en">cover · 16:10</span><span data-l="zh">封面图 · 16:10</span></div>
+          <div class="acard__body">
+            <div class="acard__meta">
+              <a class="chip" data-phase="discover" href="discover.html"><span class="dot"></span>Discover</a>
+              <span class="mono muted">12 min</span>
+            </div>
+            <h3 class="acard__title">
+              <a href="article.html"><span data-l="en">Talk to 30 strangers before you write a line of code</span><span data-l="zh">写第一行代码前，先和 30 个陌生人聊聊</span></a>
+            </h3>
+            <p class="acard__dek"><span data-l="en">A repeatable interview script for validating demand without leading the witness — plus how to read the signal under the politeness.</span><span data-l="zh">一套可复用的需求验证访谈脚本：如何不诱导式提问，以及怎样从客气话里读出真实信号。</span></p>
+            <div class="acard__foot"><span data-l="en">Lin Yao</span><span data-l="zh">林遥</span><i class="sep"></i><span>2026.05.28</span></div>
+          </div>
+        </article>
+
+        <div>
+          <div class="col-head">
+            <h2><span data-l="en">Latest articles</span><span data-l="zh">最新文章</span></h2>
+            <a class="link-arrow" href="#"><span data-l="en">All</span><span data-l="zh">全部</span><span class="ar">→</span></a>
+          </div>
+          <div class="grid-2">
+            <article class="acard reveal" data-phase="build">
+              <div class="acard__media ph" data-phase="build"><span data-l="en">cover</span><span data-l="zh">封面</span></div>
+              <div class="acard__meta"><a class="chip" data-phase="build" href="discover.html"><span class="dot"></span>Build</a><span class="mono muted">9 min</span></div>
+              <h3 class="acard__title"><a href="article.html"><span data-l="en">Ship a v0 in a weekend without drowning in setup</span><span data-l="zh">一个周末上线 v0，别把时间耗在脚手架上</span></a></h3>
+              <p class="acard__dek"><span data-l="en">The boring stack that lets you skip auth, payments, and deploys.</span><span data-l="zh">一套无聊但靠谱的技术栈，帮你跳过鉴权、支付与部署的坑。</span></p>
+              <div class="acard__foot"><span data-l="en">Chen Mu</span><span data-l="zh">陈牧</span><i class="sep"></i><span>05.24</span></div>
+            </article>
+            <article class="acard reveal" data-phase="market">
+              <div class="acard__media ph" data-phase="market"><span data-l="en">cover</span><span data-l="zh">封面</span></div>
+              <div class="acard__meta"><a class="chip" data-phase="market" href="discover.html"><span class="dot"></span>Market</a><span class="mono muted">7 min</span></div>
+              <h3 class="acard__title"><a href="article.html"><span data-l="en">Your first 100 users won't come from Product Hunt</span><span data-l="zh">前 100 个用户，不会来自 Product Hunt</span></a></h3>
+              <p class="acard__dek"><span data-l="en">Where they actually hide, and how to show up without being spammy.</span><span data-l="zh">他们究竟藏在哪，以及如何不招人烦地出现在那里。</span></p>
+              <div class="acard__foot"><span data-l="en">A. Reyes</span><span data-l="zh">A. Reyes</span><i class="sep"></i><span>05.21</span></div>
+            </article>
+            <article class="acard reveal" data-phase="design">
+              <div class="acard__media ph" data-phase="design"><span data-l="en">cover</span><span data-l="zh">封面</span></div>
+              <div class="acard__meta"><a class="chip" data-phase="design" href="discover.html"><span class="dot"></span>Design</a><span class="mono muted">6 min</span></div>
+              <h3 class="acard__title"><a href="article.html"><span data-l="en">Design systems are overkill until they aren't</span><span data-l="zh">设计系统在某一刻之前都是过度设计</span></a></h3>
+              <p class="acard__dek"><span data-l="en">The exact moment a solo dev should stop improvising tokens.</span><span data-l="zh">单人开发者该在哪一刻停止临时拍脑袋定 token。</span></p>
+              <div class="acard__foot"><span data-l="en">Ito K.</span><span data-l="zh">伊藤 K.</span><i class="sep"></i><span>05.18</span></div>
+            </article>
+            <article class="acard reveal" data-phase="business">
+              <div class="acard__media ph" data-phase="business"><span data-l="en">cover</span><span data-l="zh">封面</span></div>
+              <div class="acard__meta"><a class="chip" data-phase="business" href="discover.html"><span class="dot"></span>Business</a><span class="mono muted">11 min</span></div>
+              <h3 class="acard__title"><a href="article.html"><span data-l="en">Pricing is a research project, not a guess</span><span data-l="zh">定价是一个研究课题，不是拍脑袋</span></a></h3>
+              <p class="acard__dek"><span data-l="en">Van Westendorp, fake door tests, and reading churn like tea leaves.</span><span data-l="zh">Van Westendorp 法、假门测试，以及如何从流失率里读出定价信号。</span></p>
+              <div class="acard__foot"><span data-l="en">Sofia M.</span><span data-l="zh">Sofia M.</span><i class="sep"></i><span>05.15</span></div>
+            </article>
+          </div>
+        </div>
+      </div>
+
+      <!-- right: fresh resources sidebar -->
+      <aside class="stack" id="resources">
+        <div>
+          <div class="col-head">
+            <h2><span data-l="en">Fresh tools</span><span data-l="zh">新入库工具</span></h2>
+            <a class="link-arrow" href="discover.html"><span data-l="en">Catalog</span><span data-l="zh">目录</span><span class="ar">→</span></a>
+          </div>
+          <div class="reslist">
+            <a class="rcard reveal" data-phase="discover" data-cat="research" data-price="freemium" href="#">
+              <div class="rcard__top"><span class="rlogo" data-phase="discover">P</span><div><div class="rcard__name">PostScan</div><div class="rcard__cat"><span data-l="en">Demand research</span><span data-l="zh">需求调研</span></div></div></div>
+              <p class="rcard__desc"><span data-l="en">Watches niche subreddits & forums for recurring pain phrases.</span><span data-l="zh">监听细分论坛与 subreddit，抓取反复出现的痛点表述。</span></p>
+              <div class="rcard__foot"><span class="price price--freemium">Freemium</span><span class="rcard__ext"><span data-l="en">Visit</span><span data-l="zh">前往</span>↗</span></div>
+            </a>
+            <a class="rcard reveal" data-phase="build" data-cat="dev" data-price="free" href="#">
+              <div class="rcard__top"><span class="rlogo" data-phase="build">Q</span><div><div class="rcard__name">Queueless</div><div class="rcard__cat"><span data-l="en">Background jobs</span><span data-l="zh">后台任务</span></div></div></div>
+              <p class="rcard__desc"><span data-l="en">Cron + queues on top of your existing Postgres, zero infra.</span><span data-l="zh">直接在现有 Postgres 上跑定时任务与队列，零额外基础设施。</span></p>
+              <div class="rcard__foot"><span class="price price--free">Free · OSS</span><span class="rcard__ext"><span data-l="en">Visit</span><span data-l="zh">前往</span>↗</span></div>
+            </a>
+            <a class="rcard reveal" data-phase="market" data-cat="marketing" data-price="paid" href="#">
+              <div class="rcard__top"><span class="rlogo" data-phase="market">B</span><div><div class="rcard__name">Beacon</div><div class="rcard__cat"><span data-l="en">SEO programmatic</span><span data-l="zh">程序化 SEO</span></div></div></div>
+              <p class="rcard__desc"><span data-l="en">Generate & track thousands of landing pages from a sheet.</span><span data-l="zh">从一张表格批量生成并追踪上千个落地页。</span></p>
+              <div class="rcard__foot"><span class="price price--paid">Paid</span><span class="rcard__ext"><span data-l="en">Visit</span><span data-l="zh">前往</span>↗</span></div>
+            </a>
+          </div>
+        </div>
+
+        <!-- mini subscribe -->
+        <div class="subscribe" style="padding: var(--space-lg); border-radius: var(--r-lg);">
+          <div class="subscribe__hue"></div>
+          <span class="eyebrow" style="color: color-mix(in oklch, var(--bg) 70%, transparent);"><span data-l="en">Weekly digest</span><span data-l="zh">每周精选</span></span>
+          <h2 style="font-size: var(--fs-h4);"><span data-l="en">One email. Five phases.</span><span data-l="zh">一封邮件，五个阶段。</span></h2>
+          <form class="subform" novalidate>
+            <input type="email" placeholder="you@indie.dev" aria-label="Email">
+            <button class="btn btn--primary" type="submit"><span data-l="en">Join</span><span data-l="zh">订阅</span></button>
+          </form>
+          <span class="subform__note"><span data-l="en">3,400+ builders · no spam</span><span data-l="zh">3,400+ 开发者 · 无垃圾邮件</span></span>
+        </div>
+      </aside>
+    </div>
+  </section>
+
+  <!-- ============ FIELD NOTES (dense ledger) ============ -->
+  <section class="field-band">
+    <div class="wrap section" style="padding-block: clamp(2rem,1.4rem+3vw,4rem);">
+      <div class="section-head">
+        <div>
+          <span class="eyebrow"><span data-l="en">From the field</span><span data-l="zh">来自一线</span></span>
+          <h2><span data-l="en">Recently cross-linked</span><span data-l="zh">最近交叉关联</span></h2>
+        </div>
+        <a class="link-arrow" href="#"><span data-l="en">Full index</span><span data-l="zh">完整索引</span><span class="ar">→</span></a>
+      </div>
+      <div>
+        <a class="arow" data-phase="build" href="article.html"><span class="arow__idx">01</span><span class="arow__title"><span data-l="en">Stop rewriting your landing page; rewrite the headline</span><span data-l="zh">别重写落地页，先重写那句标题</span></span><span class="arow__meta"><span class="chip" data-phase="build"><span class="dot"></span>Build</span> · 8 min</span></a>
+        <a class="arow" data-phase="discover" href="article.html"><span class="arow__idx">02</span><span class="arow__title"><span data-l="en">The “fake door” test that saved me 3 months</span><span data-l="zh">帮我省下三个月的「假门」测试</span></span><span class="arow__meta"><span class="chip" data-phase="discover"><span class="dot"></span>Discover</span> · 6 min</span></a>
+        <a class="arow" data-phase="business" href="article.html"><span class="arow__idx">03</span><span class="arow__title"><span data-l="en">When to incorporate (and when it's a distraction)</span><span data-l="zh">什么时候该注册公司，什么时候是分心</span></span><span class="arow__meta"><span class="chip" data-phase="business"><span class="dot"></span>Business</span> · 10 min</span></a>
+        <a class="arow" data-phase="market" href="article.html"><span class="arow__idx">04</span><span class="arow__title"><span data-l="en">Cold outreach that doesn't feel gross</span><span data-l="zh">不让人反感的冷启动私信</span></span><span class="arow__meta"><span class="chip" data-phase="market"><span class="dot"></span>Market</span> · 7 min</span></a>
+        <a class="arow" data-phase="design" href="article.html" style="border-bottom:0;"><span class="arow__idx">05</span><span class="arow__title"><span data-l="en">Empty states are your best onboarding</span><span data-l="zh">空状态才是最好的新手引导</span></span><span class="arow__meta"><span class="chip" data-phase="design"><span class="dot"></span>Design</span> · 5 min</span></a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ SUBSCRIBE ============ -->
+  <section class="wrap section">
+    <div class="subscribe reveal">
+      <div class="subscribe__hue"></div>
+      <span class="eyebrow" style="color: color-mix(in oklch, var(--bg) 70%, transparent);"><span data-l="en">Newsletter</span><span data-l="zh">订阅</span></span>
+      <h2><span data-l="en">Field notes, every Tuesday.</span><span data-l="zh">每周二，一封实战笔记。</span></h2>
+      <p><span data-l="en">One curated article and one tool worth your time, across all five phases. Written by builders who shipped, not marketers.</span><span data-l="zh">每周一篇精选文章 + 一个值得花时间的工具，横跨五个阶段。由真正发过货的开发者撰写，而非营销号。</span></p>
+      <form class="subform" novalidate>
+        <input type="email" placeholder="you@indie.dev" aria-label="Email">
+        <button class="btn btn--primary btn--lg" type="submit"><span data-l="en">Subscribe</span><span data-l="zh">订阅</span></button>
+      </form>
+      <span class="subform__note"><span data-l="en">3,400+ indie hackers · unsubscribe anytime</span><span data-l="zh">3,400+ 独立开发者 · 随时退订</span></span>
+    </div>
+  </section>
+</main>
+
+<!-- ============ FOOTER ============ -->
+<footer class="foot">
+  <div class="foot__in">
+    <div class="foot__col">
+      <a class="brand" href="index.html" style="margin-bottom: var(--space-md);"><span>Work<span class="mk">bench</span></span></a>
+      <p class="muted" style="font-size: var(--fs-small); max-width: 34ch;"><span data-l="en">A bilingual field manual for indie hackers, organized by the five phases of shipping.</span><span data-l="zh">面向独立开发者的双语实战手册，按出货的五个阶段组织。</span></p>
+      <div class="phaserail" style="margin-top: var(--space-md); max-width: 240px;"><i></i><i></i><i></i><i></i><i></i></div>
+    </div>
+    <div class="foot__col">
+      <h4><span data-l="en">Phases</span><span data-l="zh">阶段</span></h4>
+      <ul>
+        <li><a href="discover.html"><span data-l="en">Discover</span><span data-l="zh">需求挖掘</span></a></li>
+        <li><a href="discover.html"><span data-l="en">Design</span><span data-l="zh">设计</span></a></li>
+        <li><a href="discover.html"><span data-l="en">Build</span><span data-l="zh">开发</span></a></li>
+        <li><a href="discover.html"><span data-l="en">Market</span><span data-l="zh">营销</span></a></li>
+        <li><a href="discover.html"><span data-l="en">Business</span><span data-l="zh">商业分析</span></a></li>
+      </ul>
+    </div>
+    <div class="foot__col">
+      <h4><span data-l="en">Content</span><span data-l="zh">内容</span></h4>
+      <ul>
+        <li><a href="#"><span data-l="en">Articles</span><span data-l="zh">文章</span></a></li>
+        <li><a href="discover.html"><span data-l="en">Tool catalog</span><span data-l="zh">工具目录</span></a></li>
+        <li><a href="#"><span data-l="en">Collections</span><span data-l="zh">合集</span></a></li>
+        <li><a href="#"><span data-l="en">Submit a tool</span><span data-l="zh">提交工具</span></a></li>
+      </ul>
+    </div>
+    <div class="foot__col">
+      <h4><span data-l="en">Project</span><span data-l="zh">项目</span></h4>
+      <ul>
+        <li><a href="design-system.html"><span data-l="en">Design system</span><span data-l="zh">设计系统</span></a></li>
+        <li><a href="#"><span data-l="en">About</span><span data-l="zh">关于</span></a></li>
+        <li><a href="#">RSS</a></li>
+        <li><a href="#">GitHub</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="foot__bottom">
+    <span>© 2026 Workbench</span>
+    <span><span data-l="en">Variant A · Editorial Masthead</span><span data-l="zh">变体 A · 杂志刊头</span></span>
+  </div>
+</footer>
+
+<!-- ============ COMMAND PALETTE ============ -->
+<div class="palette" id="palette" role="dialog" aria-modal="true" aria-label="Search">
+  <div class="palette__scrim" data-act="palette"></div>
+  <div class="palette__box">
+    <div class="palette__field">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.2-3.2"/></svg>
+      <input type="text" placeholder="搜索文章、工具、阶段… / Search articles, tools, phases…" aria-label="Search">
+      <span class="palette__hint">ESC</span>
+    </div>
+    <div class="palette__list">
+      <a href="article.html"><span data-l="en">Talk to 30 strangers before you code</span><span data-l="zh">写代码前先和 30 个陌生人聊聊</span><span class="chip" data-phase="discover"><span class="dot"></span>Discover</span></a>
+      <a href="discover.html"><span data-l="en">PostScan — demand research</span><span data-l="zh">PostScan — 需求调研</span><span class="chip" data-phase="discover"><span class="dot"></span>Tool</span></a>
+      <a href="article.html"><span data-l="en">Ship a v0 in a weekend</span><span data-l="zh">一个周末上线 v0</span><span class="chip" data-phase="build"><span class="dot"></span>Build</span></a>
+      <a href="discover.html"><span data-l="en">Beacon — programmatic SEO</span><span data-l="zh">Beacon — 程序化 SEO</span><span class="chip" data-phase="market"><span class="dot"></span>Tool</span></a>
+      <a href="article.html"><span data-l="en">Pricing is a research project</span><span data-l="zh">定价是一个研究课题</span><span class="chip" data-phase="business"><span class="dot"></span>Business</span></a>
+    </div>
+  </div>
+</div>
+
+<script src="scripts/site.js"></script>
+</body>
+</html>

@@ -2,8 +2,8 @@
 import PhaseChip from './PhaseChip.astro';
 import { getLocalizedPath, type Lang } from '@/i18n/ui';
 import type { PhaseId } from '@/lib/phases';
-interface Props { slug: string; title: string; description: string; phase: PhaseId; lang: Lang; pubDate?: Date; }
-const { slug, title, description, phase, lang, pubDate } = Astro.props;
+interface Props { slug: string; title: string; description: string; phase: PhaseId; lang: Lang; pubDate?: Date; readingTime?: string; }
+const { slug, title, description, phase, lang, pubDate, readingTime } = Astro.props;
 const href = getLocalizedPath(`/articles/${slug}/`, lang);
 const phaseHref = getLocalizedPath(`/${phase}/`, lang);
 const d = pubDate;
@@ -13,6 +13,7 @@ const dateStr = d ? `${d.getFullYear()}.${String(d.getMonth() + 1).padStart(2, '
   <div class="acard__media ph" data-phase={phase} style="aspect-ratio:16/9;"></div>
   <div class="acard__meta">
     <PhaseChip phase={phase} lang={lang} href={phaseHref} />
+    {readingTime && <span class="mono muted">{readingTime}</span>}
   </div>
   <h3 class="acard__title"><a href={href}>{title}</a></h3>
   <p class="acard__dek">{description}</p>

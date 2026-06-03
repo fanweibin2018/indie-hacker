@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="zh" data-lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Workbench — 首页排版方向对比</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&family=Noto+Sans+SC:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles/tokens.css">
+<link rel="stylesheet" href="styles/base.css">
+<style>
+  body { background: var(--bg-sunken); }
+  .top { position: sticky; top: 0; z-index: 10; background: color-mix(in oklch, var(--bg) 86%, transparent); backdrop-filter: blur(12px); border-bottom: 1px solid var(--line); }
+  .top__in { max-width: 1600px; margin-inline: auto; padding: var(--space-md) var(--gutter); display: flex; align-items: center; gap: var(--space-md); flex-wrap: wrap; }
+  .top h1 { font-size: var(--fs-h5); font-family: var(--font-display); }
+  .top .eyebrow { color: var(--ink-3); }
+  .top__sp { flex: 1; }
+  .seg { display: inline-flex; border: 1px solid var(--line-2); border-radius: var(--r-sm); overflow: hidden; font-family: var(--font-mono); font-size: var(--fs-mono); }
+  .seg button { padding: 0.5em 0.9em; color: var(--ink-3); }
+  .seg button[aria-pressed="true"] { background: var(--ink); color: var(--bg); }
+
+  .grid { max-width: 1600px; margin: var(--space-xl) auto; padding-inline: var(--gutter); display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--space-lg); align-items: start; }
+  @media (max-width: 1100px) { .grid { grid-template-columns: 1fr; max-width: 640px; } }
+
+  .opt { display: grid; gap: var(--space-sm); }
+  .opt__bar { display: flex; align-items: baseline; gap: var(--space-sm); }
+  .opt__tag { font-family: var(--font-mono); font-size: var(--fs-mono); font-weight: 600; letter-spacing: 0.06em; color: var(--bg); background: var(--ink); padding: 0.2em 0.55em; border-radius: var(--r-xs); }
+  .opt__nm { font-family: var(--font-display); font-weight: 700; font-size: var(--fs-h6); letter-spacing: var(--track-snug); }
+  .opt__desc { font-size: var(--fs-small); color: var(--ink-2); min-height: 3.4em; }
+  .opt__desc .mono { color: var(--ink-3); }
+
+  .frame { position: relative; border: 1px solid var(--line-2); border-radius: var(--r-lg); overflow: hidden; background: var(--surface); box-shadow: var(--shadow-2); aspect-ratio: 1440 / 1500; }
+  .frame iframe { position: absolute; top: 0; left: 0; width: 1440px; height: 3000px; border: 0; transform-origin: top left; }
+  .frame__open { position: absolute; right: 10px; bottom: 10px; z-index: 3; display: inline-flex; align-items: center; gap: 0.4em; font-family: var(--font-mono); font-size: var(--fs-mono); padding: 0.5em 0.8em; border-radius: var(--r-sm); background: var(--ink); color: var(--bg); box-shadow: var(--shadow-2); }
+  .frame__open:hover { background: var(--accent-ink); }
+  .frame__lock { position: absolute; inset: 0; z-index: 2; cursor: pointer; }
+</style>
+</head>
+<body>
+  <div class="top">
+    <div class="top__in">
+      <div>
+        <span class="eyebrow"><span data-l="en">Workbench · choose a direction</span><span data-l="zh">Workbench · 选择排版方向</span></span>
+        <h1><span data-l="en">Landing page — 3 layout directions</span><span data-l="zh">首页 —— 三种排版方向</span></h1>
+      </div>
+      <span class="top__sp"></span>
+      <div class="seg" role="group" aria-label="Language">
+        <button data-act="lang" data-lang="zh">中</button>
+        <button data-act="lang" data-lang="en">EN</button>
+      </div>
+      <button class="seg" data-act="theme" aria-pressed="false" style="padding:0;"><span style="padding:0.5em 0.9em;" data-l="en">Light / Dark</span><span style="padding:0.5em 0.9em;" data-l="zh">浅 / 深</span></button>
+    </div>
+  </div>
+
+  <div class="grid">
+    <div class="opt">
+      <div class="opt__bar"><span class="opt__tag">A</span><span class="opt__nm"><span data-l="en">Editorial Masthead</span><span data-l="zh">杂志刊头</span></span></div>
+      <p class="opt__desc"><span data-l="en">Magazine front-page hierarchy: oversized headline, hairline rules, a color-coded phase index strip, asymmetric bento + a dense “from the field” ledger.</span><span data-l="zh">杂志头版式层级：超大标题、细线分隔、彩色阶段索引条，配不对称 bento 与紧凑的「来自一线」账本区。</span></p>
+      <div class="frame">
+        <iframe src="landing-a.html" title="Variant A" scrolling="no"></iframe>
+        <a class="frame__lock" href="landing-a.html" aria-label="Open A"></a>
+        <a class="frame__open" href="landing-a.html"><span data-l="en">Open full ↗</span><span data-l="zh">全屏查看 ↗</span></a>
+      </div>
+    </div>
+
+    <div class="opt">
+      <div class="opt__bar"><span class="opt__tag">B</span><span class="opt__nm"><span data-l="en">Phase-first Bento</span><span data-l="zh">阶段优先 Bento</span></span></div>
+      <p class="opt__desc"><span data-l="en">The five phases ARE the hero — a color-forward bento of tiles in their semantic colors, varying sizes, value prop in one cell. Most memorable color system.</span><span data-l="zh">五个阶段即主视觉——以语义色填充、大小不一的 bento 色块，价值主张占一格。色码记忆点最强。</span></p>
+      <div class="frame">
+        <iframe src="landing-b.html" title="Variant B" scrolling="no"></iframe>
+        <a class="frame__lock" href="landing-b.html" aria-label="Open B"></a>
+        <a class="frame__open" href="landing-b.html"><span data-l="en">Open full ↗</span><span data-l="zh">全屏查看 ↗</span></a>
+      </div>
+    </div>
+
+    <div class="opt">
+      <div class="opt__bar"><span class="opt__tag">C</span><span class="opt__nm"><span data-l="en">Index / Ledger</span><span data-l="zh">索引 / 账本</span></span></div>
+      <p class="opt__desc"><span data-l="en">Hardcore docs density: sticky left rail with a numbered phase TOC + mini subscribe, right column a tight ledger of latest articles. indiehackers energy.</span><span data-l="zh">硬核文档密度：左侧粘性栏含编号阶段目录 + 迷你订阅，右栏是紧凑的最新文章账本。indiehackers 气质。</span></p>
+      <div class="frame">
+        <iframe src="landing-c.html" title="Variant C" scrolling="no"></iframe>
+        <a class="frame__lock" href="landing-c.html" aria-label="Open C"></a>
+        <a class="frame__open" href="landing-c.html"><span data-l="en">Open full ↗</span><span data-l="zh">全屏查看 ↗</span></a>
+      </div>
+    </div>
+  </div>
+
+  <script src="scripts/site.js"></script>
+  <script>
+    // scale each iframe to its column width
+    function fit() {
+      document.querySelectorAll('.frame').forEach(function (f) {
+        var w = f.clientWidth;
+        var s = w / 1440;
+        var ifr = f.querySelector('iframe');
+        ifr.style.transform = 'scale(' + s + ')';
+        ifr.style.width = 1440 + 'px';
+        ifr.style.height = (f.clientHeight / s) + 'px';
+      });
+    }
+    window.addEventListener('load', fit);
+    window.addEventListener('resize', fit);
+    setTimeout(fit, 400);
+  </script>
+</body>
+</html>

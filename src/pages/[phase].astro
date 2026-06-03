@@ -6,6 +6,7 @@ import { PHASES, PHASE_IDS, getPhase, isPhaseId } from '@/lib/phases';
 import { getLocalizedPath } from '@/i18n/ui';
 import { getCollection } from 'astro:content';
 import { filterArticles, sortByDateDesc } from '@/lib/collections';
+import { readingLabel } from '@/lib/reading-time';
 
 export function getStaticPaths() {
   return PHASE_IDS.map((phase) => ({ params: { phase } }));
@@ -121,6 +122,7 @@ const shortDate = (d: Date) =>
           <div class="acard__media ph" data-phase={feature.data.phase} style="aspect-ratio: 16/9;"></div>
           <div class="acard__meta">
             <a class="chip" data-phase={feature.data.phase} href={getLocalizedPath(`/${feature.data.phase}/`, lang)}><span class="dot"></span>{getPhase(feature.data.phase).label[lang]}</a>
+            <span class="mono muted">{readingLabel(feature.body)}</span>
           </div>
           <h3 class="acard__title" style="font-size: var(--fs-h3);">
             <a href={getLocalizedPath(`/articles/${slugOf(feature.id)}/`, lang)}>{feature.data.title}</a>
@@ -140,7 +142,7 @@ const shortDate = (d: Date) =>
               >
                 <span class="arow__idx">{String(i + 1).padStart(2, '0')}</span>
                 <span class="arow__title">{a.data.title}</span>
-                <span class="arow__meta">{shortDate(a.data.pubDate)}</span>
+                <span class="arow__meta">{readingLabel(a.body)}</span>
               </a>
             ))}
           </div>

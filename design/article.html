@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="zh" data-lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Talk to 30 strangers — Workbench</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Sora:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Noto+Sans+SC:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles/tokens.css">
+<link rel="stylesheet" href="styles/base.css">
+<link rel="stylesheet" href="styles/components.css">
+<style>
+  .art-head { padding-top: clamp(1.5rem,1rem+2vw,2.5rem); }
+  .art-head__rule { border-bottom: 2px solid var(--phase); padding-bottom: var(--space-md); }
+  .art-title { font-size: clamp(2.1rem, 1.5rem + 2.8vw, 3.75rem); letter-spacing: -0.03em; line-height: 1.02; margin: 0.35em 0; max-width: 22ch; }
+  .art-dek { font-size: var(--fs-lead); color: var(--ink-2); max-width: 60ch; line-height: var(--lh-snug); text-wrap: pretty; }
+  .byline { display: flex; align-items: center; gap: var(--space-md); flex-wrap: wrap; font-family: var(--font-mono); font-size: var(--fs-mono); color: var(--ink-3); margin-top: var(--space-lg); }
+  .byline .who { display: flex; align-items: center; gap: 0.6em; color: var(--ink); }
+  .byline .av { width: 30px; height: 30px; border-radius: 50%; background: var(--phase); display: grid; place-items: center; color: oklch(99% 0 0); font-family: var(--font-display); font-weight: 700; font-size: 0.8rem; }
+  :root[data-theme="dark"] .byline .av { color: oklch(16% 0.02 265); }
+  .byline .sep { width: 3px; height: 3px; border-radius: 50%; background: var(--ink-4); }
+  .art-cover { aspect-ratio: 21/9; border-radius: var(--r-lg); margin-block: clamp(1.5rem,1rem+2vw,2.5rem); }
+
+  .art-grid { display: grid; grid-template-columns: minmax(0, 1fr) 304px; gap: clamp(1.5rem, 0.6rem + 3vw, 4rem); align-items: start; }
+  @media (max-width: 980px){ .art-grid{ grid-template-columns: 1fr; } .rail-art{ position: static !important; order: -1; } }
+
+  /* prose */
+  .prose { max-width: 720px; }
+  .prose p { font-size: 1.0625rem; line-height: 1.82; margin-block: 1.1em; color: var(--ink); text-wrap: pretty; }
+  :root[data-lang="zh"] .prose p { line-height: 1.95; }
+  .prose > p:first-of-type::first-letter { font-family: var(--font-display); font-weight: 700; font-size: 3.2em; line-height: 0.82; float: left; padding: 0.06em 0.12em 0 0; color: var(--phase-ink); }
+  .prose h2 { font-size: var(--fs-h3); margin-top: 1.9em; margin-bottom: 0.4em; letter-spacing: -0.02em; }
+  .prose h2 .no { font-family: var(--font-mono); font-size: 0.5em; color: var(--phase); vertical-align: middle; margin-right: 0.6em; font-weight: 500; }
+  .prose h3 { font-size: var(--fs-h5); margin-top: 1.5em; margin-bottom: 0.3em; }
+  .prose ul { margin-block: 1.1em; padding-left: 1.3em; display: grid; gap: 0.5em; }
+  .prose li { line-height: 1.7; }
+  .prose li::marker { color: var(--phase); }
+  .prose strong { font-weight: 600; }
+
+  .toolref { color: var(--phase-ink); border-bottom: 1.5px solid color-mix(in oklch, var(--phase) 50%, transparent); font-weight: 500; white-space: nowrap; transition: background var(--dur) var(--ease-out); padding: 0 0.1em; }
+  .toolref::after { content: "↗"; font-size: 0.8em; margin-left: 0.15em; opacity: 0.7; }
+  .toolref:hover { background: var(--phase-tint); }
+
+  .pullquote { font-family: var(--font-display); font-weight: 500; font-size: var(--fs-h4); line-height: 1.28; letter-spacing: -0.015em; border-left: 3px solid var(--phase); padding-left: clamp(1rem,0.6rem+1vw,1.6rem); margin-block: 1.8em; color: var(--ink); text-wrap: balance; }
+  .pullquote cite { display: block; font-family: var(--font-mono); font-size: var(--fs-mono); font-style: normal; color: var(--ink-3); margin-top: 0.8em; letter-spacing: 0.03em; }
+
+  .figure { margin-block: 1.8em; }
+  .figure .ph { aspect-ratio: 16/9; border-radius: var(--r-md); }
+  .figure figcaption { font-family: var(--font-mono); font-size: var(--fs-mono); color: var(--ink-3); margin-top: 0.7em; padding-left: 0.2em; border-left: 2px solid var(--line-2); padding-left: 0.7em; }
+
+  .codeblock { margin-block: 1.8em; border: 1px solid var(--line); border-radius: var(--r-md); overflow: hidden; background: var(--bg-sunken); }
+  .codeblock__bar { display: flex; align-items: center; gap: 0.6em; padding: 0.55em 0.9em; border-bottom: 1px solid var(--line); font-family: var(--font-mono); font-size: var(--fs-mono); color: var(--ink-3); }
+  .codeblock__bar .dotrow { display: flex; gap: 5px; }
+  .codeblock__bar .dotrow i { width: 9px; height: 9px; border-radius: 50%; background: var(--line-2); }
+  .codeblock pre { margin: 0; padding: 1.1em 1.2em; overflow-x: auto; font-family: var(--font-mono); font-size: 0.85rem; line-height: 1.65; color: var(--ink); }
+  .codeblock .c-key { color: var(--build-ink); } .codeblock .c-str { color: var(--business-ink); } .codeblock .c-com { color: var(--ink-3); }
+
+  /* rail */
+  .rail-art { position: sticky; top: 88px; display: grid; gap: var(--space-lg); }
+  .toolbox { border: 1px solid var(--line-2); border-radius: var(--r-lg); background: var(--surface); overflow: hidden; box-shadow: var(--shadow-1); }
+  .toolbox__h { padding: var(--space-md); border-bottom: 1px solid var(--line); background: var(--phase-tint); }
+  .toolbox__h .eyebrow { color: var(--phase-ink); }
+  .toolbox__h h3 { font-size: var(--fs-h6); margin-top: 0.3em; }
+  .tool-item { display: grid; grid-template-columns: auto 1fr auto; gap: var(--space-sm); align-items: center; padding: var(--space-md); border-bottom: 1px solid var(--line); transition: background var(--dur) var(--ease-out); }
+  .tool-item:last-child { border-bottom: 0; }
+  .tool-item:hover { background: var(--hover); }
+  .tool-item .rlogo { width: 36px; height: 36px; font-size: 0.95rem; border-radius: var(--r-sm); }
+  .tool-item__nm { font-family: var(--font-display); font-weight: var(--w-semibold); font-size: var(--fs-small); letter-spacing: var(--track-snug); }
+  .tool-item__cat { font-family: var(--font-mono); font-size: var(--fs-mono); color: var(--ink-3); }
+  .tool-item__r { font-family: var(--font-mono); font-size: var(--fs-mono); color: var(--ink-3); }
+  .tool-item:hover .tool-item__r { color: var(--phase-ink); }
+
+  .toc-art { border: 1px solid var(--line); border-radius: var(--r-md); padding: var(--space-md); }
+  .toc-art .eyebrow { display: block; margin-bottom: var(--space-sm); }
+  .toc-art a { display: block; padding: 0.4em 0; padding-left: 0.7em; border-left: 2px solid var(--line); font-size: var(--fs-small); color: var(--ink-2); transition: all var(--dur) var(--ease-out); }
+  .toc-art a:hover { border-color: var(--phase); color: var(--ink); padding-left: 1em; }
+
+  /* comments + pager */
+  .comments { border-top: 1px solid var(--line); margin-top: var(--space-2xl); padding-top: var(--space-xl); max-width: 720px; }
+  .cprompt { display: flex; align-items: center; gap: var(--space-md); padding: var(--space-md); border: 1px dashed var(--line-2); border-radius: var(--r-md); background: var(--bg-sunken); flex-wrap: wrap; }
+  .cprompt input { flex: 1; min-width: 200px; padding: 0.7em 0.9em; border: 1px solid var(--line-2); border-radius: var(--r-sm); background: var(--surface); }
+  .cskel { display: grid; grid-template-columns: auto 1fr; gap: var(--space-md); padding: var(--space-md) 0; border-bottom: 1px solid var(--line); }
+  .cskel .av { width: 34px; height: 34px; border-radius: 50%; background: var(--bg-sunken); border: 1px solid var(--line); }
+  .cskel__nm { font-weight: 600; font-size: var(--fs-small); }
+  .cskel__meta { font-family: var(--font-mono); font-size: var(--fs-mono); color: var(--ink-3); }
+  .cskel p { color: var(--ink-2); font-size: var(--fs-small); margin-top: 0.4em; line-height: 1.6; }
+
+  .pager { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-md); margin-top: var(--space-2xl); }
+  @media (max-width: 560px){ .pager{ grid-template-columns: 1fr; } }
+  .pager a { display: grid; gap: 0.4em; padding: var(--space-md) var(--space-lg); border: 1px solid var(--line); border-radius: var(--r-md); transition: border-color var(--dur) var(--ease-out), background var(--dur) var(--ease-out); }
+  .pager a:hover { border-color: var(--line-2); background: var(--hover); }
+  .pager__k { font-family: var(--font-mono); font-size: var(--fs-mono); color: var(--ink-3); }
+  .pager__t { font-family: var(--font-display); font-weight: var(--w-semibold); font-size: var(--fs-h6); letter-spacing: var(--track-snug); }
+  .pager .next { text-align: right; }
+</style>
+</head>
+<body data-phase="discover">
+
+<header class="nav">
+  <div class="nav__in">
+    <a class="brand" href="index.html" aria-label="Workbench home"><span>Work<span class="mk">bench</span></span><span class="sl" data-l="en">Field Manual</span><span class="sl" data-l="zh">实战手册</span></a>
+    <nav class="nav__links" aria-label="Phases">
+      <a href="discover.html" data-phase="discover"><span data-l="en">Discover</span><span data-l="zh">需求</span></a>
+      <a href="discover.html?phase=design" data-phase="design"><span data-l="en">Design</span><span data-l="zh">设计</span></a>
+      <a href="discover.html?phase=build" data-phase="build"><span data-l="en">Build</span><span data-l="zh">开发</span></a>
+      <a href="discover.html?phase=market" data-phase="market"><span data-l="en">Market</span><span data-l="zh">营销</span></a>
+      <a href="discover.html?phase=business" data-phase="business"><span data-l="en">Business</span><span data-l="zh">商业</span></a>
+    </nav>
+    <span class="nav__spacer"></span>
+    <div class="nav__tools">
+      <button class="search-btn" data-act="palette" aria-label="Search">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.2-3.2"/></svg>
+        <span class="sk" data-l="en">Search articles & tools</span><span class="sk" data-l="zh">搜索文章与工具</span><kbd>⌘K</kbd>
+      </button>
+      <div class="langtog" role="group" aria-label="Language"><button data-act="lang" data-lang="zh">中</button><button data-act="lang" data-lang="en">EN</button></div>
+      <button class="icon-btn" data-act="theme" aria-label="Toggle theme" aria-pressed="false">
+        <svg class="i-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="4"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9l2.1 2.1M17 17l2.1 2.1M19.1 4.9 17 7M7 17l-2.1 2.1"/></svg>
+        <svg class="i-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z"/></svg>
+      </button>
+      <button class="icon-btn nav__burger" data-act="menu" aria-label="Menu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M3 12h18M3 18h18"/></svg></button>
+    </div>
+  </div>
+  <nav class="mobnav" aria-label="Mobile">
+    <a href="discover.html" data-phase="discover"><span class="dot"></span><span data-l="en">Discover</span><span data-l="zh">需求挖掘</span></a>
+    <a href="discover.html?phase=design" data-phase="design"><span class="dot"></span><span data-l="en">Design</span><span data-l="zh">设计</span></a>
+    <a href="discover.html?phase=build" data-phase="build"><span class="dot"></span><span data-l="en">Build</span><span data-l="zh">开发</span></a>
+    <a href="discover.html?phase=market" data-phase="market"><span class="dot"></span><span data-l="en">Market</span><span data-l="zh">营销</span></a>
+    <a href="discover.html?phase=business" data-phase="business"><span class="dot"></span><span data-l="en">Business</span><span data-l="zh">商业分析</span></a>
+  </nav>
+</header>
+
+<main class="wrap">
+  <!-- ============ ARTICLE HEADER ============ -->
+  <article class="art-head">
+    <nav class="crumb" aria-label="Breadcrumb" style="font-family: var(--font-mono); font-size: var(--fs-mono); color: var(--ink-3); display:flex; gap:0.5em; flex-wrap:wrap;">
+      <a href="index.html"><span data-l="en">Home</span><span data-l="zh">首页</span></a><span style="color:var(--ink-4)">/</span>
+      <a href="discover.html"><span data-l="en">Discover</span><span data-l="zh">需求挖掘</span></a><span style="color:var(--ink-4)">/</span>
+      <span style="color: var(--phase-ink);"><span data-l="en">Article</span><span data-l="zh">文章</span></span>
+    </nav>
+    <div class="art-head__rule" style="margin-top: var(--space-md);">
+      <div style="display:flex; align-items:center; gap: var(--space-sm); flex-wrap: wrap;">
+        <a class="chip" data-phase="discover" href="discover.html"><span class="dot"></span>Discover · <span data-l="en">Discover</span><span data-l="zh">需求挖掘</span></a>
+        <span class="tag"><span data-l="en">Guide</span><span data-l="zh">指南</span></span>
+        <span class="tag"><span data-l="en">Interviews</span><span data-l="zh">用户访谈</span></span>
+      </div>
+      <h1 class="art-title"><span data-l="en">Talk to 30 strangers before you write a line of code</span><span data-l="zh">写第一行代码前，先和 30 个陌生人聊聊</span></h1>
+      <p class="art-dek"><span data-l="en">A repeatable interview script for validating demand without leading the witness — plus how to read the signal under the politeness, and the four questions that actually predict willingness to pay.</span><span data-l="zh">一套可复用的需求验证访谈脚本：如何不诱导式提问，怎样从客气话里读出真实信号，以及真正能预测付费意愿的四个问题。</span></p>
+      <div class="byline">
+        <span class="who"><span class="av">林</span><span data-l="en">Lin Yao</span><span data-l="zh">林遥</span></span>
+        <i class="sep"></i><span>2026.05.28</span>
+        <i class="sep"></i><span>12 min</span>
+        <i class="sep"></i><span><span data-l="en">2,140 reads</span><span data-l="zh">2,140 阅读</span></span>
+      </div>
+    </div>
+    <div class="art-cover ph" data-phase="discover"><span data-l="en">hero image · 21:9</span><span data-l="zh">题图 · 21:9</span></div>
+  </article>
+
+  <!-- ============ BODY + RAIL ============ -->
+  <div class="art-grid">
+    <div class="prose">
+      <p><span data-l="en">Most failed indie products didn't fail at the code. They failed months earlier, the moment the founder decided the idea was good enough to build without ever testing whether anyone wanted it. The cheapest insurance you can buy is a conversation.</span><span data-l="zh">大多数失败的独立产品，问题不在代码。它们在几个月前就已经失败了——就在创始人认定「这个点子够好，可以直接开干」、却从没验证过有没有人真正想要它的那一刻。你能买到的最便宜的保险，就是一次对话。</span></p>
+
+      <p><span data-l="en">Over the last three launches I've standardized a 20-minute interview I run before committing to anything. The goal isn't to hear “yes, I'd use that.” Politeness is noise. The goal is to find <strong>evidence of existing behavior</strong>: what they already do, what it already costs them, and what they've already tried.</span><span data-l="zh">在过去三次发布里，我把一套 20 分钟的访谈标准化了，凡是要投入的事，都先跑一遍。目标不是听到「会啊，我会用」——客气话是噪音。目标是找到<strong>既有行为的证据</strong>：他们现在已经在做什么、为此已经付出多少代价、已经试过哪些办法。</span></p>
+
+      <h2><span class="no">01</span><span data-l="en">Find the strangers</span><span data-l="zh">找到这些陌生人</span></h2>
+      <p><span data-l="en">Your friends will lie to be nice. You need people who have the problem but no reason to flatter you. I source them where the pain is already being voiced out loud — niche subreddits, Discord servers, and the one-star reviews of adjacent products. A tool like <a class="toolref" data-phase="discover" href="discover.html">PostScan</a> surfaces the exact phrases people repeat, which doubles as your interview opener.</span><span data-l="zh">朋友为了照顾面子会说假话。你需要的是真正有这个问题、却没有任何理由讨好你的人。我从痛点已经被大声说出来的地方找他们——细分的 subreddit、Discord 群，以及相邻产品的一星差评。像 <a class="toolref" data-phase="discover" href="discover.html">PostScan</a> 这样的工具能把人们反复念叨的原话抓出来，正好拿来当访谈的开场白。</span></p>
+
+      <div class="pullquote">
+        <span data-l="en">“If they haven't already hacked together a workaround, you haven't found a real problem — you've found a nice-to-have.”</span>
+        <span data-l="zh">「如果他们还没有自己拼凑出一个临时方案，那你找到的就不是真问题，而是一个可有可无的『最好能有』。」</span>
+        <cite><span data-l="en">— the only filter that matters</span><span data-l="zh">—— 唯一真正重要的筛子</span></cite>
+      </div>
+
+      <h2><span class="no">02</span><span data-l="en">The script (don't lead the witness)</span><span data-l="zh">访谈脚本（别诱导对方）</span></h2>
+      <p><span data-l="en">Every question is about the past, never the hypothetical future. “Would you pay for X?” is worthless. “Walk me through the last time you dealt with this” is gold. Keep a copy of the script open — <a class="toolref" data-phase="discover" href="discover.html">AskKit</a> has a template that bakes in the non-leading phrasing so you don't improvise your way into bias.</span><span data-l="zh">每个问题都问过去，绝不问假设的未来。「你会为 X 付费吗？」一文不值；「带我回顾一下你上次处理这件事的经过」才是金矿。把脚本放在手边——<a class="toolref" data-phase="discover" href="discover.html">AskKit</a> 有一份模板，把「不诱导」的措辞固化进去，免得你即兴发挥、一不小心就把偏见带了进去。</span></p>
+      <ul>
+        <li><span data-l="en"><strong>Last time:</strong> When did you last run into this? Walk me through it.</span><span data-l="zh"><strong>上一次：</strong>你上次碰到这个问题是什么时候？带我走一遍当时的经过。</span></li>
+        <li><span data-l="en"><strong>Cost:</strong> What did that cost you — time, money, sanity?</span><span data-l="zh"><strong>代价：</strong>它让你付出了什么——时间、金钱，还是心力？</span></li>
+        <li><span data-l="en"><strong>Workaround:</strong> What do you do about it today?</span><span data-l="zh"><strong>临时方案：</strong>你现在是怎么应付它的？</span></li>
+        <li><span data-l="en"><strong>Spend:</strong> Have you ever paid to make it go away?</span><span data-l="zh"><strong>已付费：</strong>你有没有为了摆脱它而花过钱？</span></li>
+      </ul>
+
+      <h2><span class="no">03</span><span data-l="en">Turn talk into a number</span><span data-l="zh">把对话变成一个数字</span></h2>
+      <p><span data-l="en">Interviews tell you what to build; they don't tell you how many people want it. Before I write code, I put up a fake-door landing page and route a tiny ad budget at it. If the click-to-signup rate clears my threshold, I build. If not, the conversations were lying to me politely. Here's the event I log on every waitlist submit:</span><span data-l="zh">访谈告诉你该做什么，但不会告诉你有多少人想要。在写代码之前，我会架一个「假门」落地页，导一点点广告预算过去。如果「点击→注册」的转化率越过我的阈值，就开工；否则，说明那些对话只是在礼貌地骗我。下面是我在每次等候名单提交时记录的事件：</span></p>
+
+      <div class="codeblock">
+        <div class="codeblock__bar"><span class="dotrow"><i></i><i></i><i></i></span><span>track.ts</span></div>
+        <pre><span class="c-com">// fire on waitlist submit — measure intent, not vanity</span>
+analytics.<span class="c-key">track</span>(<span class="c-str">"waitlist_joined"</span>, {
+  variant:   <span class="c-str">"fake_door_v2"</span>,
+  price_hint: <span class="c-str">"$12/mo"</span>,   <span class="c-com">// show price BEFORE the email</span>
+  source:    ctx.utm_source,
+  ts:        Date.<span class="c-key">now</span>(),
+});</pre>
+      </div>
+
+      <p><span data-l="en">Show the price <em>before</em> you ask for the email. A signup that survives a real price tag is worth ten that don't. Spin the page up in minutes with <a class="toolref" data-phase="discover" href="discover.html">Waitlisted</a> and let the numbers — not your hopes — decide whether code gets written.</span><span data-l="zh">在索要邮箱<em>之前</em>就把价格亮出来。一个扛得住真实价签的注册，抵得过十个扛不住的。用 <a class="toolref" data-phase="discover" href="discover.html">Waitlisted</a> 几分钟搭好页面，让数字——而不是你的一厢情愿——来决定要不要写代码。</span></p>
+
+      <figure class="figure">
+        <div class="ph" data-phase="discover"><span data-l="en">chart · signup funnel by price</span><span data-l="zh">图表 · 按价格的注册漏斗</span></div>
+        <figcaption><span data-l="en">Fig 1. Conversion holds at $12/mo but collapses at $29 — a pricing signal worth three more interviews.</span><span data-l="zh">图 1. 转化在 $12/月 时保持稳定、到 $29 时崩塌——一个值得再做三场访谈的定价信号。</span></figcaption>
+      </figure>
+
+      <p><span data-l="en">Thirty conversations and one fake door will save you a quarter of wasted building. That's the whole trick. Everything after this is just execution.</span><span data-l="zh">三十场对话加一扇假门，能帮你省下一个季度的无效开发。诀窍就这么多，剩下的全是执行。</span></p>
+    </div>
+
+    <!-- ============ RAIL: TOOLS MENTIONED (the differentiator) ============ -->
+    <aside class="rail-art">
+      <div class="toolbox">
+        <div class="toolbox__h">
+          <span class="eyebrow"><span data-l="en">Cross-linked</span><span data-l="zh">交叉关联</span></span>
+          <h3><span data-l="en">Tools used in this article</span><span data-l="zh">本文用到的工具</span></h3>
+        </div>
+        <a class="tool-item" data-phase="discover" href="discover.html">
+          <span class="rlogo" data-phase="discover">P</span>
+          <span><span class="tool-item__nm">PostScan</span><br><span class="tool-item__cat"><span data-l="en">Demand research</span><span data-l="zh">需求调研</span></span></span>
+          <span class="tool-item__r"><span class="price price--freemium" style="font-size:0.66rem;">Freemium</span></span>
+        </a>
+        <a class="tool-item" data-phase="discover" href="discover.html">
+          <span class="rlogo" data-phase="discover">A</span>
+          <span><span class="tool-item__nm">AskKit</span><br><span class="tool-item__cat"><span data-l="en">Interview scripts</span><span data-l="zh">访谈脚本</span></span></span>
+          <span class="tool-item__r"><span class="price price--free" style="font-size:0.66rem;">Free</span></span>
+        </a>
+        <a class="tool-item" data-phase="discover" href="discover.html">
+          <span class="rlogo" data-phase="discover">W</span>
+          <span><span class="tool-item__nm">Waitlisted</span><br><span class="tool-item__cat"><span data-l="en">Fake-door tests</span><span data-l="zh">假门测试</span></span></span>
+          <span class="tool-item__r"><span class="price price--freemium" style="font-size:0.66rem;">Freemium</span></span>
+        </a>
+      </div>
+
+      <nav class="toc-art" aria-label="Contents">
+        <span class="eyebrow"><span data-l="en">On this page</span><span data-l="zh">本页目录</span></span>
+        <a href="#"><span data-l="en">01 · Find the strangers</span><span data-l="zh">01 · 找到这些陌生人</span></a>
+        <a href="#"><span data-l="en">02 · The script</span><span data-l="zh">02 · 访谈脚本</span></a>
+        <a href="#"><span data-l="en">03 · Talk into a number</span><span data-l="zh">03 · 变成一个数字</span></a>
+      </nav>
+
+      <div style="display:flex; gap:0.5em; flex-wrap:wrap;">
+        <button class="btn btn--ghost" style="flex:1; justify-content:center;"><span data-l="en">↑ Save</span><span data-l="zh">↑ 收藏</span></button>
+        <button class="btn btn--ghost" style="flex:1; justify-content:center;"><span data-l="en">↗ Share</span><span data-l="zh">↗ 分享</span></button>
+      </div>
+    </aside>
+  </div>
+
+  <!-- ============ COMMENTS PLACEHOLDER ============ -->
+  <section class="comments">
+    <div class="col-head" style="border-color: var(--line);">
+      <h2 style="font-size: var(--fs-h4);"><span data-l="en">Discussion</span><span data-l="zh">讨论区</span></h2>
+      <span class="eyebrow"><span data-l="en">12 comments</span><span data-l="zh">12 条评论</span></span>
+    </div>
+    <div class="cprompt">
+      <span class="av" style="background: var(--phase); width:34px; height:34px; border-radius:50%; display:grid; place-items:center; color:oklch(99% 0 0); font-family:var(--font-display); font-weight:700;">你</span>
+      <input type="text" placeholder="分享你的访谈经验… · Add to the discussion…" aria-label="Comment">
+      <button class="btn btn--phase"><span data-l="en">Post</span><span data-l="zh">发布</span></button>
+    </div>
+    <div style="margin-top: var(--space-lg);">
+      <div class="cskel">
+        <span class="av"></span>
+        <div>
+          <span class="cskel__nm"><span data-l="en">Chen Mu</span><span data-l="zh">陈牧</span></span> <span class="cskel__meta">· 2d</span>
+          <p><span data-l="en">The “show price before email” bit is underrated. Doubled my signal-to-noise overnight.</span><span data-l="zh">「先亮价格再要邮箱」这点被严重低估。一夜之间我的信噪比翻倍。</span></p>
+        </div>
+      </div>
+      <div class="cskel" style="border-bottom:0;">
+        <span class="av"></span>
+        <div>
+          <span class="cskel__nm">A. Reyes</span> <span class="cskel__meta">· 4d</span>
+          <p><span data-l="en">Curious how you keep 30 interviews from taking a month. Batch them?</span><span data-l="zh">好奇你怎么让 30 场访谈不拖上一个月，是批量安排的吗？</span></p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ PREV / NEXT ============ -->
+  <nav class="pager" aria-label="More in Discover">
+    <a href="article.html" data-phase="discover">
+      <span class="pager__k">← <span data-l="en">Previous</span><span data-l="zh">上一篇</span></span>
+      <span class="pager__t"><span data-l="en">Your idea isn't a niche, it's a sentence</span><span data-l="zh">你的点子不是利基，是一句话</span></span>
+    </a>
+    <a href="article.html" class="next" data-phase="discover">
+      <span class="pager__k"><span data-l="en">Next</span><span data-l="zh">下一篇</span> →</span>
+      <span class="pager__t"><span data-l="en">The “fake door” test that saved me 3 months</span><span data-l="zh">帮我省下三个月的「假门」测试</span></span>
+    </a>
+  </nav>
+</main>
+
+<footer class="foot" style="margin-top: var(--space-3xl);">
+  <div class="foot__in">
+    <div class="foot__col">
+      <a class="brand" href="index.html" style="margin-bottom: var(--space-md);"><span>Work<span class="mk">bench</span></span></a>
+      <p class="muted" style="font-size: var(--fs-small); max-width: 34ch;"><span data-l="en">A bilingual field manual for indie hackers, organized by the five phases of shipping.</span><span data-l="zh">面向独立开发者的双语实战手册，按出货的五个阶段组织。</span></p>
+      <div class="phaserail" style="margin-top: var(--space-md); max-width: 240px;"><i></i><i></i><i></i><i></i><i></i></div>
+    </div>
+    <div class="foot__col"><h4><span data-l="en">Phases</span><span data-l="zh">阶段</span></h4><ul><li><a href="discover.html"><span data-l="en">Discover</span><span data-l="zh">需求挖掘</span></a></li><li><a href="discover.html?phase=design"><span data-l="en">Design</span><span data-l="zh">设计</span></a></li><li><a href="discover.html?phase=build"><span data-l="en">Build</span><span data-l="zh">开发</span></a></li><li><a href="discover.html?phase=market"><span data-l="en">Market</span><span data-l="zh">营销</span></a></li><li><a href="discover.html?phase=business"><span data-l="en">Business</span><span data-l="zh">商业分析</span></a></li></ul></div>
+    <div class="foot__col"><h4><span data-l="en">Content</span><span data-l="zh">内容</span></h4><ul><li><a href="#"><span data-l="en">Articles</span><span data-l="zh">文章</span></a></li><li><a href="discover.html"><span data-l="en">Tool catalog</span><span data-l="zh">工具目录</span></a></li><li><a href="#"><span data-l="en">Collections</span><span data-l="zh">合集</span></a></li><li><a href="#"><span data-l="en">Submit a tool</span><span data-l="zh">提交工具</span></a></li></ul></div>
+    <div class="foot__col"><h4><span data-l="en">Project</span><span data-l="zh">项目</span></h4><ul><li><a href="design-system.html"><span data-l="en">Design system</span><span data-l="zh">设计系统</span></a></li><li><a href="#"><span data-l="en">About</span><span data-l="zh">关于</span></a></li><li><a href="#">RSS</a></li><li><a href="#">GitHub</a></li></ul></div>
+  </div>
+  <div class="foot__bottom"><span>© 2026 Workbench</span><span><span data-l="en">Article · Discover</span><span data-l="zh">文章详情 · 需求挖掘</span></span></div>
+</footer>
+
+<div class="palette" id="palette" role="dialog" aria-modal="true" aria-label="Search">
+  <div class="palette__scrim" data-act="palette"></div>
+  <div class="palette__box">
+    <div class="palette__field"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.2-3.2"/></svg><input type="text" placeholder="搜索文章、工具、阶段… / Search…" aria-label="Search"><span class="palette__hint">ESC</span></div>
+    <div class="palette__list">
+      <a href="discover.html"><span data-l="en">PostScan — demand research</span><span data-l="zh">PostScan — 需求调研</span><span class="chip" data-phase="discover"><span class="dot"></span>Tool</span></a>
+      <a href="discover.html"><span data-l="en">AskKit — interview scripts</span><span data-l="zh">AskKit — 访谈脚本</span><span class="chip" data-phase="discover"><span class="dot"></span>Tool</span></a>
+      <a href="article.html"><span data-l="en">The fake door test</span><span data-l="zh">假门测试</span><span class="chip" data-phase="discover"><span class="dot"></span>Discover</span></a>
+    </div>
+  </div>
+</div>
+
+<script src="scripts/site.js"></script>
+</body>
+</html>

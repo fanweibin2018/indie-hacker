@@ -12,6 +12,7 @@ const articles = defineCollection({
     phase: PHASE,
     tags: z.array(z.string()).default([]),
     lang: LANG,
+    author: z.string().optional(),
     pubDate: z.coerce.date(),
     updatedDate: z.coerce.date().optional(),
     draft: z.boolean().default(false),

@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="zh" data-lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Workbench — Variant B · Phase-first Bento</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Sora:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Noto+Sans+SC:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles/tokens.css">
+<link rel="stylesheet" href="styles/base.css">
+<link rel="stylesheet" href="styles/components.css">
+<style>
+  /* ---- Variant B: phase-first bento ---- */
+  .hero-b { padding-top: clamp(1.5rem,1rem+2vw,2.5rem); }
+  .hb-grid { display: grid; grid-template-columns: repeat(12, 1fr); grid-auto-rows: minmax(120px, auto); gap: clamp(0.75rem,0.4rem+1vw,1.25rem); }
+  .hb-grid > * { min-width: 0; }
+
+  .hb-intro { grid-column: span 6; grid-row: span 2; display: flex; flex-direction: column; justify-content: space-between; gap: var(--space-lg); background: var(--surface); border: 1px solid var(--line); border-radius: var(--r-xl); padding: clamp(1.5rem,1rem+2vw,2.75rem); }
+  .hb-intro h1 { font-size: clamp(2rem, 1.3rem + 3.4vw, 3.75rem); letter-spacing: -0.03em; line-height: 1.0; }
+  .hb-intro h1 em { font-style: normal; color: var(--accent); }
+  .hb-intro .lead { max-width: 42ch; }
+
+  .ptile { position: relative; overflow: hidden; border-radius: var(--r-lg); padding: var(--space-lg); display: flex; flex-direction: column; justify-content: space-between; gap: var(--space-xl); color: oklch(99% 0 0); background: var(--phase); border: 1px solid color-mix(in oklch, var(--phase) 60%, black 10%); min-height: 150px; transition: transform var(--dur) var(--ease-out), box-shadow var(--dur) var(--ease-out); }
+  :root[data-theme="dark"] .ptile { color: oklch(16% 0.02 265); }
+  .ptile:hover { transform: translateY(-3px); box-shadow: 0 16px 40px color-mix(in oklch, var(--phase) 45%, transparent); }
+  .ptile__no { font-family: var(--font-mono); font-size: var(--fs-mono); letter-spacing: 0.08em; opacity: 0.8; }
+  .ptile__big { position: absolute; right: -0.1em; bottom: -0.32em; font-family: var(--font-display); font-weight: 700; font-size: clamp(5rem, 4rem + 8vw, 11rem); line-height: 1; opacity: 0.14; pointer-events: none; }
+  .ptile__nm { font-family: var(--font-display); font-weight: var(--w-bold); font-size: var(--fs-h3); letter-spacing: -0.02em; }
+  .ptile__sub { font-size: var(--fs-small); opacity: 0.92; max-width: 30ch; }
+  .ptile__ct { font-family: var(--font-mono); font-size: var(--fs-mono); opacity: 0.85; display: inline-flex; align-items: center; gap: 0.5em; }
+  .ptile--lg { grid-column: span 6; grid-row: span 2; }
+  .ptile--w { grid-column: span 6; }
+  .ptile--s { grid-column: span 4; }
+  .ptile--s.span2 { grid-column: span 2; }
+
+  @media (max-width: 900px) {
+    .hb-grid { grid-template-columns: repeat(6,1fr); }
+    .hb-intro, .ptile--lg, .ptile--w { grid-column: span 6; grid-row: auto; }
+    .ptile--s { grid-column: span 3; }
+    .ptile--s.span2 { grid-column: span 3; }
+  }
+  @media (max-width: 520px) {
+    .hb-grid { grid-template-columns: 1fr; }
+    .hb-intro, .ptile { grid-column: 1 / -1; }
+  }
+
+  .row-head { display: flex; align-items: baseline; justify-content: space-between; gap: var(--space-md); margin-bottom: var(--space-lg); }
+  .row-head h2 { font-size: var(--fs-h3); }
+  .acards-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--space-md); }
+  .rcards-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: var(--space-md); }
+  @media (max-width: 900px){ .acards-3{ grid-template-columns: 1fr 1fr; } .rcards-4{ grid-template-columns: 1fr 1fr; } }
+  @media (max-width: 560px){ .acards-3, .rcards-4{ grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+
+<header class="nav">
+  <div class="nav__in">
+    <a class="brand" href="index.html" aria-label="Workbench home">
+      <span>Work<span class="mk">bench</span></span>
+      <span class="sl" data-l="en">Field Manual</span>
+      <span class="sl" data-l="zh">实战手册</span>
+    </a>
+    <nav class="nav__links" aria-label="Phases">
+      <a href="discover.html" data-phase="discover"><span data-l="en">Discover</span><span data-l="zh">需求</span></a>
+      <a href="discover.html" data-phase="design"><span data-l="en">Design</span><span data-l="zh">设计</span></a>
+      <a href="discover.html" data-phase="build"><span data-l="en">Build</span><span data-l="zh">开发</span></a>
+      <a href="discover.html" data-phase="market"><span data-l="en">Market</span><span data-l="zh">营销</span></a>
+      <a href="discover.html" data-phase="business"><span data-l="en">Business</span><span data-l="zh">商业</span></a>
+    </nav>
+    <span class="nav__spacer"></span>
+    <div class="nav__tools">
+      <button class="search-btn" data-act="palette" aria-label="Search">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.2-3.2"/></svg>
+        <span class="sk" data-l="en">Search articles & tools</span>
+        <span class="sk" data-l="zh">搜索文章与工具</span>
+        <kbd>⌘K</kbd>
+      </button>
+      <div class="langtog" role="group" aria-label="Language">
+        <button data-act="lang" data-lang="zh">中</button>
+        <button data-act="lang" data-lang="en">EN</button>
+      </div>
+      <button class="icon-btn" data-act="theme" aria-label="Toggle theme" aria-pressed="false">
+        <svg class="i-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="4"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9l2.1 2.1M17 17l2.1 2.1M19.1 4.9 17 7M7 17l-2.1 2.1"/></svg>
+        <svg class="i-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z"/></svg>
+      </button>
+      <button class="icon-btn nav__burger" data-act="menu" aria-label="Menu">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+      </button>
+    </div>
+  </div>
+  <nav class="mobnav" aria-label="Mobile">
+    <a href="discover.html" data-phase="discover"><span class="dot"></span><span data-l="en">Discover</span><span data-l="zh">需求挖掘</span></a>
+    <a href="discover.html" data-phase="design"><span class="dot"></span><span data-l="en">Design</span><span data-l="zh">设计</span></a>
+    <a href="discover.html" data-phase="build"><span class="dot"></span><span data-l="en">Build</span><span data-l="zh">开发</span></a>
+    <a href="discover.html" data-phase="market"><span class="dot"></span><span data-l="en">Market</span><span data-l="zh">营销</span></a>
+    <a href="discover.html" data-phase="business"><span class="dot"></span><span data-l="en">Business</span><span data-l="zh">商业分析</span></a>
+  </nav>
+</header>
+
+<main>
+  <!-- ============ HERO BENTO ============ -->
+  <section class="wrap hero-b section" style="padding-top: clamp(1.5rem,1rem+2vw,2.5rem);">
+    <div class="hb-grid">
+      <!-- value prop cell -->
+      <div class="hb-intro">
+        <div>
+          <span class="eyebrow"><span data-l="en">Field Manual for Indie Hackers</span><span data-l="zh">独立开发者的实战手册</span></span>
+          <h1 style="margin-top: var(--space-md);">
+            <span data-l="en">Five phases.<br><em>One</em> knowledge base.</span>
+            <span data-l="zh">五个阶段，<br><em>一座</em>知识库。</span>
+          </h1>
+        </div>
+        <p class="lead"><span data-l="en">Original guides cross-linked to the exact tools they mention — pick where you are in the journey.</span><span data-l="zh">原创指南与它引用的工具逐一交叉关联——从你所在的阶段切入。</span></p>
+      </div>
+
+      <!-- build = large feature tile -->
+      <a class="ptile ptile--lg" data-phase="build" href="discover.html">
+        <span class="ptile__big">03</span>
+        <div><span class="ptile__no">PHASE 03</span><div class="ptile__nm" style="font-size: var(--fs-h2); margin-top:0.3em;"><span data-l="en">Build</span><span data-l="zh">开发</span></div></div>
+        <div>
+          <p class="ptile__sub" style="margin-bottom: var(--space-md);"><span data-l="en">Stacks, deploys, auth, payments — ship a v0 without drowning in setup.</span><span data-l="zh">技术栈、部署、鉴权、支付——上线 v0 而不被脚手架淹没。</span></p>
+          <span class="ptile__ct"><span data-l="en">58 articles · 90 tools</span><span data-l="zh">58 篇 · 90 工具</span> →</span>
+        </div>
+      </a>
+
+      <!-- discover -->
+      <a class="ptile ptile--w" data-phase="discover" href="discover.html">
+        <span class="ptile__big">01</span>
+        <div><span class="ptile__no">PHASE 01</span><div class="ptile__nm"><span data-l="en">Discover</span><span data-l="zh">需求挖掘</span></div></div>
+        <span class="ptile__ct"><span data-l="en">42 articles · 60 tools</span><span data-l="zh">42 篇 · 60 工具</span> →</span>
+      </a>
+
+      <!-- design + market + business small -->
+      <a class="ptile ptile--s span2" data-phase="design" href="discover.html">
+        <span class="ptile__big">02</span>
+        <div><span class="ptile__no">PHASE 02</span><div class="ptile__nm" style="font-size: var(--fs-h4);"><span data-l="en">Design</span><span data-l="zh">设计</span></div></div>
+        <span class="ptile__ct"><span data-l="en">31 · 44</span><span data-l="zh">31 · 44</span> →</span>
+      </a>
+      <a class="ptile ptile--s" data-phase="market" href="discover.html">
+        <span class="ptile__big">04</span>
+        <div><span class="ptile__no">PHASE 04</span><div class="ptile__nm" style="font-size: var(--fs-h4);"><span data-l="en">Market</span><span data-l="zh">营销</span></div></div>
+        <span class="ptile__ct"><span data-l="en">47 · 71</span><span data-l="zh">47 · 71</span> →</span>
+      </a>
+      <a class="ptile ptile--s" data-phase="business" href="discover.html">
+        <span class="ptile__big">05</span>
+        <div><span class="ptile__no">PHASE 05</span><div class="ptile__nm" style="font-size: var(--fs-h4);"><span data-l="en">Business</span><span data-l="zh">商业分析</span></div></div>
+        <span class="ptile__ct"><span data-l="en">40 · 38</span><span data-l="zh">40 · 38</span> →</span>
+      </a>
+    </div>
+  </section>
+
+  <!-- ============ FEATURED ARTICLES ============ -->
+  <section class="wrap section" style="padding-top:0;">
+    <div class="row-head">
+      <div><span class="eyebrow"><span data-l="en">Editor's picks</span><span data-l="zh">编辑精选</span></span><h2><span data-l="en">Featured articles</span><span data-l="zh">精选文章</span></h2></div>
+      <a class="link-arrow" href="#"><span data-l="en">All articles</span><span data-l="zh">全部文章</span><span class="ar">→</span></a>
+    </div>
+    <div class="acards-3">
+      <article class="acard reveal" data-phase="discover">
+        <div class="acard__media ph" data-phase="discover"><span data-l="en">cover · 16:10</span><span data-l="zh">封面图 · 16:10</span></div>
+        <div class="acard__meta"><a class="chip" data-phase="discover" href="discover.html"><span class="dot"></span>Discover</a><span class="mono muted">12 min</span></div>
+        <h3 class="acard__title"><a href="article.html"><span data-l="en">Talk to 30 strangers before you write a line of code</span><span data-l="zh">写第一行代码前，先和 30 个陌生人聊聊</span></a></h3>
+        <p class="acard__dek"><span data-l="en">A repeatable interview script for validating demand without leading the witness.</span><span data-l="zh">一套可复用的需求验证访谈脚本，不诱导式提问。</span></p>
+        <div class="acard__foot"><span data-l="en">Lin Yao</span><span data-l="zh">林遥</span><i class="sep"></i><span>2026.05.28</span></div>
+      </article>
+      <article class="acard reveal" data-phase="market">
+        <div class="acard__media ph" data-phase="market"><span data-l="en">cover · 16:10</span><span data-l="zh">封面图 · 16:10</span></div>
+        <div class="acard__meta"><a class="chip" data-phase="market" href="discover.html"><span class="dot"></span>Market</a><span class="mono muted">7 min</span></div>
+        <h3 class="acard__title"><a href="article.html"><span data-l="en">Your first 100 users won't come from Product Hunt</span><span data-l="zh">前 100 个用户，不会来自 Product Hunt</span></a></h3>
+        <p class="acard__dek"><span data-l="en">Where they actually hide, and how to show up without being spammy.</span><span data-l="zh">他们究竟藏在哪，以及如何不招人烦地出现在那里。</span></p>
+        <div class="acard__foot"><span data-l="en">A. Reyes</span><span data-l="zh">A. Reyes</span><i class="sep"></i><span>05.21</span></div>
+      </article>
+      <article class="acard reveal" data-phase="business">
+        <div class="acard__media ph" data-phase="business"><span data-l="en">cover · 16:10</span><span data-l="zh">封面图 · 16:10</span></div>
+        <div class="acard__meta"><a class="chip" data-phase="business" href="discover.html"><span class="dot"></span>Business</a><span class="mono muted">11 min</span></div>
+        <h3 class="acard__title"><a href="article.html"><span data-l="en">Pricing is a research project, not a guess</span><span data-l="zh">定价是一个研究课题，不是拍脑袋</span></a></h3>
+        <p class="acard__dek"><span data-l="en">Van Westendorp, fake door tests, and reading churn like tea leaves.</span><span data-l="zh">Van Westendorp 法、假门测试，以及从流失率读出定价信号。</span></p>
+        <div class="acard__foot"><span data-l="en">Sofia M.</span><span data-l="zh">Sofia M.</span><i class="sep"></i><span>05.15</span></div>
+      </article>
+    </div>
+  </section>
+
+  <!-- ============ FEATURED RESOURCES ============ -->
+  <section style="background: var(--bg-sunken); border-block: 1px solid var(--line);">
+    <div class="wrap section">
+      <div class="row-head">
+        <div><span class="eyebrow"><span data-l="en">Tool catalog</span><span data-l="zh">工具目录</span></span><h2><span data-l="en">Fresh in the catalog</span><span data-l="zh">新入库工具</span></h2></div>
+        <a class="link-arrow" href="discover.html"><span data-l="en">Browse all</span><span data-l="zh">浏览全部</span><span class="ar">→</span></a>
+      </div>
+      <div class="rcards-4">
+        <a class="rcard reveal" data-phase="discover" href="#"><div class="rcard__top"><span class="rlogo" data-phase="discover">P</span><div><div class="rcard__name">PostScan</div><div class="rcard__cat"><span data-l="en">Demand research</span><span data-l="zh">需求调研</span></div></div></div><p class="rcard__desc"><span data-l="en">Watches niche forums for recurring pain phrases.</span><span data-l="zh">监听细分论坛，抓取反复出现的痛点。</span></p><div class="rcard__tags"><span class="tag">Reddit</span><span class="tag">AI</span></div><div class="rcard__foot"><span class="price price--freemium">Freemium</span><span class="rcard__ext">↗</span></div></a>
+        <a class="rcard reveal" data-phase="build" href="#"><div class="rcard__top"><span class="rlogo" data-phase="build">Q</span><div><div class="rcard__name">Queueless</div><div class="rcard__cat"><span data-l="en">Background jobs</span><span data-l="zh">后台任务</span></div></div></div><p class="rcard__desc"><span data-l="en">Cron + queues on your existing Postgres.</span><span data-l="zh">在现有 Postgres 上跑定时任务与队列。</span></p><div class="rcard__tags"><span class="tag">Postgres</span><span class="tag">OSS</span></div><div class="rcard__foot"><span class="price price--free">Free</span><span class="rcard__ext">↗</span></div></a>
+        <a class="rcard reveal" data-phase="market" href="#"><div class="rcard__top"><span class="rlogo" data-phase="market">B</span><div><div class="rcard__name">Beacon</div><div class="rcard__cat"><span data-l="en">Programmatic SEO</span><span data-l="zh">程序化 SEO</span></div></div></div><p class="rcard__desc"><span data-l="en">Thousands of landing pages from a sheet.</span><span data-l="zh">从一张表批量生成上千落地页。</span></p><div class="rcard__tags"><span class="tag">SEO</span><span class="tag">Content</span></div><div class="rcard__foot"><span class="price price--paid">Paid</span><span class="rcard__ext">↗</span></div></a>
+        <a class="rcard reveal" data-phase="design" href="#"><div class="rcard__top"><span class="rlogo" data-phase="design">H</span><div><div class="rcard__name">Hueshift</div><div class="rcard__cat"><span data-l="en">Color systems</span><span data-l="zh">配色系统</span></div></div></div><p class="rcard__desc"><span data-l="en">Generate accessible OKLCH palettes in seconds.</span><span data-l="zh">秒级生成无障碍 OKLCH 色板。</span></p><div class="rcard__tags"><span class="tag">OKLCH</span><span class="tag">a11y</span></div><div class="rcard__foot"><span class="price price--freemium">Freemium</span><span class="rcard__ext">↗</span></div></a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ SUBSCRIBE ============ -->
+  <section class="wrap section">
+    <div class="subscribe reveal">
+      <div class="subscribe__hue"></div>
+      <span class="eyebrow" style="color: color-mix(in oklch, var(--bg) 70%, transparent);"><span data-l="en">Newsletter</span><span data-l="zh">订阅</span></span>
+      <h2><span data-l="en">Field notes, every Tuesday.</span><span data-l="zh">每周二，一封实战笔记。</span></h2>
+      <p><span data-l="en">One curated article and one tool worth your time, across all five phases.</span><span data-l="zh">每周一篇精选文章 + 一个值得花时间的工具，横跨五个阶段。</span></p>
+      <form class="subform" novalidate>
+        <input type="email" placeholder="you@indie.dev" aria-label="Email">
+        <button class="btn btn--primary btn--lg" type="submit"><span data-l="en">Subscribe</span><span data-l="zh">订阅</span></button>
+      </form>
+      <span class="subform__note"><span data-l="en">3,400+ indie hackers · unsubscribe anytime</span><span data-l="zh">3,400+ 独立开发者 · 随时退订</span></span>
+    </div>
+  </section>
+</main>
+
+<footer class="foot">
+  <div class="foot__in">
+    <div class="foot__col">
+      <a class="brand" href="index.html" style="margin-bottom: var(--space-md);"><span>Work<span class="mk">bench</span></span></a>
+      <p class="muted" style="font-size: var(--fs-small); max-width: 34ch;"><span data-l="en">A bilingual field manual for indie hackers, organized by the five phases of shipping.</span><span data-l="zh">面向独立开发者的双语实战手册，按出货的五个阶段组织。</span></p>
+      <div class="phaserail" style="margin-top: var(--space-md); max-width: 240px;"><i></i><i></i><i></i><i></i><i></i></div>
+    </div>
+    <div class="foot__col"><h4><span data-l="en">Phases</span><span data-l="zh">阶段</span></h4><ul><li><a href="discover.html"><span data-l="en">Discover</span><span data-l="zh">需求挖掘</span></a></li><li><a href="discover.html"><span data-l="en">Design</span><span data-l="zh">设计</span></a></li><li><a href="discover.html"><span data-l="en">Build</span><span data-l="zh">开发</span></a></li><li><a href="discover.html"><span data-l="en">Market</span><span data-l="zh">营销</span></a></li><li><a href="discover.html"><span data-l="en">Business</span><span data-l="zh">商业分析</span></a></li></ul></div>
+    <div class="foot__col"><h4><span data-l="en">Content</span><span data-l="zh">内容</span></h4><ul><li><a href="#"><span data-l="en">Articles</span><span data-l="zh">文章</span></a></li><li><a href="discover.html"><span data-l="en">Tool catalog</span><span data-l="zh">工具目录</span></a></li><li><a href="#"><span data-l="en">Collections</span><span data-l="zh">合集</span></a></li><li><a href="#"><span data-l="en">Submit a tool</span><span data-l="zh">提交工具</span></a></li></ul></div>
+    <div class="foot__col"><h4><span data-l="en">Project</span><span data-l="zh">项目</span></h4><ul><li><a href="design-system.html"><span data-l="en">Design system</span><span data-l="zh">设计系统</span></a></li><li><a href="#"><span data-l="en">About</span><span data-l="zh">关于</span></a></li><li><a href="#">RSS</a></li><li><a href="#">GitHub</a></li></ul></div>
+  </div>
+  <div class="foot__bottom">
+    <span>© 2026 Workbench</span>
+    <span><span data-l="en">Variant B · Phase-first Bento</span><span data-l="zh">变体 B · 阶段优先 Bento</span></span>
+  </div>
+</footer>
+
+<div class="palette" id="palette" role="dialog" aria-modal="true" aria-label="Search">
+  <div class="palette__scrim" data-act="palette"></div>
+  <div class="palette__box">
+    <div class="palette__field">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.2-3.2"/></svg>
+      <input type="text" placeholder="搜索文章、工具、阶段… / Search articles, tools, phases…" aria-label="Search">
+      <span class="palette__hint">ESC</span>
+    </div>
+    <div class="palette__list">
+      <a href="article.html"><span data-l="en">Talk to 30 strangers before you code</span><span data-l="zh">写代码前先和 30 个陌生人聊聊</span><span class="chip" data-phase="discover"><span class="dot"></span>Discover</span></a>
+      <a href="discover.html"><span data-l="en">PostScan — demand research</span><span data-l="zh">PostScan — 需求调研</span><span class="chip" data-phase="discover"><span class="dot"></span>Tool</span></a>
+      <a href="article.html"><span data-l="en">Ship a v0 in a weekend</span><span data-l="zh">一个周末上线 v0</span><span class="chip" data-phase="build"><span class="dot"></span>Build</span></a>
+      <a href="article.html"><span data-l="en">Pricing is a research project</span><span data-l="zh">定价是一个研究课题</span><span class="chip" data-phase="business"><span class="dot"></span>Business</span></a>
+    </div>
+  </div>
+</div>
+
+<script src="scripts/site.js"></script>
+</body>
+</html>

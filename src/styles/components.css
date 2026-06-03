@@ -81,7 +81,8 @@ a.chip:hover { background: color-mix(in oklch, var(--phase) 18%, var(--surface))
   height: 64px; max-width: var(--maxw); margin-inline: auto;
   padding-inline: var(--gutter);
 }
-.brand { display: inline-flex; align-items: baseline; gap: 0.45em; font-family: var(--font-display); font-weight: var(--w-bold); font-size: 1.15rem; letter-spacing: var(--track-tight); }
+.brand { display: inline-flex; align-items: baseline; gap: 0.45em; flex: none; white-space: nowrap; font-family: var(--font-display); font-weight: var(--w-bold); font-size: 1.15rem; letter-spacing: var(--track-tight); }
+.brand > span { white-space: nowrap; }
 .brand .mk { color: var(--accent); }
 .brand .sl { font-family: var(--font-mono); font-size: var(--fs-mono); color: var(--ink-3); letter-spacing: var(--track-mono); text-transform: uppercase; align-self: center; }
 .nav__links { display: flex; align-items: center; gap: 0.15rem; margin-inline-start: var(--space-md); }
@@ -139,6 +140,11 @@ a.chip:hover { background: color-mix(in oklch, var(--phase) 18%, var(--surface))
 @media (max-width: 860px) {
   .nav__links { display: none; }
   .nav__burger { display: inline-grid; }
+}
+/* On small phones drop the brand tagline so the wordmark never wraps. */
+@media (max-width: 560px) {
+  .nav__in { gap: var(--space-md); }
+  .brand .sl { display: none; }
 }
 
 /* ====================== ARTICLE CARD ======================== */
@@ -377,6 +383,46 @@ a.chip:hover { background: color-mix(in oklch, var(--phase) 18%, var(--surface))
 @media (max-width: 560px) { .grid-2 { grid-template-columns: 1fr; } }
 
 .field-band { background: var(--bg-sunken); border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+
+/* ====================== SECONDARY PAGE HEADER =============== */
+/* Editorial header for pages without a phase color (search / about /
+   resources). Built on the frozen masthead system; not in the original
+   mockups, which only covered home / phase / article. */
+.page-head { padding-top: clamp(1.5rem, 1rem + 2vw, 2.5rem); }
+.page-head .crumb { margin-bottom: var(--space-md); }
+.page-head__rule { display: flex; align-items: center; justify-content: space-between; gap: var(--space-md); padding-bottom: var(--space-md); border-bottom: 2px solid var(--ink); flex-wrap: wrap; }
+.page-head__rule .eyebrow { color: var(--ink); }
+.page-head h1 { font-size: clamp(2rem, 1.5rem + 2.4vw, 3.25rem); letter-spacing: -0.03em; line-height: 1.04; margin-top: clamp(1rem, 0.6rem + 1.5vw, 2rem); }
+.page-head .lead { margin-top: var(--space-md); max-width: 56ch; color: var(--ink-2); }
+
+/* ====================== SEARCH (Pagefind UI, themed) ======== */
+/* Repaint the Pagefind default UI with our tokens so it reads as part of
+   the editorial system instead of its stock blue skin. */
+.pf-search {
+  --pagefind-ui-scale: 0.9;
+  --pagefind-ui-primary: var(--ink);
+  --pagefind-ui-text: var(--ink);
+  --pagefind-ui-background: var(--surface);
+  --pagefind-ui-border: var(--line-2);
+  --pagefind-ui-tag: var(--bg-sunken);
+  --pagefind-ui-border-width: 1px;
+  --pagefind-ui-border-radius: var(--r-md);
+  --pagefind-ui-image-border-radius: var(--r-sm);
+  --pagefind-ui-font: var(--font-body);
+}
+.pf-search .pagefind-ui__search-input { font-weight: var(--w-medium); background: var(--surface); }
+.pf-search .pagefind-ui__search-clear { background: var(--bg-sunken); color: var(--ink-3); }
+.pf-search .pagefind-ui__result { border-top: 1px solid var(--line); padding-block: var(--space-md); }
+.pf-search .pagefind-ui__result-title a { font-family: var(--font-display); font-weight: var(--w-semibold); letter-spacing: var(--track-snug); }
+.pf-search .pagefind-ui__result-excerpt { color: var(--ink-2); line-height: var(--lh-body); }
+.pf-search .pagefind-ui__result-tags,
+.pf-search .pagefind-ui__message { font-family: var(--font-mono); font-size: var(--fs-mono); color: var(--ink-3); letter-spacing: var(--track-mono); }
+.pf-search mark,
+.pf-search .pagefind-ui__result mark,
+.pf-search .pagefind-ui__result-excerpt mark {
+  background: var(--market-tint); color: var(--ink-2);
+  border-radius: var(--r-xs); padding: 0 0.15em; font-weight: var(--w-medium);
+}
 
 /* ====================== ARTICLE DETAIL ====================== */
 /* Promoted from article.html <style> block — Variant A article pages */

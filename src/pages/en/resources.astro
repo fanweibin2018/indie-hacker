@@ -2,6 +2,7 @@
 import BaseLayout from '@/layouts/BaseLayout.astro';
 import ResourceCard from '@/components/ResourceCard.astro';
 import ResourceFilter from '@/components/ResourceFilter.astro';
+import PageHeader from '@/components/PageHeader.astro';
 import { getCollection } from 'astro:content';
 
 const lang = 'en' as const;
@@ -12,14 +13,15 @@ const resourceCategories = resources.map((r) => r.data.category as string);
 ---
 <BaseLayout title="Resources" description="Cross-phase indie hacker tools and resources">
 
-  <section class="wrap section" style="padding-top: clamp(2rem,1.4rem+3vw,4rem); padding-bottom: var(--space-xl);">
-    <h1 style="font-size: var(--fs-h2); letter-spacing: var(--track-snug);">Resources</h1>
-    <p class="lead" style="margin-top: var(--space-md); color: var(--ink-2); max-width: 52ch;">
-      Curated tools for indie hackers, filterable by phase and pricing.
-    </p>
-  </section>
+  <PageHeader
+    lang="en"
+    eyebrow="Tool catalog"
+    title="Resources"
+    lead="Curated tools for indie hackers across all five phases — filter live by phase, category and pricing."
+    meta={`${resources.length} tools`}
+  />
 
-  <section class="catalog">
+  <section class="catalog" style="margin-top: clamp(2rem,1.4rem+3vw,3.5rem);">
     <div class="filters-wrap">
       <div class="wrap">
         <ResourceFilter lang={lang} showPhase={true} categories={resourceCategories} />

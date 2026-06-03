@@ -293,7 +293,8 @@ a.chip:hover { background: color-mix(in oklch, var(--phase) 18%, var(--surface))
 .palette__list { padding: 0.5em; max-height: 52vh; overflow: auto; }
 .palette__list a { display: flex; align-items: center; gap: 0.8em; padding: 0.7em 0.8em; border-radius: var(--r-sm); color: var(--ink-2); font-size: var(--fs-small); }
 .palette__list a:hover { background: var(--hover); color: var(--ink); }
-.palette__list .chip { margin-inline-start: auto; }
+.palette__list .chip { margin-inline-start: auto; flex: none; }
+.palette__empty { padding: 1.1em 0.9em; font-family: var(--font-mono); font-size: var(--fs-small); color: var(--ink-3); }
 
 /* ---- Mobile menu sheet ---- */
 .mobnav { display: none; }

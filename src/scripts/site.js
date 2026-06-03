@@ -40,6 +40,9 @@
       localStorage.setItem('ih-theme', next);
       syncToggles();
     } else if (act === 'palette') {
+      // When the popup palette exists, intercept the link so we open the
+      // overlay instead of navigating to the /search/ fallback page.
+      if (document.getElementById('palette')) e.preventDefault();
       togglePalette();
     } else if (act === 'menu') {
       document.body.classList.toggle('nav-open');
@@ -76,6 +79,72 @@
       if (p) p.classList.remove('open');
     }
   });
+
+  /* ---- Command palette: live Pagefind search ----------------
+     Restores the design's ⌘K popup. Typing queries the Pagefind
+     index (generated at build) and renders results inline; empty
+     query restores the default "browse phases" list. Pagefind auto-
+     selects the index for the page's language. Degrades gracefully
+     when the index is absent (e.g. astro dev). */
+  var palInput = document.getElementById('palette-input');
+  var palList = document.getElementById('palette-list');
+  if (palInput && palList) {
+    var PHASE_LABEL = {
+      zh: { discover: '需求挖掘', design: '设计', build: '开发', market: '营销', business: '商业分析' },
+      en: { discover: 'Discover', design: 'Design', build: 'Build', market: 'Market', business: 'Business' }
+    };
+    var palLang = palList.getAttribute('data-lang') === 'en' ? 'en' : 'zh';
+    var defaultHTML = palList.innerHTML;
+    var pf = null; // lazily-imported Pagefind module (or 'err')
+    var debounce;
+
+    function esc(s) {
+      return String(s).replace(/[&<>"]/g, function (c) {
+        return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c];
+      });
+    }
+    function note(text) {
+      palList.innerHTML = '<div class="palette__empty">' + esc(text) + '</div>';
+    }
+    function ensurePF() {
+      if (pf) return Promise.resolve(pf);
+      // Variable path keeps Rollup from statically resolving this build-time
+      // -absent module; Pagefind is generated into /pagefind/ at build.
+      var PF_URL = '/pagefind/pagefind.js';
+      return import(/* @vite-ignore */ PF_URL)
+        .then(function (m) { pf = m; return m; })
+        .catch(function () { pf = 'err'; return 'err'; });
+    }
+    function row(d) {
+      var phase = d.meta && d.meta.phase;
+      var title = (d.meta && d.meta.title) || d.url;
+      var chip = phase
+        ? '<span class="chip" data-phase="' + phase + '"><span class="dot"></span>' +
+          ((PHASE_LABEL[palLang] && PHASE_LABEL[palLang][phase]) || phase) + '</span>'
+        : '';
+      return '<a href="' + d.url + '">' + esc(title) + chip + '</a>';
+    }
+    function runSearch(q) {
+      ensurePF().then(function (lib) {
+        if (lib === 'err') { note(palLang === 'zh' ? '搜索暂不可用' : 'Search unavailable'); return; }
+        lib.search(q).then(function (res) {
+          if (palInput.value.trim() !== q) return; // stale
+          var top = res.results.slice(0, 6);
+          if (!top.length) { note(palLang === 'zh' ? '没有匹配的结果' : 'No results'); return; }
+          Promise.all(top.map(function (r) { return r.data(); })).then(function (datas) {
+            if (palInput.value.trim() !== q) return;
+            palList.innerHTML = datas.map(row).join('');
+          });
+        });
+      });
+    }
+    palInput.addEventListener('input', function () {
+      var q = palInput.value.trim();
+      clearTimeout(debounce);
+      if (!q) { palList.innerHTML = defaultHTML; return; }
+      debounce = setTimeout(function () { runSearch(q); }, 160);
+    });
+  }
 
   /* ---- Reveal on scroll -------------------------------------
      `.js .reveal` is hidden-initial (base.css); add `.in` to animate.

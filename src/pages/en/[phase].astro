@@ -59,7 +59,7 @@ const shortDate = (d: Date) =>
 <BaseLayout title={meta.label[lang]} description={meta.blurb[lang]}>
 
   <!-- ============ PHASE HEADER ============ -->
-  <section class="wrap phead" data-phase={phase}>
+  <section class="wrap phead" data-phase={phase} data-pagefind-meta={`phase:${phase}`}>
     <nav class="crumb" aria-label="Breadcrumb">
       <a href={getLocalizedPath('/', lang)}>Home</a>
       <span class="sep">/</span>

@@ -44,7 +44,7 @@ const author = entry.data.author;
 <BaseLayout title={entry.data.title} description={entry.data.description}>
   <div class="wrap">
     <!-- Article header -->
-    <article class="art-head" data-phase={entry.data.phase}>
+    <article class="art-head" data-phase={entry.data.phase} data-pagefind-meta={`phase:${entry.data.phase}`}>
       <nav class="crumb" aria-label="Breadcrumb">
         <a href={getLocalizedPath('/', lang)}>Home</a>
         <span class="sep">/</span>

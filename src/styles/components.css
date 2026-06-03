@@ -81,7 +81,8 @@ a.chip:hover { background: color-mix(in oklch, var(--phase) 18%, var(--surface))
   height: 64px; max-width: var(--maxw); margin-inline: auto;
   padding-inline: var(--gutter);
 }
-.brand { display: inline-flex; align-items: baseline; gap: 0.45em; font-family: var(--font-display); font-weight: var(--w-bold); font-size: 1.15rem; letter-spacing: var(--track-tight); }
+.brand { display: inline-flex; align-items: baseline; gap: 0.45em; flex: none; white-space: nowrap; font-family: var(--font-display); font-weight: var(--w-bold); font-size: 1.15rem; letter-spacing: var(--track-tight); }
+.brand > span { white-space: nowrap; }
 .brand .mk { color: var(--accent); }
 .brand .sl { font-family: var(--font-mono); font-size: var(--fs-mono); color: var(--ink-3); letter-spacing: var(--track-mono); text-transform: uppercase; align-self: center; }
 .nav__links { display: flex; align-items: center; gap: 0.15rem; margin-inline-start: var(--space-md); }
@@ -139,6 +140,11 @@ a.chip:hover { background: color-mix(in oklch, var(--phase) 18%, var(--surface))
 @media (max-width: 860px) {
   .nav__links { display: none; }
   .nav__burger { display: inline-grid; }
+}
+/* On small phones drop the brand tagline so the wordmark never wraps. */
+@media (max-width: 560px) {
+  .nav__in { gap: var(--space-md); }
+  .brand .sl { display: none; }
 }
 
 /* ====================== ARTICLE CARD ======================== */
@@ -411,7 +417,12 @@ a.chip:hover { background: color-mix(in oklch, var(--phase) 18%, var(--surface))
 .pf-search .pagefind-ui__result-excerpt { color: var(--ink-2); line-height: var(--lh-body); }
 .pf-search .pagefind-ui__result-tags,
 .pf-search .pagefind-ui__message { font-family: var(--font-mono); font-size: var(--fs-mono); color: var(--ink-3); letter-spacing: var(--track-mono); }
-.pf-search mark { background: var(--phase-tint, var(--market-tint)); color: var(--ink); border-radius: var(--r-xs); padding: 0 0.15em; }
+.pf-search mark,
+.pf-search .pagefind-ui__result mark,
+.pf-search .pagefind-ui__result-excerpt mark {
+  background: var(--market-tint); color: var(--ink-2);
+  border-radius: var(--r-xs); padding: 0 0.15em; font-weight: var(--w-medium);
+}
 
 /* ====================== ARTICLE DETAIL ====================== */
 /* Promoted from article.html <style> block — Variant A article pages */
